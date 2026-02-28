@@ -1,36 +1,240 @@
 ---
+import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import Container from '../components/Container.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+import PillTag from '../components/PillTag.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const featured = (await getCollection('work'))
+	.filter((entry) => !entry.data.draft && entry.data.featured)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 4);
+
+const techGroups = {
+	'Edge / Cloud': ['Cloudflare Workers', 'Turnstile', 'Routing & Rules', 'Edge Observability'],
+	Automation: ['n8n', 'Event-driven webhooks', 'Workflow hardening', 'Operational playbooks'],
+	'Data / Search': ['Meilisearch', 'Ingestion pipelines', 'Schema governance', 'Faceted query design'],
+	Frontend: ['Astro', 'TypeScript', 'React islands', 'Performance-first UI'],
+};
 ---
 
-<MainLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<h1>Hello, Astronaut!</h1>
-	<p>
-		Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-		template serves as a lightweight, minimally-styled starting point for anyone looking to build
-		a personal website, blog, or portfolio with Astro.
-	</p>
-	<p>
-		This template comes with a few integrations already configured in your
-		<code>astro.config.mjs</code> file. You can customize your setup with
-		<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-		React, or Vue to your project.
-	</p>
-	<p>Here are a few ideas on how to get started with the template:</p>
-	<ul>
-		<li>Edit this page in <code>src/pages/index.astro</code></li>
-		<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-		<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-		<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-		<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-	</ul>
-	<p>
-		Have fun! If you get stuck, remember to <a href="https://docs.astro.build/">read the docs</a>
-		or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-	</p>
-	<p>
-		Looking for a blog template with a bit more personality? Check out
-		<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a> by
-		<a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-	</p>
+<MainLayout title="Tajinder Singh | Solutions Architect" description="Automation, edge, and data platform architecture.">
+	<Container size="wide">
+		<section class="hero section">
+			<p class="hero__eyebrow">Solutions Architect / Automation & Edge Platforms</p>
+			<h1>Tajinder Singh</h1>
+			<p class="hero__subtitle">Solutions Architect · Automation · Edge &amp; Data Platforms</p>
+			<p class="hero__mission">
+				I design practical platform architectures that reduce operational friction, harden verification
+				paths, and move data reliably from edge events to automation systems.
+			</p>
+			<div class="hero__actions">
+				<ButtonLink href="/work">View Work</ButtonLink>
+				<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
+			</div>
+			<div class="hero__pills">
+				<PillTag label="Cloudflare Workers" />
+				<PillTag label="n8n Automation" />
+				<PillTag label="Meilisearch" />
+				<PillTag label="Xano" />
+				<PillTag label="Security & Verification" />
+			</div>
+		</section>
+
+		<section class="section">
+			<SectionHeading
+				eyebrow="Work"
+				title="Featured Case Studies"
+				description="Selected implementations with measurable operational outcomes."
+			/>
+			<ul class="grid grid--cards">
+				{featured.map((item) => (
+					<li>
+						<ProjectCard
+							title={item.data.title}
+							description={item.data.description}
+							tags={item.data.tags}
+							href={`/work/${item.id}/`}
+						/>
+					</li>
+				))}
+			</ul>
+		</section>
+
+		<section class="section">
+			<SectionHeading eyebrow="Capabilities" title="What I Do" />
+			<div class="grid grid--three">
+				<article class="info-card">
+					<h3>Edge &amp; Security</h3>
+					<p>Workers-based routing, Turnstile verification paths, and request validation at the edge.</p>
+				</article>
+				<article class="info-card">
+					<h3>Automation Platforms</h3>
+					<p>n8n and event-driven workflows that replace brittle manual operations with resilient automation.</p>
+				</article>
+				<article class="info-card">
+					<h3>Search &amp; Data</h3>
+					<p>Meilisearch ingestion architecture, schema governance, and faceted discovery experiences.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section">
+			<SectionHeading eyebrow="Stack" title="Selected Tech" />
+			<div class="grid grid--stack">
+				{
+					Object.entries(techGroups).map(([group, tech]) => (
+						<section class="tech-group">
+							<h3>{group}</h3>
+							<div class="tech-group__items">
+								{tech.map((item) => <PillTag label={item} />)}
+							</div>
+						</section>
+					))
+				}
+			</div>
+		</section>
+
+		<section class="section now">
+			<SectionHeading eyebrow="Now" title="Currently Building" />
+			<p>
+				Designing verification-first edge pipelines that connect Cloudflare entry points to n8n orchestration
+				and downstream data services with tighter observability.
+			</p>
+		</section>
+
+		<section class="section contact-cta">
+			<SectionHeading eyebrow="Contact" title="Let’s Build Useful Systems" />
+			<p>
+				If you are shipping automation-heavy products or edge-first platforms, I can help design and
+				implement architecture that scales with fewer surprises.
+			</p>
+			<div class="contact-links">
+				<a href="mailto:taj@example.com">taj@example.com</a>
+				<a href="https://github.com/your-handle" target="_blank" rel="noreferrer">GitHub</a>
+				<a href="https://linkedin.com/in/your-handle" target="_blank" rel="noreferrer">LinkedIn</a>
+			</div>
+		</section>
+	</Container>
 </MainLayout>
+
+<style>
+	.section {
+		margin-bottom: clamp(2.5rem, 6vw, 5rem);
+	}
+
+	.hero {
+		padding: clamp(1.1rem, 3vw, 2rem);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+	}
+
+	.hero__eyebrow {
+		margin: 0 0 0.85rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.hero h1 {
+		margin: 0;
+		font-size: clamp(2.5rem, 1.9rem + 3vw, 4.4rem);
+	}
+
+	.hero__subtitle {
+		margin: 0.6rem 0 1rem;
+		font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	.hero__mission {
+		max-width: 48rem;
+		font-size: 1.05rem;
+		margin-bottom: 1.2rem;
+	}
+
+	.hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-bottom: 1rem;
+	}
+
+	.hero__pills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+
+	.grid {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.grid--cards {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.grid--three {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.grid--stack {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.info-card,
+	.tech-group,
+	.contact-cta,
+	.now {
+		padding: 1.15rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+	}
+
+	.info-card h3,
+	.tech-group h3 {
+		margin: 0 0 0.55rem;
+		font-size: 1.1rem;
+	}
+
+	.info-card p {
+		margin: 0;
+	}
+
+	.tech-group__items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+	}
+
+	.contact-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.contact-links a {
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	@media (max-width: 980px) {
+		.grid--cards,
+		.grid--three,
+		.grid--stack {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,49 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
+
+type WorkEntry = CollectionEntry<'work'>;
+
+export async function getStaticPaths() {
+	const sortedWork = (await getCollection('work'))
+		.filter((entry) => !entry.data.draft)
+		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+	return sortedWork.map((post, index) => ({
+		params: { slug: post.id },
+		props: {
+			post,
+			previous: sortedWork[index - 1]
+				? { title: sortedWork[index - 1].data.title, slug: sortedWork[index - 1].id }
+				: null,
+			next: sortedWork[index + 1]
+				? { title: sortedWork[index + 1].data.title, slug: sortedWork[index + 1].id }
+				: null,
+		},
+	}));
+}
+
+interface Props {
+	post: WorkEntry;
+	previous: { title: string; slug: string } | null;
+	next: { title: string; slug: string } | null;
+}
+
+const { post, previous, next } = Astro.props;
+const { Content } = await render(post);
+const words = post.body.split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.ceil(words / 220));
+---
+
+<WorkCaseStudy
+	title={post.data.title}
+	description={post.data.description}
+	date={post.data.date}
+	tags={post.data.tags}
+	github={post.data.github}
+	readingTime={readingTime}
+	previous={previous ?? undefined}
+	next={next ?? undefined}
+>
+	<Content />
+</WorkCaseStudy>

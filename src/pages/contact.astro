@@ -1,0 +1,58 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Container from '../components/Container.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+---
+
+<MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh for architecture and automation projects.">
+	<Container size="narrow">
+		<section class="contact-page">
+			<SectionHeading
+				eyebrow="Contact"
+				title="Discuss Your Platform Architecture"
+				description="Share your current system, constraints, and timeline. I can help map an implementation path."
+			/>
+			<div class="contact-card">
+				<p>Email is the fastest path for project inquiries.</p>
+				<ul>
+					<li><a href="mailto:taj@example.com">taj@example.com</a></li>
+					<li><a href="https://github.com/your-handle" target="_blank" rel="noreferrer">GitHub</a></li>
+					<li><a href="https://linkedin.com/in/your-handle" target="_blank" rel="noreferrer">LinkedIn</a></li>
+				</ul>
+				<ButtonLink href="/work" variant="secondary">View Case Studies</ButtonLink>
+			</div>
+		</section>
+	</Container>
+</MainLayout>
+
+<style>
+	.contact-page {
+		display: grid;
+		gap: 1.1rem;
+	}
+
+	.contact-card {
+		padding: 1.2rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+		display: grid;
+		gap: 0.95rem;
+	}
+
+	.contact-card p {
+		margin: 0;
+	}
+
+	.contact-card ul {
+		margin: 0;
+		padding-left: 1.15rem;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.contact-card a {
+		font-weight: 700;
+	}
+</style>

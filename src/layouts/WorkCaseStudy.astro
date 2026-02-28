@@ -1,0 +1,164 @@
+---
+import MainLayout from './MainLayout.astro';
+import PillTag from '../components/PillTag.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface AdjacentLink {
+	title: string;
+	slug: string;
+}
+
+interface Props {
+	title: string;
+	description: string;
+	date: Date;
+	tags: string[];
+	github?: string;
+	readingTime?: number;
+	previous?: AdjacentLink;
+	next?: AdjacentLink;
+}
+
+const { title, description, date, tags, github, readingTime, previous, next } = Astro.props;
+---
+
+<MainLayout title={`${title} | Work`} description={description} width="full">
+	<article class="work-article">
+		<a class="back-link" href="/work">? Back to Work</a>
+		<header class="work-header">
+			<p class="work-label">Case Study</p>
+			<h1>{title}</h1>
+			<p class="work-description">{description}</p>
+			<div class="work-meta">
+				<span><FormattedDate date={date} /></span>
+				{readingTime && <span>{readingTime} min read</span>}
+				{github && (
+					<a href={github} target="_blank" rel="noreferrer">GitHub</a>
+				)}
+			</div>
+			<div class="work-tags">
+				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`} />)}
+			</div>
+		</header>
+		<div class="work-prose">
+			<slot />
+		</div>
+		<nav class="work-nav" aria-label="Case study navigation">
+			{previous ? <a href={`/work/${previous.slug}/`}>? {previous.title}</a> : <span />}
+			{next ? <a href={`/work/${next.slug}/`}>{next.title} ?</a> : <span />}
+		</nav>
+	</article>
+</MainLayout>
+
+<style>
+	.work-article {
+		max-width: min(62rem, 100%);
+		margin-inline: auto;
+		display: grid;
+		gap: var(--space-6);
+	}
+
+	.back-link {
+		font-size: 0.9rem;
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+	.work-header {
+		display: grid;
+		gap: 1rem;
+		padding: clamp(1.3rem, 2vw, 2rem);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+	}
+
+	.work-label {
+		margin: 0;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.work-header h1 {
+		margin: 0;
+		font-size: clamp(2rem, 1.4rem + 2.1vw, 3.1rem);
+	}
+
+	.work-description {
+		margin: 0;
+		font-size: 1.04rem;
+	}
+
+	.work-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem 1.4rem;
+		font-size: 0.86rem;
+		color: var(--color-text-muted);
+	}
+
+	.work-meta a {
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.work-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+	}
+
+	.work-prose {
+		max-width: 56rem;
+		display: grid;
+		gap: 1rem;
+	}
+
+	.work-prose h2 {
+		margin-top: 1.4rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-border);
+		font-size: clamp(1.35rem, 1.1rem + 0.65vw, 1.8rem);
+	}
+
+	.work-prose p,
+	.work-prose li {
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+
+	.work-prose ul {
+		margin: 0;
+		padding-left: 1.2rem;
+	}
+
+	.work-nav {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		padding-top: 1.2rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.work-nav a {
+		font-weight: 600;
+		text-decoration: none;
+	}
+
+	.work-nav a:last-child {
+		text-align: right;
+	}
+
+	@media (max-width: 720px) {
+		.work-nav {
+			grid-template-columns: 1fr;
+		}
+
+		.work-nav a:last-child {
+			text-align: left;
+		}
+	}
+</style>

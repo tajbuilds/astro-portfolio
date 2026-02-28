@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import Container from '../../components/Container.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import PillTag from '../../components/PillTag.astro';
+
+const workItems = (await getCollection('work'))
+	.filter((entry) => !entry.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).sort((a, b) =>
+	a.localeCompare(b),
+);
+---
+
+<MainLayout
+	title="Work | Tajinder Singh"
+	description="Architecture case studies focused on edge security, automation, and data/search systems."
+	width="full"
+>
+	<Container size="wide">
+		<section class="work-intro">
+			<SectionHeading
+				eyebrow="Portfolio"
+				title="Case Studies"
+				description="Selected architecture and platform work across verification pipelines, search systems, and high-leverage automation."
+			/>
+		</section>
+
+		<section class="work-filter" aria-label="Filter by tag">
+			<p>Filter by focus area:</p>
+			<div class="work-filter__tags">
+				<PillTag label="All" href="/work/" />
+				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`} />)}
+			</div>
+		</section>
+
+		<section>
+			<ul class="work-grid">
+				{
+					workItems.map((item) => (
+						<li>
+							<ProjectCard
+								title={item.data.title}
+								description={item.data.description}
+								tags={item.data.tags}
+								date={item.data.date}
+								href={`/work/${item.id}/`}
+							/>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+	</Container>
+</MainLayout>
+
+<style>
+	.work-intro {
+		margin-bottom: var(--space-5);
+	}
+
+	.work-filter {
+		display: grid;
+		gap: 0.7rem;
+		margin-bottom: var(--space-6);
+	}
+
+	.work-filter p {
+		margin: 0;
+		font-size: 0.84rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	.work-filter__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+	}
+
+	.work-grid {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.work-grid li {
+		height: 100%;
+	}
+
+	@media (max-width: 900px) {
+		.work-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

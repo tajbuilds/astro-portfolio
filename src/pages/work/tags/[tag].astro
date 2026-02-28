@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../../layouts/MainLayout.astro';
+import Container from '../../../components/Container.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import PillTag from '../../../components/PillTag.astro';
+
+const allWork = (await getCollection('work'))
+	.filter((entry) => !entry.data.draft)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+export async function getStaticPaths() {
+	const items = (await getCollection('work')).filter((entry) => !entry.data.draft);
+	const tags = Array.from(new Set(items.flatMap((item) => item.data.tags)));
+	return tags.map((tag) => ({
+		params: { tag: tag.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+		props: { tag },
+	}));
+}
+
+const { tag } = Astro.props;
+const tagSlug = String(tag).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const filtered = allWork.filter((item) =>
+	item.data.tags.some((entry) => entry.toLowerCase().replace(/[^a-z0-9]+/g, '-') === tagSlug),
+);
+---
+
+<MainLayout
+	title={`${tag} | Work | Tajinder Singh`}
+	description={`Case studies tagged ${tag}.`}
+	width="full"
+>
+	<Container size="wide">
+		<SectionHeading
+			eyebrow="Filtered"
+			title={`Work tagged: ${tag}`}
+			description="Focused case studies within this domain."
+		/>
+		<p class="tag-back"><PillTag label="<- Back to all work" href="/work/" /></p>
+		<ul class="work-grid">
+			{
+				filtered.map((item) => (
+					<li>
+						<ProjectCard
+							title={item.data.title}
+							description={item.data.description}
+							tags={item.data.tags}
+							date={item.data.date}
+							href={`/work/${item.id}/`}
+						/>
+					</li>
+				))
+			}
+		</ul>
+	</Container>
+</MainLayout>
+
+<style>
+	.tag-back {
+		margin-bottom: 1.3rem;
+	}
+
+	.work-grid {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	@media (max-width: 900px) {
+		.work-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

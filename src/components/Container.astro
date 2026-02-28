@@ -1,0 +1,33 @@
+---
+interface Props {
+	size?: 'narrow' | 'wide' | 'full';
+	as?: 'div' | 'section';
+	class?: string;
+}
+
+const { size = 'wide', as = 'div', class: className } = Astro.props;
+const Tag = as;
+---
+
+<Tag class:list={['container', `container--${size}`, className]}>
+	<slot />
+</Tag>
+
+<style>
+	.container {
+		width: 100%;
+		margin-inline: auto;
+	}
+
+	.container--narrow {
+		max-width: 60rem;
+	}
+
+	.container--wide {
+		max-width: 72rem;
+	}
+
+	.container--full {
+		max-width: 86rem;
+	}
+</style>

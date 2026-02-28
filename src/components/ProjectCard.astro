@@ -1,0 +1,100 @@
+---
+import PillTag from './PillTag.astro';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	tags: string[];
+	href: string;
+	date?: Date;
+	compact?: boolean;
+}
+
+const { title, description, tags, href, date, compact = false } = Astro.props;
+---
+
+<article class:list={['project-card', { 'project-card--compact': compact }]}>
+	<div class="project-card__meta">
+		{date && (
+			<p class="project-card__date">
+				<FormattedDate date={date} />
+			</p>
+		)}
+	</div>
+	<h3>
+		<a href={href}>{title}</a>
+	</h3>
+	<p>{description}</p>
+	<div class="project-card__tags">
+		{tags.map((tag) => <PillTag label={tag} />)}
+	</div>
+	<a class="project-card__cta" href={href}>Read case study ?</a>
+</article>
+
+<style>
+	.project-card {
+		display: grid;
+		gap: 0.85rem;
+		height: 100%;
+		padding: 1.25rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
+		box-shadow: var(--shadow-sm);
+		transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+	}
+
+	.project-card:hover,
+	.project-card:focus-within {
+		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+		box-shadow: var(--shadow-md);
+		transform: translateY(-2px);
+	}
+
+	.project-card h3 {
+		margin: 0;
+		font-size: 1.2rem;
+	}
+
+	.project-card h3 a {
+		text-decoration: none;
+		color: var(--color-text);
+	}
+
+	.project-card p {
+		margin: 0;
+		font-size: 0.96rem;
+	}
+
+	.project-card__meta {
+		min-height: 1rem;
+	}
+
+	.project-card__date {
+		font-size: 0.78rem;
+		color: var(--color-text-muted);
+	}
+
+	.project-card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.15rem;
+	}
+
+	.project-card__cta {
+		font-size: 0.9rem;
+		font-weight: 700;
+		text-decoration: none;
+		color: var(--color-accent);
+	}
+
+	.project-card__cta:hover {
+		color: var(--color-accent-strong);
+	}
+
+	.project-card--compact {
+		padding: 1rem;
+	}
+</style>

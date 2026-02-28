@@ -9,8 +9,10 @@ import { SITE_TITLE } from '../consts';
 		<div class="nav-controls">
 			<div class="internal-links">
 				<HeaderLink href="/">Home</HeaderLink>
-				<HeaderLink href="/blog">Blog</HeaderLink>
+				<HeaderLink href="/work">Work</HeaderLink>
 				<HeaderLink href="/about">About</HeaderLink>
+				<HeaderLink href="/blog" class="secondary-link">Blog</HeaderLink>
+				<HeaderLink href="/contact">Contact</HeaderLink>
 			</div>
 			<button
 				id="theme-toggle"
@@ -92,7 +94,7 @@ import { SITE_TITLE } from '../consts';
 	}
 
 	nav {
-		max-width: var(--container-wide);
+		max-width: var(--container-full);
 		margin: 0 auto;
 		display: flex;
 		align-items: center;
@@ -101,7 +103,7 @@ import { SITE_TITLE } from '../consts';
 	}
 
 	.brand {
-		font-size: 0.95rem;
+		font-size: 0.92rem;
 		font-weight: 700;
 		letter-spacing: 0.03em;
 		text-decoration: none;
@@ -118,7 +120,11 @@ import { SITE_TITLE } from '../consts';
 	.internal-links {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 0.55rem;
+	}
+
+	:global(.secondary-link) {
+		opacity: 0.75;
 	}
 
 	.theme-toggle {
@@ -180,20 +186,38 @@ import { SITE_TITLE } from '../consts';
 		border-color: rgba(147, 197, 253, 0.45);
 	}
 
-	@media (max-width: 680px) {
+	@media (max-width: 980px) {
+		nav {
+			align-items: flex-start;
+		}
+
+		.nav-controls {
+			flex-direction: column;
+			align-items: flex-end;
+		}
+
+		.internal-links {
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
+	}
+
+	@media (max-width: 700px) {
 		header {
 			padding-inline: 0.9rem;
 		}
 
-		nav {
-			flex-wrap: wrap;
-			justify-content: center;
+		nav,
+		.nav-controls {
+			align-items: center;
 		}
 
-		.nav-controls {
-			width: 100%;
+		nav {
+			flex-direction: column;
+		}
+
+		.internal-links {
 			justify-content: center;
-			flex-wrap: wrap;
 		}
 	}
 </style>

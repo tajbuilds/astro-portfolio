@@ -1,0 +1,40 @@
+---
+interface Props {
+	label: string;
+	href?: string;
+}
+
+const { label, href } = Astro.props;
+---
+
+{
+	href ? (
+		<a class="pill" href={href}>{label}</a>
+	) : (
+		<span class="pill">{label}</span>
+	)
+}
+
+<style>
+	.pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.26rem 0.7rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		line-height: 1;
+		text-decoration: none;
+		border-radius: 999px;
+		border: 1px solid color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+		background: color-mix(in srgb, var(--color-accent) 11%, var(--color-bg-elevated));
+		color: var(--color-text);
+		transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+	}
+
+	a.pill:hover {
+		transform: translateY(-1px);
+		border-color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg-elevated));
+	}
+</style>
