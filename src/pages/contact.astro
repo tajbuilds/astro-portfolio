@@ -1,4 +1,4 @@
-﻿---
+---
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -94,6 +94,9 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 			</div>
 		</section>
 	</Container>
+{turnstileSiteKey && (
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
 </MainLayout>
 
 <script is:inline>

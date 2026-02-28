@@ -50,21 +50,22 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 						<p id="quick-contact-status" class="status" role="status" aria-live="polite"></p>
 					</div>
 					<div class="quick-contact-turnstile">
-						<div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto" data-size="flexible"></div>
+						<div id="quick-contact-turnstile-widget" class="quick-contact-turnstile-widget"></div>
 					</div>
 				</form>
 			) : (
 				<div class="quick-contact-fallback">
 					<p>Quick form is unavailable right now. Please use the full contact page.</p>
-					<a href="/contact/">Open contact page</a>
+					<a href="/contact/" data-astro-prefetch>Open contact page</a>
 				</div>
 			)
 		}
 	</div>
 </div>
 
-<script is:inline>
+<script is:inline define:vars={{ turnstileSiteKey }}>
 	(() => {
+		const QUICK_TURNSTILE_SITE_KEY = turnstileSiteKey || "";
 		const trigger = document.getElementById('quick-contact-trigger');
 		const modal = document.getElementById('quick-contact-modal');
 		if (!(trigger instanceof HTMLButtonElement) || !(modal instanceof HTMLElement)) return;
@@ -72,18 +73,74 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		const form = document.getElementById('quick-contact-form');
 		const statusEl = document.getElementById('quick-contact-status');
 		const firstInput = form?.querySelector('input[name="name"]');
+		const turnstileTarget = document.getElementById('quick-contact-turnstile-widget');
 		const MIN_MESSAGE_CHARS = 30;
 		const MIN_MESSAGE_WORDS = 29;
-		const wordCount = (value) => value.trim().split(/\\s+/).filter(Boolean).length;
+		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
 		const footer = document.querySelector('footer');
 
 		let previousFocus = null;
+		let turnstileWidgetId = null;
+		let turnstileLoader = null;
 
-		const openModal = () => {
+		const ensureTurnstileScript = () => {
+			if (!QUICK_TURNSTILE_SITE_KEY) return Promise.resolve(false);
+			if (window.turnstile) return Promise.resolve(true);
+			if (turnstileLoader) return turnstileLoader;
+
+			turnstileLoader = new Promise((resolve) => {
+				const existing = document.querySelector('script[data-turnstile-script="1"]');
+				if (existing instanceof HTMLScriptElement) {
+					existing.addEventListener('load', () => resolve(Boolean(window.turnstile)), { once: true });
+					existing.addEventListener('error', () => resolve(false), { once: true });
+					return;
+				}
+
+				const script = document.createElement('script');
+				script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+				script.async = true;
+				script.defer = true;
+				script.dataset.turnstileScript = '1';
+				script.addEventListener('load', () => resolve(Boolean(window.turnstile)), { once: true });
+				script.addEventListener('error', () => resolve(false), { once: true });
+				document.head.appendChild(script);
+			});
+
+			return turnstileLoader;
+		};
+
+		const ensureTurnstileWidget = async () => {
+			if (!(turnstileTarget instanceof HTMLElement) || !QUICK_TURNSTILE_SITE_KEY) return false;
+			if (turnstileWidgetId !== null) return true;
+
+			const loaded = await ensureTurnstileScript();
+			if (!loaded || !window.turnstile) return false;
+
+			try {
+				turnstileWidgetId = window.turnstile.render(turnstileTarget, {
+					sitekey: QUICK_TURNSTILE_SITE_KEY,
+					theme: 'auto',
+					size: 'flexible',
+				});
+				return true;
+			} catch {
+				return false;
+			}
+		};
+
+		const openModal = async () => {
 			previousFocus = document.activeElement;
 			modal.hidden = false;
 			document.body.style.overflow = 'hidden';
 			if (firstInput instanceof HTMLElement) firstInput.focus();
+
+			if (QUICK_TURNSTILE_SITE_KEY && form instanceof HTMLFormElement) {
+				const ok = await ensureTurnstileWidget();
+				if (!ok && statusEl instanceof HTMLElement) {
+					statusEl.textContent = 'Verification unavailable. Use full contact page.';
+					statusEl.dataset.error = 'true';
+				}
+			}
 		};
 
 		const closeModal = () => {
@@ -128,7 +185,10 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 				email: String(formData.get('email') || ''),
 				message: String(formData.get('message') || ''),
 				company: String(formData.get('company') || ''),
-				turnstileToken: String(formData.get('cf-turnstile-response') || ''),
+				turnstileToken:
+					turnstileWidgetId !== null && window.turnstile
+						? String(window.turnstile.getResponse(turnstileWidgetId) || '')
+						: '',
 			};
 
 			if (payload.name.trim().length < 2) {
@@ -151,6 +211,11 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 				return;
 			}
 
+			if (!payload.turnstileToken) {
+				setStatus('Please complete verification.', true);
+				return;
+			}
+
 			try {
 				const response = await fetch('/api/contact', {
 					method: 'POST',
@@ -168,8 +233,8 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 				}
 
 				form.reset();
-				if (window.turnstile && typeof window.turnstile.reset === 'function') {
-					window.turnstile.reset();
+				if (window.turnstile && turnstileWidgetId !== null) {
+					window.turnstile.reset(turnstileWidgetId);
 				}
 				setStatus('Message sent. Thank you.');
 				setTimeout(closeModal, 700);
@@ -293,7 +358,7 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		margin-top: 0.1rem;
 	}
 
-	.quick-contact-turnstile .cf-turnstile {
+	.quick-contact-turnstile-widget {
 		max-width: 100%;
 	}
 
@@ -367,5 +432,4 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		}
 	}
 </style>
-
 

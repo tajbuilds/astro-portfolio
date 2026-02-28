@@ -3,7 +3,6 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuickContact from '../components/QuickContact.astro';
-import { TURNSTILE_SITE_KEY } from '../consts';
 
 interface Props {
 	title: string;
@@ -14,7 +13,6 @@ interface Props {
 }
 
 const { title, description, image, width = 'narrow', mainClass } = Astro.props;
-const turnstileSiteKey = TURNSTILE_SITE_KEY;
 const pathname = Astro.url.pathname;
 const showQuickContact = !pathname.startsWith('/contact');
 ---
@@ -45,10 +43,6 @@ const showQuickContact = !pathname.startsWith('/contact');
 		{showQuickContact && <QuickContact />}
 		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
 
-		{turnstileSiteKey && (
-			<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-		)}
-
 		<script is:inline>
 			(() => {
 				const btn = document.getElementById('back-to-top');
@@ -71,6 +65,7 @@ const showQuickContact = !pathname.startsWith('/contact');
 					});
 					observer.observe(footer);
 				}
+
 				btn.addEventListener('click', () => {
 					window.scrollTo({ top: 0, behavior: 'smooth' });
 				});
@@ -78,8 +73,3 @@ const showQuickContact = !pathname.startsWith('/contact');
 		</script>
 	</body>
 </html>
-
-
-
-
-

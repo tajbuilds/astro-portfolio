@@ -1,4 +1,4 @@
----
+﻿---
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = HTMLAttributes<'a'>;
@@ -9,7 +9,7 @@ const subpath = pathname.match(/[^\/]+/g);
 const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 ---
 
-<a href={href} class:list={[className, { active: isActive }]} {...props}>
+<a href={href} data-astro-prefetch class:list={[className, { active: isActive }]} {...props}>
 	<slot />
 </a>
 
@@ -35,3 +35,4 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 		background: rgba(15, 118, 110, 0.16);
 	}
 </style>
+
