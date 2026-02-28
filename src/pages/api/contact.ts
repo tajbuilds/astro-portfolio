@@ -142,7 +142,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	});
 
 	if (!resendResponse.ok) {
-		return json(502, { ok: false, message: 'Unable to deliver message right now. Please try later.' });
+		const errorText = await resendResponse.text().catch(() => 'unknown resend error');
+		console.error('Resend send failed', {
+			status: resendResponse.status,
+			body: errorText,
+		});
+		return json(502, {
+			ok: false,
+			message: 'Email provider rejected this message. Check sender/domain verification in Resend.',
+		});
 	}
 
 	return json(200, { ok: true, message: 'Message sent successfully.' });
