@@ -1,24 +1,24 @@
 :root {
-	--color-bg: #f4f7fb;
+	--color-bg: #f7f9fc;
 	--color-bg-elevated: #ffffff;
-	--color-surface: #ecf1f8;
-	--color-text: #0f1724;
-	--color-text-muted: #4b5f80;
-	--color-border: #ced9e8;
-	--color-accent: #0f766e;
-	--color-accent-strong: #115e59;
-	--color-focus: #0891b2;
+	--color-surface: #eef3f9;
+	--color-text: #121826;
+	--color-text-muted: #4e5d78;
+	--color-border: #d6deea;
+	--color-accent: #2563eb;
+	--color-accent-strong: #1d4ed8;
+	--color-focus: #0ea5e9;
 
-	--bg-gradient-top-1: rgba(15, 118, 110, 0.11);
-	--bg-gradient-top-2: rgba(8, 145, 178, 0.11);
+	--bg-gradient-top-1: rgba(37, 99, 235, 0.11);
+	--bg-gradient-top-2: rgba(14, 165, 233, 0.09);
 	--bg-gradient-base: #fbfdff;
 
 	--radius-sm: 0.5rem;
 	--radius-md: 0.9rem;
 	--radius-lg: 1.4rem;
 
-	--shadow-sm: 0 2px 10px rgba(15, 23, 36, 0.06);
-	--shadow-md: 0 10px 30px rgba(15, 23, 36, 0.11);
+	--shadow-sm: 0 2px 10px rgba(17, 24, 39, 0.06);
+	--shadow-md: 0 12px 30px rgba(17, 24, 39, 0.11);
 
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
@@ -38,66 +38,64 @@
 	/* Backward-compatible tokens used by starter components */
 	--accent: var(--color-accent);
 	--accent-dark: var(--color-accent-strong);
-	--black: 15, 23, 36;
-	--gray: 90, 111, 146;
-	--gray-light: 220, 229, 241;
-	--gray-dark: 27, 40, 60;
-	--gray-gradient: rgba(220, 229, 241, 0.62), #f7f9fc;
+	--black: 18, 24, 38;
+	--gray: 92, 108, 137;
+	--gray-light: 219, 228, 241;
+	--gray-dark: 29, 42, 64;
+	--gray-gradient: rgba(223, 231, 242, 0.65), #f9fbff;
 	--box-shadow: var(--shadow-md);
 }
 
-/* Explicit dark theme override hook (for future toggle support). */
 :root[data-theme="dark"],
 [data-theme="dark"] {
 	--color-bg: #0b1220;
-	--color-bg-elevated: #121b2e;
-	--color-surface: #16223a;
-	--color-text: #e7eefc;
-	--color-text-muted: #a6b5d3;
-	--color-border: #2d3c5a;
-	--color-accent: #3ec8b8;
-	--color-accent-strong: #60e3d1;
-	--color-focus: #7dd3fc;
+	--color-bg-elevated: #121a2b;
+	--color-surface: #172238;
+	--color-text: #e8eefc;
+	--color-text-muted: #a9b8d5;
+	--color-border: #2a3854;
+	--color-accent: #60a5fa;
+	--color-accent-strong: #93c5fd;
+	--color-focus: #38bdf8;
 
-	--bg-gradient-top-1: rgba(62, 200, 184, 0.14);
-	--bg-gradient-top-2: rgba(125, 211, 252, 0.12);
-	--bg-gradient-base: #080e19;
+	--bg-gradient-top-1: rgba(96, 165, 250, 0.16);
+	--bg-gradient-top-2: rgba(34, 211, 238, 0.11);
+	--bg-gradient-base: #080d18;
 
 	--shadow-sm: 0 2px 10px rgba(3, 6, 12, 0.45);
-	--shadow-md: 0 12px 30px rgba(3, 6, 12, 0.55);
+	--shadow-md: 0 12px 32px rgba(3, 6, 12, 0.58);
 
-	--black: 231, 238, 252;
-	--gray: 166, 181, 211;
-	--gray-light: 36, 50, 78;
-	--gray-dark: 222, 233, 252;
-	--gray-gradient: rgba(14, 20, 35, 0.8), #0b1220;
+	--black: 232, 238, 252;
+	--gray: 169, 184, 213;
+	--gray-light: 37, 51, 78;
+	--gray-dark: 226, 235, 252;
+	--gray-gradient: rgba(12, 18, 34, 0.84), #0b1220;
 }
 
-/* Auto dark mode when user prefers it and no explicit light override exists. */
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme="light"]) {
 		--color-bg: #0b1220;
-		--color-bg-elevated: #121b2e;
-		--color-surface: #16223a;
-		--color-text: #e7eefc;
-		--color-text-muted: #a6b5d3;
-		--color-border: #2d3c5a;
-		--color-accent: #3ec8b8;
-		--color-accent-strong: #60e3d1;
-		--color-focus: #7dd3fc;
+		--color-bg-elevated: #121a2b;
+		--color-surface: #172238;
+		--color-text: #e8eefc;
+		--color-text-muted: #a9b8d5;
+		--color-border: #2a3854;
+		--color-accent: #60a5fa;
+		--color-accent-strong: #93c5fd;
+		--color-focus: #38bdf8;
 
-		--bg-gradient-top-1: rgba(62, 200, 184, 0.14);
-		--bg-gradient-top-2: rgba(125, 211, 252, 0.12);
-		--bg-gradient-base: #080e19;
+		--bg-gradient-top-1: rgba(96, 165, 250, 0.16);
+		--bg-gradient-top-2: rgba(34, 211, 238, 0.11);
+		--bg-gradient-base: #080d18;
 
 		--shadow-sm: 0 2px 10px rgba(3, 6, 12, 0.45);
-		--shadow-md: 0 12px 30px rgba(3, 6, 12, 0.55);
+		--shadow-md: 0 12px 32px rgba(3, 6, 12, 0.58);
 
-		--black: 231, 238, 252;
-		--gray: 166, 181, 211;
-		--gray-light: 36, 50, 78;
-		--gray-dark: 222, 233, 252;
-		--gray-gradient: rgba(14, 20, 35, 0.8), #0b1220;
+		--black: 232, 238, 252;
+		--gray: 169, 184, 213;
+		--gray-light: 37, 51, 78;
+		--gray-dark: 226, 235, 252;
+		--gray-gradient: rgba(12, 18, 34, 0.84), #0b1220;
 	}
 }
 
