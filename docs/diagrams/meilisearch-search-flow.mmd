@@ -1,0 +1,20 @@
+flowchart LR
+    U["User / Browser UI"] --> Q["Unified Search Request"]
+    Q --> P["Secure Proxy API"]
+
+    P --> V["Validation & Payload Shaping"]
+    V --> F["Deterministic Filter Builder"]
+    F --> M[(Search Index)]
+
+    M --> R["Response Shaping"]
+    R --> U
+
+    subgraph Data Layer
+        M
+        I["Structured Index Model"]
+    end
+
+    subgraph Security Layer
+        S["Server-side Secrets"]
+        P
+    end

@@ -14,10 +14,10 @@ github: "https://github.com/your-handle/cf-xano-edge-cache-proxy"
 ---
 
 ## TL;DR
-I built a Cloudflare Worker in front of Xano APIs that normalizes requests, applies policy-driven cache keys, and layers edge cache with R2 for better resiliency. The proxy supports stale-on-error behavior, operator-aware TTL mode, strict endpoint gating, and deterministic key versioning for safer invalidation.
+Designed and deployed an edge cache proxy that enforced deterministic request normalization to prevent cache fragmentation and improve effective hit ratio. Cache behavior was controlled through KV policy so TTL bands, bypass rules, and endpoint behavior could be changed without redeploying code. The system used tiered caching with edge cache (`caches.default`) and an optional R2 tier for large payloads, with stale-on-error handling during upstream failures. Because physical delete behavior can be unreliable across POPs, invalidation was implemented with a purge-version suffix for deterministic, global logical refresh.
 
 ## Problem
-The upstream API layer needed better protection from avoidable traffic and uneven query patterns. Existing behavior made cache efficiency inconsistent and invalidation fragile, especially across POPs and high-churn endpoints.
+Cache performance was inconsistent because query parameter order, casing, and tracking noise produced multiple cache keys for equivalent requests. That fragmentation lowered hit ratio and pushed avoidable traffic to origin, especially on large or frequently requested payloads. Invalidation was also an operational risk: deleting cache objects did not always produce predictable results across POPs. The architecture needed deterministic keys, policy-driven control, and safer invalidation behavior without adding latency.
 
 ## Constraints
 - Keep API behavior compatible for existing consumers.
@@ -27,30 +27,44 @@ The upstream API layer needed better protection from avoidable traffic and uneve
 
 ## Architecture
 
-![Edge cache proxy request flow diagram](/diagrams/edge-cache-proxy-request-flow.svg)
-*Figure: Edge request flow with KV policy, edge cache, R2 tiering, and origin fallback.*
+### Design Principles
+- Deterministic cache keys over implicit cache behavior.
+- Config-driven KV policy over hardcoded rules.
+- Tiered caching over a single-cache dependency.
+- Logical invalidation (versioning) over physical deletes.
 
-Requests flow through a Worker route (`protected-api.example/*`) before origin fetch.
+<figure class="diagram">
+  <img
+    src="/diagrams/edge-cache-proxy-flow.svg"
+    alt="Edge request flow: Client -> Worker (normalization + policy) -> Edge Cache -> R2 fallback -> Origin API -> write-back + metrics."
+    loading="lazy"
+  />
+  <figcaption>
+    Edge request flow with KV policy lookup, deterministic cache keys, edge cache, R2 tiering, origin fallback, and metrics emission.
+  </figcaption>
+</figure>
+
+All API traffic is routed through a Cloudflare Worker in front of `protected-api.example/*` before origin fetch.
 
 1. **Normalization and policy lookup**
-- Query keys are canonicalized (lowercased, sorted, filtered).
-- Endpoint config is loaded from `CFG_KV` and memoized with a small in-memory LRU.
-- Global runtime policy (bypass/debug/thresholds) is also loaded from KV.
+- Query keys are canonicalized (lowercased, sorted, filtered) before cache key generation.
+- Endpoint config is read from `CFG_KV` and memoized with a bounded in-memory LRU.
+- Runtime controls (bypass/debug/thresholds) are loaded as KV policy.
 
 2. **Cache key derivation**
-- Canonical normalized URL is used as the base cache key.
-- Optional suffixes are appended for operator sync context and purge-version context.
-- Hash-based keys are used for R2 object storage.
+- A canonical normalized URL is used as the base cache key.
+- Optional operator and purge-version suffixes are appended for deterministic behavior.
+- Hash-based keying is used for R2 object storage.
 
 3. **Tiered cache behavior**
-- Read order: edge cache -> R2 (if enabled and fresh) -> origin.
-- Size-based TTL bands (from KV) determine edge cache lifetime.
-- Operator-aware TTL mode can override size TTL based on operator sync policy.
+- Read order: edge cache (`caches.default`) -> R2 tier (if enabled and fresh) -> origin.
+- Adaptive TTL bands from KV policy determine edge cache lifetime by payload profile.
+- Operator-aware TTL mode can override band-based TTL when policy requires it.
 
 4. **Resiliency and observability**
-- Stale-on-error is applied for upstream failures/5xx conditions.
-- Response headers expose trace/cache decisions for debugging.
-- Analytics events are emitted to `WAE_METRICS` for outcome monitoring.
+- Stale-on-error is applied on upstream failures and 5xx conditions.
+- Trace headers expose cache decisions for debugging and incident response.
+- Analytics events are emitted to `WAE_METRICS` for operational monitoring.
 
 ## Key Decisions
 - **KV-driven configuration over hardcoded rules**
@@ -69,22 +83,13 @@ Requests flow through a Worker route (`protected-api.example/*`) before origin f
   Because `caches.default.delete()` can be unreliable in some cases, key versioning via `last_purge` was introduced to force global logical misses on demand.
 
 ## Results
-- Improved cache consistency across normalized request variants.
-- Better origin protection with a two-tier cache model and stale-on-error fallback.
-- Clearer operational debugging through trace headers and cache outcome metadata.
-- Stronger control boundaries via strict endpoint policy gating.
+- Reduced origin requests by approximately `[X-Y%]` on high-traffic endpoints by eliminating cache key fragmentation.
+- Improved effective cache hit ratio from around `[A%]` to `[B%]` after deterministic normalization and KV policy alignment.
+- Reduced p95 latency by roughly `[X ms]` for cache-served responses and stabilized performance during burst traffic.
+- Served stale responses during upstream 5xx incidents to reduce user-facing failures and timeout cascades.
+- Improved operational control with deterministic purge versioning and traceable cache decision headers.
 
-> Add your concrete metrics here for portfolio impact:
-> - Origin request reduction: `[xx%]`
-> - Edge/R2 hit ratio change: `[from x to y]`
-> - p95 latency improvement: `[xx ms / xx%]`
-> - Error resilience during upstream incidents: `[brief evidence]`
-
-## Next Improvements
-- Add scheduled cleanup for superseded R2 objects after purge-version rotations.
-- Extend policy validation tooling for KV config safety checks before publish.
-- Add a small internal dashboard for hit/miss/stale trends by endpoint.
-- Introduce automated canary rollout for major cache policy changes.
-
-
-
+## Future Enhancements
+- Add automated cleanup for superseded R2 objects after purge-version rotations.
+- Add pre-publish KV policy validation to reduce misconfiguration risk.
+- Expand cache observability with endpoint-level trend views and anomaly alerts.

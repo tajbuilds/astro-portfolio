@@ -7,10 +7,11 @@ import react from "@astrojs/react";
 import cloudflare from "@astrojs/cloudflare";
 
 const enablePlatformProxy = process.env.CF_PLATFORM_PROXY === "true";
+const site = process.env.SITE_URL || process.env.PUBLIC_SITE_URL || "https://tajs.io";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://example.com",
+	site,
 	integrations: [mdx(), sitemap(), react()],
 	adapter: cloudflare({
 		platformProxy: {
@@ -18,3 +19,4 @@ export default defineConfig({
 		},
 	}),
 });
+
