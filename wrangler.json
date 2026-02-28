@@ -10,5 +10,11 @@
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	"vars": {
+		"CONTACT_TO_EMAIL": "contact@tajs.io",
+		"CONTACT_FROM_EMAIL": "Portfolio Contact <noreply@tajs.io>",
+		"CONTACT_SUBJECT_PREFIX": "[tajs.io] Contact Form",
+		"TURNSTILE_SITE_KEY": "0x4AAAAAACj5smKRjyW5M3sV"
+	}
 }

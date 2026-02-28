@@ -2,7 +2,10 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import ButtonLink from '../components/ButtonLink.astro';
+
+export const prerender = false;
+
+const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 ---
 
 <MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh for architecture and automation projects.">
@@ -13,17 +16,91 @@ import ButtonLink from '../components/ButtonLink.astro';
 				title="Discuss Your Platform Architecture"
 				description="Share your current system, constraints, and timeline. I can help map an implementation path."
 			/>
+
 			<div class="contact-card">
-				<p>Email is the fastest path for project inquiries.</p>
-				<ul>
+				<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
+					<label>
+						<span>Name</span>
+						<input name="name" type="text" autocomplete="name" required maxlength="120" />
+					</label>
+
+					<label>
+						<span>Email</span>
+						<input name="email" type="email" autocomplete="email" required maxlength="190" />
+					</label>
+
+					<label>
+						<span>Message</span>
+						<textarea name="message" rows="6" required maxlength="2500"></textarea>
+					</label>
+
+					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
+
+					{turnstileSiteKey ? (
+						<div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+					) : (
+						<p class="config-warning">Turnstile site key is not configured yet.</p>
+					)}
+
+					<div class="actions">
+						<button type="submit">Send message</button>
+						<p id="contact-status" class="status" role="status" aria-live="polite"></p>
+					</div>
+				</form>
+
+				<ul class="contact-links">
 					<li><a href="mailto:contact@tajs.io">contact@tajs.io</a></li>
 					<li><a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a></li>
 				</ul>
-				<ButtonLink href="/work" variant="secondary">View Case Studies</ButtonLink>
 			</div>
 		</section>
 	</Container>
 </MainLayout>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script is:inline>
+	(() => {
+		const form = document.getElementById('contact-form');
+		const statusEl = document.getElementById('contact-status');
+		if (!(form instanceof HTMLFormElement) || !(statusEl instanceof HTMLElement)) return;
+
+		const setStatus = (message, isError = false) => {
+			statusEl.textContent = message;
+			statusEl.dataset.error = isError ? 'true' : 'false';
+		};
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			setStatus('Sending...');
+
+			const formData = new FormData(form);
+
+			try {
+				const response = await fetch('/api/contact', {
+					method: 'POST',
+					body: formData,
+					headers: { Accept: 'application/json' },
+				});
+
+				const payload = await response.json().catch(() => ({ ok: false, message: 'Unexpected response.' }));
+
+				if (!response.ok || !payload.ok) {
+					setStatus(payload.message || 'Unable to send message.', true);
+					return;
+				}
+
+				form.reset();
+				if (window.turnstile && typeof window.turnstile.reset === 'function') {
+					window.turnstile.reset();
+				}
+				setStatus(payload.message || 'Message sent.');
+			} catch {
+				setStatus('Network error. Please try again.', true);
+			}
+		});
+	})();
+</script>
 
 <style>
 	.contact-page {
@@ -37,21 +114,93 @@ import ButtonLink from '../components/ButtonLink.astro';
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
 		display: grid;
-		gap: 0.95rem;
+		gap: 1rem;
 	}
 
-	.contact-card p {
+	.contact-form {
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.contact-form label {
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	.contact-form span {
+		font-size: 0.9rem;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	.contact-form input,
+	.contact-form textarea {
+		width: 100%;
+		padding: 0.62rem 0.72rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: var(--color-bg-elevated);
+		color: var(--color-text);
+		font: inherit;
+	}
+
+	.contact-form textarea {
+		resize: vertical;
+		min-height: 8rem;
+	}
+
+	.contact-form button {
+		width: fit-content;
+		border: 1px solid var(--color-accent);
+		background: var(--color-accent);
+		color: #fff;
+		border-radius: 999px;
+		padding: 0.52rem 0.95rem;
+		font: inherit;
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.contact-form button:hover {
+		background: var(--color-accent-strong);
+	}
+
+	.actions {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.status {
 		margin: 0;
+		font-size: 0.9rem;
+		color: var(--color-text-muted);
 	}
 
-	.contact-card ul {
+	.status[data-error='true'] {
+		color: #ef4444;
+	}
+
+	.config-warning {
+		margin: 0;
+		font-size: 0.9rem;
+		color: #ef4444;
+	}
+
+	.contact-links {
 		margin: 0;
 		padding-left: 1.15rem;
 		display: grid;
 		gap: 0.4rem;
 	}
 
-	.contact-card a {
+	.contact-links a {
 		font-weight: 700;
+	}
+
+	.honeypot {
+		position: absolute;
+		left: -9999px;
+		opacity: 0;
+		pointer-events: none;
 	}
 </style>
