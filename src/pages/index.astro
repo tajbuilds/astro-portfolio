@@ -13,33 +13,34 @@ const featured = (await getCollection('work'))
 	.slice(0, 4);
 
 const techGroups = {
-	'Edge / Cloud': ['Cloudflare Workers', 'Turnstile', 'Routing & Rules', 'Edge Observability'],
-	Automation: ['n8n', 'Event-driven webhooks', 'Workflow hardening', 'Operational playbooks'],
-	'Data / Search': ['Meilisearch', 'Ingestion pipelines', 'Schema governance', 'Faceted query design'],
+	'Edge / Cloud': ['Cloudflare Workers', 'Routing & Rules', 'Access Control', 'Observability'],
+	Automation: ['Event-driven webhooks', 'Workflow hardening', 'Operational runbooks'],
+	'Data / Search': ['Search index design', 'Ingestion pipelines', 'Schema governance', 'Faceted query strategy'],
 	Frontend: ['Astro', 'TypeScript', 'React islands', 'Performance-first UI'],
 };
 ---
 
-<MainLayout title="Tajinder Singh | Solutions Architect" description="Automation, edge, and data platform architecture.">
+<MainLayout title="Tajinder Singh | Solutions Architect" description="Solutions Architect focused on edge, automation, and data platform architecture.">
 	<Container size="wide">
 		<section class="hero section">
-			<p class="hero__eyebrow">Solutions Architect / Automation & Edge Platforms</p>
+			<p class="hero__eyebrow">Solutions Architect · Edge, Automation &amp; Data Platforms</p>
 			<h1>Tajinder Singh</h1>
-			<p class="hero__subtitle">Solutions Architect · Automation · Edge &amp; Data Platforms</p>
 			<p class="hero__mission">
-				I design practical platform architectures that reduce operational friction, harden verification
-				paths, and move data reliably from edge events to automation systems.
+				I design verification-first, automation-driven platform architectures that reduce operational
+				friction, harden edge entry points, and move data reliably from edge events into
+				production systems.
 			</p>
 			<div class="hero__actions">
 				<ButtonLink href="/work">View Work</ButtonLink>
 				<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
 			</div>
+			<p class="hero__focus-title">Core Focus Areas</p>
 			<div class="hero__pills">
 				<PillTag label="Cloudflare Workers" />
-				<PillTag label="n8n Automation" />
-				<PillTag label="Meilisearch" />
-				<PillTag label="Xano" />
-				<PillTag label="Security & Verification" />
+				<PillTag label="Secure Verification Paths" />
+				<PillTag label="Event-Driven Automation" />
+				<PillTag label="Faceted Search Architecture" />
+				<PillTag label="Data Pipelines" />
 			</div>
 		</section>
 
@@ -47,42 +48,59 @@ const techGroups = {
 			<SectionHeading
 				eyebrow="Work"
 				title="Featured Case Studies"
-				description="Selected implementations with measurable operational outcomes."
+				description="Selected implementations with measurable operational impact."
 			/>
-			<ul class="grid grid--cards">
-				{featured.map((item) => (
-					<li>
-						<ProjectCard
-							title={item.data.title}
-							description={item.data.description}
-							tags={item.data.tags}
-							href={`/work/${item.id}/`}
-						/>
-					</li>
-				))}
-			</ul>
+			{featured.length ? (
+				<ul class="grid grid--cards">
+					{featured.map((item) => (
+						<li>
+							<ProjectCard
+								title={item.data.title}
+								description={item.data.description}
+								tags={item.data.tags}
+								href={`/work/${item.id.replace(/\.(md|mdx)$/i, '')}/`}
+							/>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="section-intro">New case studies coming soon. In the meantime, browse all work.</p>
+			)}
 		</section>
 
 		<section class="section">
-			<SectionHeading eyebrow="Capabilities" title="What I Do" />
+			<SectionHeading eyebrow="What I Do" title="Architecture Domains" />
 			<div class="grid grid--three">
 				<article class="info-card">
-					<h3>Edge &amp; Security</h3>
-					<p>Workers-based routing, Turnstile verification paths, and request validation at the edge.</p>
+					<h3>Edge &amp; Verification Architecture</h3>
+					<p>
+						Workers-based routing, request validation, and hardened verification paths designed to stop
+						abuse before it reaches origin systems.
+					</p>
 				</article>
 				<article class="info-card">
-					<h3>Automation Platforms</h3>
-					<p>n8n and event-driven workflows that replace brittle manual operations with resilient automation.</p>
+					<h3>Automation &amp; Orchestration</h3>
+					<p>
+						Event-driven workflows that replace brittle manual operations with resilient, observable
+						automation pipelines.
+					</p>
 				</article>
 				<article class="info-card">
-					<h3>Search &amp; Data</h3>
-					<p>Meilisearch ingestion architecture, schema governance, and faceted discovery experiences.</p>
+					<h3>Search &amp; Data Platforms</h3>
+					<p>
+						Structured ingestion architecture, schema governance, and faceted discovery systems that scale
+						beyond CMS or browser constraints.
+					</p>
 				</article>
 			</div>
 		</section>
 
 		<section class="section">
-			<SectionHeading eyebrow="Stack" title="Selected Tech" />
+			<SectionHeading eyebrow="Selected Technology" title="Platform-Fit Tooling" />
+			<p class="section-intro">
+				I work across platform boundaries, selecting tools based on architectural fit rather than trend
+				alignment.
+			</p>
 			<div class="grid grid--stack">
 				{
 					Object.entries(techGroups).map(([group, tech]) => (
@@ -100,21 +118,21 @@ const techGroups = {
 		<section class="section now">
 			<SectionHeading eyebrow="Now" title="Currently Building" />
 			<p>
-				Designing verification-first edge pipelines that connect Cloudflare entry points to n8n orchestration
-				and downstream data services with tighter observability.
+				Designing verification-first edge pipelines that connect Cloudflare entry points to orchestration
+				systems and downstream data services, with tighter observability, replay protection, and
+				safer routing rules.
 			</p>
 		</section>
 
 		<section class="section contact-cta">
-			<SectionHeading eyebrow="Contact" title="Let’s Build Useful Systems" />
+			<SectionHeading eyebrow="Contact" title="Let's Build Useful Systems" />
 			<p>
-				If you are shipping automation-heavy products or edge-first platforms, I can help design and
-				implement architecture that scales with fewer surprises.
+				If you are shipping automation-heavy products or edge-first platforms, I can help design
+				infrastructure that scales with fewer surprises.
 			</p>
 			<div class="contact-links">
-				<a href="mailto:taj@example.com">taj@example.com</a>
-				<a href="https://github.com/your-handle" target="_blank" rel="noreferrer">GitHub</a>
-				<a href="https://linkedin.com/in/your-handle" target="_blank" rel="noreferrer">LinkedIn</a>
+				<a href="mailto:contact@tajs.io">contact@tajs.io</a>
+				<a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a>
 			</div>
 		</section>
 	</Container>
@@ -146,30 +164,37 @@ const techGroups = {
 		font-size: clamp(2.5rem, 1.9rem + 3vw, 4.4rem);
 	}
 
-	.hero__subtitle {
-		margin: 0.6rem 0 1rem;
-		font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
-		font-weight: 600;
-		color: var(--color-text);
-	}
-
 	.hero__mission {
-		max-width: 48rem;
+		max-width: 52rem;
 		font-size: 1.05rem;
-		margin-bottom: 1.2rem;
+		margin: 1rem 0 1.2rem;
 	}
 
 	.hero__actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.6rem;
-		margin-bottom: 1rem;
+		margin-bottom: 0.9rem;
+	}
+
+	.hero__focus-title {
+		margin: 0 0 0.55rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
 	}
 
 	.hero__pills {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.4rem;
+	}
+
+	.section-intro {
+		margin: -0.5rem 0 1rem;
+		max-width: 58rem;
 	}
 
 	.grid {

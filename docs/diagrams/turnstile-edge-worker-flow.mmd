@@ -1,0 +1,24 @@
+﻿flowchart LR
+U["User / Browser"] --> W["Cloudflare Worker - Form Verification Gateway"]
+W --> G["Cheap Guards: POST + JSON + size + shape + token sanity"]
+G -->|Fail| B["Block Response: stage + reason"]
+B --> C["Optional Block Capture: fixed schema payload"]
+B --> M["Analytics / Metrics"]
+
+G -->|Pass| I["Derive Routing Identity: domain + form_slug"]
+I --> CFG["Config API + short cache"]
+CFG --> H["Hostname Allowlist Check"]
+H -->|Fail| B
+
+H --> S["Webflow Authenticity Check: HMAC(timestamp:rawBody) + freshness"]
+S -->|Fail| B
+
+S --> T["Turnstile siteverify: server-side token validation"]
+T -->|Fail| B
+
+T --> P["Sanitize Payload: remove token/debug fields"]
+P --> F["Forward to Downstream Workflow: trace-safe headers"]
+F --> R["Response: status-only or debug mode"]
+
+R --> M
+R --> U

@@ -1,6 +1,6 @@
----
-title: "Xano Edge Cache Proxy: Deterministic Caching, R2 Tiering, and Safer Purge"
-description: "Designed a Cloudflare Worker proxy that reduced origin pressure and improved cache control using KV-driven normalization, adaptive TTLs, and R2 fallback."
+﻿---
+title: "Smart Edge Cache Proxy: Deterministic Caching, Tiering & Safer Purge"
+description: "Impact: Lower origin pressure, predictable caching behavior, and safer purge operations with deterministic invalidation."
 date: 2025-09-06
 tags:
   - Cloudflare Workers
@@ -10,7 +10,6 @@ tags:
   - Security
 featured: true
 draft: false
-github: "https://github.com/your-handle/cf-xano-edge-cache-proxy"
 ---
 
 ## TL;DR
@@ -93,3 +92,6 @@ All API traffic is routed through a Cloudflare Worker in front of `protected-api
 - Add automated cleanup for superseded R2 objects after purge-version rotations.
 - Add pre-publish KV policy validation to reduce misconfiguration risk.
 - Expand cache observability with endpoint-level trend views and anomaly alerts.
+
+
+

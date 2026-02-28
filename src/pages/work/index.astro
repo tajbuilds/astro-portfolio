@@ -47,7 +47,7 @@ const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).so
 								description={item.data.description}
 								tags={item.data.tags}
 								date={item.data.date}
-								href={`/work/${item.id}/`}
+								href={`/work/${item.id.replace(/\.(md|mdx)$/i, "")}/`}
 							/>
 						</li>
 					))
@@ -101,3 +101,4 @@ const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).so
 		}
 	}
 </style>
+

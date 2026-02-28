@@ -47,7 +47,7 @@ const filtered = allWork.filter((item) =>
 							description={item.data.description}
 							tags={item.data.tags}
 							date={item.data.date}
-							href={`/work/${item.id}/`}
+							href={`/work/${item.id.replace(/\.(md|mdx)$/i, "")}/`}
 						/>
 					</li>
 				))
@@ -76,3 +76,4 @@ const filtered = allWork.filter((item) =>
 		}
 	}
 </style>
+

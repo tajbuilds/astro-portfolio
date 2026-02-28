@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection, render } from 'astro:content';
 import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
 
 type WorkEntry = CollectionEntry<'work'>;
+const contentSlug = (id: string) => id.replace(/\.(md|mdx)$/i, '');
 
 export async function getStaticPaths() {
 	const sortedWork = (await getCollection('work'))
@@ -10,14 +11,14 @@ export async function getStaticPaths() {
 		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 	return sortedWork.map((post, index) => ({
-		params: { slug: post.id },
+		params: { slug: post.id.replace(/\.(md|mdx)$/i, '') },
 		props: {
 			post,
 			previous: sortedWork[index - 1]
-				? { title: sortedWork[index - 1].data.title, slug: sortedWork[index - 1].id }
+				? { title: sortedWork[index - 1].data.title, slug: sortedWork[index - 1].id.replace(/\.(md|mdx)$/i, '') }
 				: null,
 			next: sortedWork[index + 1]
-				? { title: sortedWork[index + 1].data.title, slug: sortedWork[index + 1].id }
+				? { title: sortedWork[index + 1].data.title, slug: sortedWork[index + 1].id.replace(/\.(md|mdx)$/i, '') }
 				: null,
 		},
 	}));
@@ -47,3 +48,4 @@ const readingTime = Math.max(1, Math.ceil(words / 220));
 >
 	<Content />
 </WorkCaseStudy>
+

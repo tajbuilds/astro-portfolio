@@ -1,6 +1,6 @@
----
+﻿---
 title: "Faceted Deals Search Engine: Scalable Server-Side Discovery"
-description: "Replaced browser-heavy filtering with server-side faceted search to improve performance, scalability, and operational control."
+description: "Impact: Sub-second filtering, deterministic faceting, and secure query routing across 50k+ products."
 date: 2025-11-18
 tags:
   - Meilisearch
@@ -10,7 +10,6 @@ tags:
   - Travel Tech
 featured: true
 draft: false
-github: "https://github.com/your-handle/meili-ingestion-platform"
 ---
 
 ## TL;DR
@@ -86,4 +85,7 @@ Search was restructured into four layers: UI, query contract, secure proxy, and 
 - Run controlled ranking experiments by query cohort.
 - Expand synonym and typo-tolerance tuning with quality gates.
 - Add query analytics dashboards and caching for common filter combinations.
+
+
+
 

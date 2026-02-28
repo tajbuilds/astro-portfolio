@@ -1,4 +1,4 @@
----
+﻿---
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -37,5 +37,26 @@ const { title, description, image, width = 'narrow', mainClass } = Astro.props;
 			<slot />
 		</main>
 		<Footer />
+		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
+
+		<script is:inline>
+			(() => {
+				const btn = document.getElementById('back-to-top');
+				if (!(btn instanceof HTMLButtonElement)) return;
+
+				const toggle = () => {
+					const shouldShow = window.scrollY > 480;
+					btn.classList.toggle('is-visible', shouldShow);
+					btn.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+				};
+
+				toggle();
+				window.addEventListener('scroll', toggle, { passive: true });
+
+				btn.addEventListener('click', () => {
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				});
+			})();
+		</script>
 	</body>
 </html>
