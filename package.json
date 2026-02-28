@@ -20,7 +20,7 @@
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {
-		"wrangler": "4.56.0"
+		"wrangler": "4.69.0"
 	},
 	"engines": {
 		"node": ">=22"
@@ -35,5 +35,8 @@
 		"dev": "astro dev",
 		"preview": "astro build && wrangler dev"
 	},
-	"type": "module"
+	"type": "module",
+	"overrides": {
+		"wrangler": "4.69.0"
+	}
 }
