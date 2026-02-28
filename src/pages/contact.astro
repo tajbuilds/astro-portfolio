@@ -1,4 +1,4 @@
----
+﻿---
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -21,7 +21,7 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 				<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
 					<label>
 						<span>Name</span>
-						<input name="name" type="text" autocomplete="name" required maxlength="120" />
+						<input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" />
 					</label>
 
 					<label>
@@ -31,7 +31,8 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 
 					<label>
 						<span>Message</span>
-						<textarea name="message" rows="6" required maxlength="2500"></textarea>
+						<textarea name="message" rows="6" required minlength="30" maxlength="2500"></textarea>
+						<small class="field-hint">Minimum 30 characters and 29 words.</small>
 					</label>
 
 					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
@@ -69,6 +70,10 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 		const statusEl = document.getElementById('contact-status');
 		if (!(form instanceof HTMLFormElement) || !(statusEl instanceof HTMLElement)) return;
 
+		const MIN_MESSAGE_CHARS = 30;
+		const MIN_MESSAGE_WORDS = 29;
+		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
+
 		const setStatus = (message, isError = false) => {
 			statusEl.textContent = message;
 			statusEl.dataset.error = isError ? 'true' : 'false';
@@ -86,6 +91,26 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 				company: String(formData.get('company') || ''),
 				turnstileToken: String(formData.get('cf-turnstile-response') || ''),
 			};
+
+			if (payload.name.trim().length < 2) {
+				setStatus('Please enter your full name (at least 2 characters).', true);
+				return;
+			}
+
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email.trim())) {
+				setStatus('Please enter a valid email address.', true);
+				return;
+			}
+
+			if (payload.message.trim().length < MIN_MESSAGE_CHARS) {
+				setStatus('Please enter a message with at least 30 characters.', true);
+				return;
+			}
+
+			if (wordCount(payload.message) < MIN_MESSAGE_WORDS) {
+				setStatus('Please provide a bit more detail (minimum 29 words).', true);
+				return;
+			}
 
 			try {
 				const response = await fetch('/api/contact', {
@@ -163,6 +188,12 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 	.contact-form textarea {
 		resize: vertical;
 		min-height: 8rem;
+	}
+
+	.field-hint {
+		font-size: 0.8rem;
+		color: var(--color-text-muted);
+		margin-top: -0.1rem;
 	}
 
 	.verification-row {

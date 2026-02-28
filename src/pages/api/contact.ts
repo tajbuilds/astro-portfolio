@@ -1,9 +1,12 @@
-import type { APIRoute } from 'astro';
+﻿import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
+const MIN_NAME_LEN = 2;
 const MAX_NAME_LEN = 120;
 const MAX_EMAIL_LEN = 190;
+const MIN_MESSAGE_CHARS = 30;
+const MIN_MESSAGE_WORDS = 29;
 const MAX_MESSAGE_LEN = 2500;
 
 const json = (status: number, payload: Record<string, unknown>) =>
@@ -26,6 +29,7 @@ const escapeHtml = (value: string) =>
 		.replaceAll("'", '&#39;');
 
 const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+const wordCount = (value: string) => value.trim().split(/\s+/).filter(Boolean).length;
 
 const parseInput = async (request: Request) => {
 	const contentType = request.headers.get('content-type') || '';
@@ -67,16 +71,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		return json(200, { ok: true, message: 'Message sent.' });
 	}
 
-	if (!name || name.length > MAX_NAME_LEN) {
-		return json(400, { ok: false, message: 'Please enter a valid name.' });
+	if (!name || name.length < MIN_NAME_LEN || name.length > MAX_NAME_LEN) {
+		return json(400, { ok: false, message: 'Please enter your full name (at least 2 characters).' });
 	}
 
 	if (!email || email.length > MAX_EMAIL_LEN || !validEmail(email)) {
 		return json(400, { ok: false, message: 'Please enter a valid email address.' });
 	}
 
-	if (!message || message.length > MAX_MESSAGE_LEN) {
-		return json(400, { ok: false, message: 'Please enter a valid message.' });
+	if (!message || message.length < MIN_MESSAGE_CHARS || message.length > MAX_MESSAGE_LEN) {
+		return json(400, { ok: false, message: 'Please enter a message with at least 30 characters.' });
+	}
+
+	if (wordCount(message) < MIN_MESSAGE_WORDS) {
+		return json(400, { ok: false, message: 'Please provide more detail (minimum 29 words).' });
 	}
 
 	if (!token) {
