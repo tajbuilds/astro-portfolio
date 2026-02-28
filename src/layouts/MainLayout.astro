@@ -55,7 +55,7 @@ const showQuickContact = !pathname.startsWith('/contact');
 				if (!(btn instanceof HTMLButtonElement)) return;
 
 				const toggle = () => {
-					const shouldShow = window.scrollY > 480;
+					const shouldShow = window.scrollY > 900;
 					btn.classList.toggle('is-visible', shouldShow);
 					btn.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
 				};
@@ -63,6 +63,14 @@ const showQuickContact = !pathname.startsWith('/contact');
 				toggle();
 				window.addEventListener('scroll', toggle, { passive: true });
 
+				const footer = document.querySelector('footer');
+				if (footer && 'IntersectionObserver' in window) {
+					const observer = new IntersectionObserver((entries) => {
+						const visible = entries.some((entry) => entry.isIntersecting);
+						btn.classList.toggle('is-over-footer', visible);
+					});
+					observer.observe(footer);
+				}
 				btn.addEventListener('click', () => {
 					window.scrollTo({ top: 0, behavior: 'smooth' });
 				});
@@ -70,5 +78,8 @@ const showQuickContact = !pathname.startsWith('/contact');
 		</script>
 	</body>
 </html>
+
+
+
 
 
