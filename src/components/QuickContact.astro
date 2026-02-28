@@ -1,8 +1,9 @@
 ﻿---
-const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
+import { TURNSTILE_SITE_KEY } from '../consts';
+
+const turnstileSiteKey = TURNSTILE_SITE_KEY;
 const hasTurnstile = Boolean(turnstileSiteKey);
 ---
-
 <button
 	id="quick-contact-trigger"
 	class="quick-contact-trigger"
@@ -344,3 +345,6 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		}
 	}
 </style>
+
+
+

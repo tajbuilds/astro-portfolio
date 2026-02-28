@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuickContact from '../components/QuickContact.astro';
+import { TURNSTILE_SITE_KEY } from '../consts';
 
 interface Props {
 	title: string;
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const { title, description, image, width = 'narrow', mainClass } = Astro.props;
-const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
+const turnstileSiteKey = TURNSTILE_SITE_KEY;
 const pathname = Astro.url.pathname;
 const showQuickContact = !pathname.startsWith('/contact');
 ---
@@ -69,4 +70,5 @@ const showQuickContact = !pathname.startsWith('/contact');
 		</script>
 	</body>
 </html>
+
 

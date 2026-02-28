@@ -5,3 +5,6 @@ export const SITE_TITLE = 'Taj | Solutions Architect';
 export const SITE_BRAND = 'Taj | Solutions Architect';
 export const SITE_DESCRIPTION = 'Architecture portfolio focused on automation, edge security, and data/search platforms.';
 
+
+export const TURNSTILE_SITE_KEY = '0x4AAAAAACj5smKRjyW5M3sV';
+

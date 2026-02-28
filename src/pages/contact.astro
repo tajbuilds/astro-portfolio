@@ -2,10 +2,11 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import { TURNSTILE_SITE_KEY } from '../consts';
 
 export const prerender = false;
 
-const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
+const turnstileSiteKey = TURNSTILE_SITE_KEY;
 ---
 
 <MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh for architecture and automation projects.">
@@ -297,3 +298,4 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 		}
 	}
 </style>
+
