@@ -1,4 +1,4 @@
-// @ts-check
+﻿// @ts-check
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
@@ -14,9 +14,9 @@ export default defineConfig({
 	site,
 	integrations: [mdx(), sitemap(), react()],
 	adapter: cloudflare({
+		imageService: "compile",
 		platformProxy: {
 			enabled: enablePlatformProxy,
 		},
 	}),
 });
-
