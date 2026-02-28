@@ -15,8 +15,7 @@ const json = (status: number, payload: Record<string, unknown>) =>
 		},
 	});
 
-const clean = (value: FormDataEntryValue | null) =>
-	typeof value === 'string' ? value.trim() : '';
+const clean = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
 
 const escapeHtml = (value: string) =>
 	value
@@ -27,6 +26,30 @@ const escapeHtml = (value: string) =>
 		.replaceAll("'", '&#39;');
 
 const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+const parseInput = async (request: Request) => {
+	const contentType = request.headers.get('content-type') || '';
+
+	if (contentType.includes('application/json')) {
+		const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+		return {
+			name: clean(body.name),
+			email: clean(body.email),
+			message: clean(body.message),
+			token: clean(body.turnstileToken),
+			company: clean(body.company),
+		};
+	}
+
+	const formData = await request.formData();
+	return {
+		name: clean(formData.get('name')),
+		email: clean(formData.get('email')),
+		message: clean(formData.get('message')),
+		token: clean(formData.get('cf-turnstile-response')),
+		company: clean(formData.get('company')),
+	};
+};
 
 export const POST: APIRoute = async ({ request, locals }) => {
 	const env = locals.runtime.env;
@@ -124,4 +147,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	return json(200, { ok: true, message: 'Message sent successfully.' });
 };
-

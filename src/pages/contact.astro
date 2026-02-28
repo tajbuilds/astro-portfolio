@@ -36,15 +36,19 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 
 					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
 
-					{turnstileSiteKey ? (
-						<div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
-					) : (
-						<p class="config-warning">Turnstile site key is not configured yet.</p>
-					)}
+					<div class="verification-row">
+						<div class="actions">
+							<button type="submit">Send message</button>
+							<p id="contact-status" class="status" role="status" aria-live="polite"></p>
+						</div>
 
-					<div class="actions">
-						<button type="submit">Send message</button>
-						<p id="contact-status" class="status" role="status" aria-live="polite"></p>
+						{turnstileSiteKey ? (
+							<div class="turnstile-wrap">
+								<div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+							</div>
+						) : (
+							<p class="config-warning">Turnstile site key is not configured yet.</p>
+						)}
 					</div>
 				</form>
 
@@ -87,16 +91,18 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 				const response = await fetch('/api/contact', {
 					method: 'POST',
 					body: JSON.stringify(payload),
-													headers: {
-													Accept: 'application/json',
-													'content-type': 'application/json',
-												},
+					headers: {
+						Accept: 'application/json',
+						'content-type': 'application/json',
+					},
 				});
 
-				const payload = await response.json().catch(() => ({ ok: false, message: 'Unexpected response.' }));
+				const responsePayload = await response
+					.json()
+					.catch(() => ({ ok: false, message: 'Unexpected response.' }));
 
-				if (!response.ok || !payload.ok) {
-					setStatus(payload.message || 'Unable to send message.', true);
+				if (!response.ok || !responsePayload.ok) {
+					setStatus(responsePayload.message || 'Unable to send message.', true);
 					return;
 				}
 
@@ -104,7 +110,7 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 				if (window.turnstile && typeof window.turnstile.reset === 'function') {
 					window.turnstile.reset();
 				}
-				setStatus(payload.message || 'Message sent.');
+				setStatus(responsePayload.message || 'Message sent.');
 			} catch {
 				setStatus('Network error. Please try again.', true);
 			}
@@ -157,6 +163,19 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 	.contact-form textarea {
 		resize: vertical;
 		min-height: 8rem;
+	}
+
+	.verification-row {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 0.35rem;
+	}
+
+	.turnstile-wrap {
+		display: flex;
+		justify-content: flex-end;
 	}
 
 	.contact-form button {
@@ -212,5 +231,16 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 		left: -9999px;
 		opacity: 0;
 		pointer-events: none;
+	}
+
+	@media (max-width: 900px) {
+		.verification-row {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.turnstile-wrap {
+			justify-content: flex-start;
+		}
 	}
 </style>
