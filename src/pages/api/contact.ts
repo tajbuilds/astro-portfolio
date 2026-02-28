@@ -38,12 +38,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		return json(500, { ok: false, message: 'Turnstile secret is missing.' });
 	}
 
-	const formData = await request.formData();
-	const name = clean(formData.get('name'));
-	const email = clean(formData.get('email'));
-	const message = clean(formData.get('message'));
-	const token = clean(formData.get('cf-turnstile-response'));
-	const company = clean(formData.get('company'));
+	const { name, email, message, token, company } = await parseInput(request);
 
 	if (company) {
 		return json(200, { ok: true, message: 'Message sent.' });
