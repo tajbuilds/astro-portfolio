@@ -74,7 +74,8 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		const firstInput = form?.querySelector('input[name="name"]');
 		const MIN_MESSAGE_CHARS = 30;
 		const MIN_MESSAGE_WORDS = 29;
-		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
+		const wordCount = (value) => value.trim().split(/\\s+/).filter(Boolean).length;
+		const footer = document.querySelector('footer');
 
 		let previousFocus = null;
 
@@ -101,6 +102,14 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		document.addEventListener('keydown', (event) => {
 			if (event.key === 'Escape' && !modal.hidden) closeModal();
 		});
+
+		if (footer && 'IntersectionObserver' in window) {
+			const observer = new IntersectionObserver((entries) => {
+				const visible = entries.some((entry) => entry.isIntersecting);
+				trigger.classList.toggle('is-over-footer', visible);
+			});
+			observer.observe(footer);
+		}
 
 		if (!(form instanceof HTMLFormElement) || !(statusEl instanceof HTMLElement)) return;
 
@@ -186,10 +195,15 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		border-radius: 999px;
 		cursor: pointer;
 		box-shadow: var(--shadow-sm);
+		transition: bottom 180ms ease, transform 120ms ease, background-color 120ms ease;
 	}
 
 	.quick-contact-trigger:hover {
 		background: var(--color-accent-strong);
+	}
+
+	.quick-contact-trigger.is-over-footer {
+		bottom: 5.2rem;
 	}
 
 	.quick-contact-modal {
@@ -331,6 +345,10 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 			bottom: 0.7rem;
 		}
 
+		.quick-contact-trigger.is-over-footer {
+			bottom: 4.7rem;
+		}
+
 		.quick-contact-panel {
 			right: 0.35rem;
 			bottom: 3.7rem;
@@ -349,4 +367,5 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		}
 	}
 </style>
+
 

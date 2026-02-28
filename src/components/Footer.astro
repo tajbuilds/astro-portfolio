@@ -13,11 +13,34 @@ const today = new Date();
 				width="36"
 				height="36"
 			/>
+			<div class="footer-links" aria-label="Footer contact links">
+				<a
+					class="footer-icon-link"
+					href="mailto:contact@tajs.io"
+					aria-label="Email Tajinder Singh"
+					title="Email"
+				>
+					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+						<path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<span class="sr-only">Email</span>
+				</a>
+				<a
+					class="footer-icon-link"
+					href="https://www.linkedin.com/in/taj-tajinder/"
+					target="_blank"
+					rel="noreferrer"
+					aria-label="LinkedIn profile"
+					title="LinkedIn"
+				>
+					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path d="M4 9h4v11H4zM6 4a2 2 0 110 4 2 2 0 010-4zM11 9h4v1.8c.8-1.3 1.9-2.2 4.1-2.2 3.3 0 4.9 2.1 4.9 6V20h-4v-4.7c0-2.2-.8-3-2.2-3-1.6 0-2.8 1.1-2.8 3.1V20h-4z" fill="currentColor"/>
+					</svg>
+					<span class="sr-only">LinkedIn</span>
+				</a>
+			</div>
 			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
-		</div>
-		<div class="footer-links">
-			<a href="mailto:contact@tajs.io">Email</a>
-			<a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a>
 		</div>
 	</div>
 </footer>
@@ -30,19 +53,17 @@ const today = new Date();
 	}
 
 	.footer-inner {
-		max-width: var(--container-narrow);
+		max-width: var(--container-full);
 		margin: 0 auto;
 		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
 		align-items: center;
-		gap: 0.85rem 1rem;
 	}
 
 	.footer-meta {
 		display: flex;
 		align-items: center;
 		gap: 0.55rem;
+		flex-wrap: wrap;
 	}
 
 	.footer-avatar {
@@ -60,19 +81,37 @@ const today = new Date();
 	}
 
 	.footer-links {
-		display: flex;
-		gap: 0.9rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		flex-wrap: nowrap;
 	}
 
-	.footer-links a {
-		font-size: 0.88rem;
-		font-weight: 600;
+	.footer-icon-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-accent);
 		text-decoration: none;
+		padding: 0.15rem;
+		border-radius: 0.25rem;
+		transition: color 120ms ease, opacity 120ms ease;
 	}
 
-	@media (max-width: 720px) {
-		.footer-inner {
-			align-items: flex-start;
-		}
+	.footer-icon-link:hover {
+		color: var(--color-accent-strong);
+		opacity: 0.9;
+	}
+
+	.footer-icon-link:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	.footer-icon-link svg {
+		width: 1.1rem;
+		height: 1.1rem;
 	}
 </style>
+
+

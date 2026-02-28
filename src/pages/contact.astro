@@ -54,7 +54,7 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 					</div>
 				</form>
 
-				<div class="contact-meta">
+				<div class="contact-meta" aria-label="Contact links">
 					<img
 						class="contact-avatar"
 						src="/images/tajinder-singh-portrait.jpg"
@@ -63,10 +63,33 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 						width="44"
 						height="44"
 					/>
-					<ul class="contact-links">
-						<li><a href="mailto:contact@tajs.io">contact@tajs.io</a></li>
-						<li><a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a></li>
-					</ul>
+					<div class="contact-links">
+						<a
+							class="contact-icon-link"
+							href="mailto:contact@tajs.io"
+							aria-label="Email Tajinder Singh"
+							title="Email"
+						>
+							<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+								<path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							<span class="sr-only">Email</span>
+						</a>
+						<a
+							class="contact-icon-link"
+							href="https://www.linkedin.com/in/taj-tajinder/"
+							target="_blank"
+							rel="noreferrer"
+							aria-label="LinkedIn profile"
+							title="LinkedIn"
+						>
+							<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M4 9h4v11H4zM6 4a2 2 0 110 4 2 2 0 010-4zM11 9h4v1.8c.8-1.3 1.9-2.2 4.1-2.2 3.3 0 4.9 2.1 4.9 6V20h-4v-4.7c0-2.2-.8-3-2.2-3-1.6 0-2.8 1.1-2.8 3.1V20h-4z" fill="currentColor"/>
+							</svg>
+							<span class="sr-only">LinkedIn</span>
+						</a>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -255,29 +278,54 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		color: #ef4444;
 	}
 
-	.contact-meta {
-		display: flex;
+    .contact-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        flex-wrap: nowrap;
+    }
+
+    .contact-avatar {
+        width: 2.2rem;
+        height: 2.2rem;
+        object-fit: cover;
+        border-radius: 999px;
+        border: 1px solid var(--color-border);
+        flex: 0 0 auto;
+    }
+
+    .contact-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex-wrap: nowrap;
+        flex: 0 0 auto;
+    }
+
+	.contact-icon-link {
+		display: inline-flex;
 		align-items: center;
-		gap: 0.6rem;
+		justify-content: center;
+		color: var(--color-accent);
+		text-decoration: none;
+		padding: 0.15rem;
+		border-radius: 0.25rem;
+		transition: color 120ms ease, opacity 120ms ease;
 	}
 
-	.contact-avatar {
-		width: 2.2rem;
-		height: 2.2rem;
-		object-fit: cover;
-		border-radius: 999px;
-		border: 1px solid var(--color-border);
+	.contact-icon-link:hover {
+		color: var(--color-accent-strong);
+		opacity: 0.9;
 	}
 
-	.contact-links {
-		margin: 0;
-		padding-left: 1.15rem;
-		display: grid;
-		gap: 0.4rem;
+	.contact-icon-link:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
 	}
 
-	.contact-links a {
-		font-weight: 700;
+	.contact-icon-link svg {
+		width: 1.1rem;
+		height: 1.1rem;
 	}
 
 	.honeypot {
@@ -298,4 +346,10 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		}
 	}
 </style>
+
+
+
+
+
+
 
