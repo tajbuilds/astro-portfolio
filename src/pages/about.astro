@@ -1,4 +1,4 @@
----
+﻿---
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -12,35 +12,46 @@ import SectionHeading from '../components/SectionHeading.astro';
 				title="Architecture That Reduces Operational Drag"
 				description="I work at the intersection of edge infrastructure, automation, and data systems."
 			/>
-			<div class="about-copy">
-				<p>
-					I'm Tajinder Singh (Taj), a solutions architect focused on designing systems that are reliable in
-					production - not just clean in diagrams. My work centers on automation-heavy platforms that require strong
-					edge verification, structured event flows, and practical observability.
-				</p>
-				<p>
-					Across platform and client work, I design routing layers, verification pipelines, and event-driven
-					architectures that teams can operate without constant firefighting.
-				</p>
-				<p>
-					My approach is simple: clarify constraints early, design for failure modes upfront, and prioritize
-					architectures that create operational leverage rather than complexity.
-				</p>
-				<p>
-					I am particularly interested in systems that combine edge enforcement, automation, and search - areas
-					where small architectural decisions have large operational impact. Outside of active projects, I explore
-					ways to make verification paths safer, workflows more observable, and platform design more predictable.
-				</p>
-				<h3 class="about-subheading">Research & Continuous Development</h3>
-				<p>
-					Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship. My
-					focus includes statistical modeling, model validation, feature engineering, and production considerations
-					for machine learning systems.
-				</p>
-				<p>
-					This training strengthens the analytical foundation behind my work in search architecture, automation
-					systems, and data-driven platform design.
-				</p>
+			<div class="about-intro">
+				<figure class="about-portrait">
+					<img
+						src="/images/tajinder-singh-portrait.jpg"
+						alt="Portrait of Tajinder Singh"
+						loading="lazy"
+						width="480"
+						height="600"
+					/>
+				</figure>
+				<div class="about-copy">
+					<p>
+						I'm Tajinder Singh (Taj), a solutions architect focused on designing systems that are reliable in
+						production - not just clean in diagrams. My work centers on automation-heavy platforms that require strong
+						edge verification, structured event flows, and practical observability.
+					</p>
+					<p>
+						Across platform and client work, I design routing layers, verification pipelines, and event-driven
+						architectures that teams can operate without constant firefighting.
+					</p>
+					<p>
+						My approach is simple: clarify constraints early, design for failure modes upfront, and prioritize
+						architectures that create operational leverage rather than complexity.
+					</p>
+					<p>
+						I am particularly interested in systems that combine edge enforcement, automation, and search - areas
+						where small architectural decisions have large operational impact. Outside of active projects, I explore
+						ways to make verification paths safer, workflows more observable, and platform design more predictable.
+					</p>
+					<h3 class="about-subheading">Research & Continuous Development</h3>
+					<p>
+						Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship. My
+						focus includes statistical modeling, model validation, feature engineering, and production considerations
+						for machine learning systems.
+					</p>
+					<p>
+						This training strengthens the analytical foundation behind my work in search architecture, automation
+						systems, and data-driven platform design.
+					</p>
+				</div>
 			</div>
 		</section>
 
@@ -84,8 +95,29 @@ import SectionHeading from '../components/SectionHeading.astro';
 		margin-bottom: clamp(2.5rem, 6vw, 5rem);
 	}
 
+	.about-intro {
+		display: grid;
+		grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+		gap: 1rem;
+		align-items: start;
+	}
+
+	.about-portrait {
+		margin: 0;
+		padding: 0.55rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+	}
+
+	.about-portrait img {
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border-radius: calc(var(--radius-md) - 0.2rem);
+	}
+
 	.about-copy {
-		max-width: 56rem;
 		display: grid;
 		gap: 0.8rem;
 	}
@@ -137,6 +169,16 @@ import SectionHeading from '../components/SectionHeading.astro';
 
 	.timeline p {
 		margin: 0.25rem 0 0;
+	}
+
+	@media (max-width: 980px) {
+		.about-intro {
+			grid-template-columns: 1fr;
+		}
+
+		.about-portrait {
+			max-width: 24rem;
+		}
 	}
 
 	@media (max-width: 900px) {

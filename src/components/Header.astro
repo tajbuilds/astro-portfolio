@@ -1,11 +1,11 @@
----
+﻿---
 import HeaderLink from './HeaderLink.astro';
-import { SITE_TITLE } from '../consts';
+import { SITE_BRAND } from '../consts';
 ---
 
 <header>
 	<nav aria-label="Primary">
-		<a class="brand" href="/">{SITE_TITLE}</a>
+		<a class="brand" href="/">{SITE_BRAND}</a>
 		<div class="nav-controls">
 			<div class="internal-links">
 				<HeaderLink href="/">Home</HeaderLink>
@@ -221,3 +221,4 @@ import { SITE_TITLE } from '../consts';
 		}
 	}
 </style>
+

@@ -1,4 +1,4 @@
-:root {
+﻿:root {
 	--color-bg: #f7f9fc;
 	--color-bg-elevated: #ffffff;
 	--color-surface: #eef3f9;
@@ -298,7 +298,7 @@ hr {
 .back-to-top {
 	position: fixed;
 	right: 1rem;
-	bottom: 1rem;
+	bottom: 4.1rem;
 	z-index: 90;
 	border: 1px solid var(--color-border);
 	background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
@@ -328,6 +328,12 @@ hr {
 @media (max-width: 720px) {
 	.back-to-top {
 		right: 0.8rem;
-		bottom: 0.8rem;
+		bottom: 4.35rem;
+	}
+}
+
+@media (max-width: 420px) {
+	.back-to-top {
+		display: none;
 	}
 }

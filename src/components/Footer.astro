@@ -1,10 +1,20 @@
----
+﻿---
 const today = new Date();
 ---
 
 <footer>
 	<div class="footer-inner">
-		<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
+		<div class="footer-meta">
+			<img
+				class="footer-avatar"
+				src="/images/tajinder-singh-portrait.jpg"
+				alt="Portrait of Tajinder Singh"
+				loading="lazy"
+				width="36"
+				height="36"
+			/>
+			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
+		</div>
 		<div class="footer-links">
 			<a href="mailto:contact@tajs.io">Email</a>
 			<a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a>
@@ -27,6 +37,20 @@ const today = new Date();
 		justify-content: space-between;
 		align-items: center;
 		gap: 0.85rem 1rem;
+	}
+
+	.footer-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+	}
+
+	.footer-avatar {
+		width: 2rem;
+		height: 2rem;
+		object-fit: cover;
+		border-radius: 999px;
+		border: 1px solid var(--color-border);
 	}
 
 	footer p {

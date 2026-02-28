@@ -1,4 +1,4 @@
----
+﻿---
 import MainLayout from './MainLayout.astro';
 import PillTag from '../components/PillTag.astro';
 import FormattedDate from '../components/FormattedDate.astro';
@@ -273,10 +273,11 @@ const { title, description, date, tags, github, readingTime, previous, next } = 
 	.work-prose :global(figure.diagram) {
 		margin: 1rem 0 1.25rem;
 		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.work-prose :global(figure.diagram img.zoomable-diagram) {
-		width: max(100%, 1150px);
+		width: max(100%, 980px);
 		max-width: none;
 	}
 
@@ -404,6 +405,18 @@ const { title, description, date, tags, github, readingTime, previous, next } = 
 		cursor: inherit;
 	}
 
+	@media (max-width: 900px) {
+		.work-prose :global(figure.diagram img.zoomable-diagram) {
+			width: max(100%, 760px);
+		}
+	}
+
+	@media (max-width: 520px) {
+		.work-prose :global(figure.diagram img.zoomable-diagram) {
+			width: max(100%, 620px);
+		}
+	}
+
 	@media (max-width: 720px) {
 		.work-nav {
 			grid-template-columns: 1fr;
@@ -424,3 +437,4 @@ const { title, description, date, tags, github, readingTime, previous, next } = 
 		}
 	}
 </style>
+

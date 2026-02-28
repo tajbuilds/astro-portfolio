@@ -53,16 +53,24 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 					</div>
 				</form>
 
-				<ul class="contact-links">
-					<li><a href="mailto:contact@tajs.io">contact@tajs.io</a></li>
-					<li><a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a></li>
-				</ul>
+				<div class="contact-meta">
+					<img
+						class="contact-avatar"
+						src="/images/tajinder-singh-portrait.jpg"
+						alt="Portrait of Tajinder Singh"
+						loading="lazy"
+						width="44"
+						height="44"
+					/>
+					<ul class="contact-links">
+						<li><a href="mailto:contact@tajs.io">contact@tajs.io</a></li>
+						<li><a href="https://www.linkedin.com/in/taj-tajinder/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+					</ul>
+				</div>
 			</div>
 		</section>
 	</Container>
 </MainLayout>
-
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script is:inline>
 	(() => {
@@ -244,6 +252,20 @@ const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
 		margin: 0;
 		font-size: 0.9rem;
 		color: #ef4444;
+	}
+
+	.contact-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.contact-avatar {
+		width: 2.2rem;
+		height: 2.2rem;
+		object-fit: cover;
+		border-radius: 999px;
+		border: 1px solid var(--color-border);
 	}
 
 	.contact-links {

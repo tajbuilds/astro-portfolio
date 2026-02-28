@@ -1,0 +1,346 @@
+﻿---
+const turnstileSiteKey = Astro.locals.runtime.env.TURNSTILE_SITE_KEY ?? '';
+const hasTurnstile = Boolean(turnstileSiteKey);
+---
+
+<button
+	id="quick-contact-trigger"
+	class="quick-contact-trigger"
+	type="button"
+	aria-haspopup="dialog"
+	aria-controls="quick-contact-modal"
+>
+	Contact
+</button>
+
+<div id="quick-contact-modal" class="quick-contact-modal" hidden>
+	<div class="quick-contact-backdrop" data-close-modal></div>
+	<div
+		class="quick-contact-panel"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="quick-contact-title"
+	>
+		<button class="quick-contact-close" type="button" aria-label="Close quick contact" data-close-modal>
+			×
+		</button>
+		<h2 id="quick-contact-title">Quick Inquiry</h2>
+		<p class="quick-contact-copy">Share a brief project context and I will reply by email.</p>
+
+		{
+			hasTurnstile ? (
+				<form id="quick-contact-form" class="quick-contact-form" novalidate>
+					<label>
+						<span>Name</span>
+						<input name="name" type="text" required minlength="2" maxlength="120" />
+					</label>
+					<label>
+						<span>Email</span>
+						<input name="email" type="email" required maxlength="190" />
+					</label>
+					<label>
+						<span>Message</span>
+						<textarea name="message" rows="4" required minlength="30" maxlength="2500"></textarea>
+						<small>Minimum 30 characters and 29 words.</small>
+					</label>
+					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
+					<div class="quick-contact-actions">
+						<button type="submit">Send</button>
+						<p id="quick-contact-status" class="status" role="status" aria-live="polite"></p>
+					</div>
+					<div class="quick-contact-turnstile">
+						<div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+					</div>
+				</form>
+			) : (
+				<div class="quick-contact-fallback">
+					<p>Quick form is unavailable right now. Please use the full contact page.</p>
+					<a href="/contact/">Open contact page</a>
+				</div>
+			)
+		}
+	</div>
+</div>
+
+<script is:inline>
+	(() => {
+		const trigger = document.getElementById('quick-contact-trigger');
+		const modal = document.getElementById('quick-contact-modal');
+		if (!(trigger instanceof HTMLButtonElement) || !(modal instanceof HTMLElement)) return;
+
+		const form = document.getElementById('quick-contact-form');
+		const statusEl = document.getElementById('quick-contact-status');
+		const firstInput = form?.querySelector('input[name="name"]');
+		const MIN_MESSAGE_CHARS = 30;
+		const MIN_MESSAGE_WORDS = 29;
+		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
+
+		let previousFocus = null;
+
+		const openModal = () => {
+			previousFocus = document.activeElement;
+			modal.hidden = false;
+			document.body.style.overflow = 'hidden';
+			if (firstInput instanceof HTMLElement) firstInput.focus();
+		};
+
+		const closeModal = () => {
+			modal.hidden = true;
+			document.body.style.overflow = '';
+			if (previousFocus instanceof HTMLElement) previousFocus.focus();
+		};
+
+		trigger.addEventListener('click', openModal);
+		modal.addEventListener('click', (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) return;
+			if (target.hasAttribute('data-close-modal')) closeModal();
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !modal.hidden) closeModal();
+		});
+
+		if (!(form instanceof HTMLFormElement) || !(statusEl instanceof HTMLElement)) return;
+
+		const setStatus = (message, isError = false) => {
+			statusEl.textContent = message;
+			statusEl.dataset.error = isError ? 'true' : 'false';
+		};
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			setStatus('Sending...');
+
+			const formData = new FormData(form);
+			const payload = {
+				name: String(formData.get('name') || ''),
+				email: String(formData.get('email') || ''),
+				message: String(formData.get('message') || ''),
+				company: String(formData.get('company') || ''),
+				turnstileToken: String(formData.get('cf-turnstile-response') || ''),
+			};
+
+			if (payload.name.trim().length < 2) {
+				setStatus('Please enter your full name.', true);
+				return;
+			}
+
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email.trim())) {
+				setStatus('Please enter a valid email.', true);
+				return;
+			}
+
+			if (payload.message.trim().length < MIN_MESSAGE_CHARS) {
+				setStatus('Message needs at least 30 characters.', true);
+				return;
+			}
+
+			if (wordCount(payload.message) < MIN_MESSAGE_WORDS) {
+				setStatus('Message needs at least 29 words.', true);
+				return;
+			}
+
+			try {
+				const response = await fetch('/api/contact', {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+						'content-type': 'application/json',
+					},
+					body: JSON.stringify(payload),
+				});
+
+				const data = await response.json().catch(() => ({ ok: false, message: 'Unexpected response.' }));
+				if (!response.ok || !data.ok) {
+					setStatus(data.message || 'Unable to send message.', true);
+					return;
+				}
+
+				form.reset();
+				if (window.turnstile && typeof window.turnstile.reset === 'function') {
+					window.turnstile.reset();
+				}
+				setStatus('Message sent. Thank you.');
+				setTimeout(closeModal, 700);
+			} catch {
+				setStatus('Network error. Please try again.', true);
+			}
+		});
+	})();
+</script>
+
+<style>
+	.quick-contact-trigger {
+		position: fixed;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 95;
+		border: 1px solid var(--color-accent);
+		background: var(--color-accent);
+		color: #fff;
+		font: inherit;
+		font-weight: 700;
+		padding: 0.62rem 0.95rem;
+		border-radius: 999px;
+		cursor: pointer;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.quick-contact-trigger:hover {
+		background: var(--color-accent-strong);
+	}
+
+	.quick-contact-modal {
+		position: fixed;
+		inset: 0;
+		z-index: 140;
+	}
+
+	.quick-contact-backdrop {
+		position: absolute;
+		inset: 0;
+		background: rgba(2, 6, 23, 0.64);
+	}
+
+	.quick-contact-panel {
+		position: absolute;
+		right: 1rem;
+		bottom: 4.4rem;
+		width: min(30rem, calc(100vw - 2rem));
+		padding: 1rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: var(--color-bg-elevated);
+		box-shadow: var(--shadow-md);
+	}
+
+	.quick-contact-close {
+		position: absolute;
+		top: 0.45rem;
+		right: 0.45rem;
+		border: 0;
+		background: transparent;
+		color: var(--color-text-muted);
+		font-size: 1.2rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.quick-contact-panel h2 {
+		margin: 0 0 0.2rem;
+		font-size: 1.2rem;
+	}
+
+	.quick-contact-copy {
+		margin: 0 0 0.7rem;
+		font-size: 0.9rem;
+	}
+
+	.quick-contact-form {
+		display: grid;
+		gap: 0.55rem;
+	}
+
+	.quick-contact-form label {
+		display: grid;
+		gap: 0.28rem;
+	}
+
+	.quick-contact-form span {
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	.quick-contact-form input,
+	.quick-contact-form textarea {
+		width: 100%;
+		font: inherit;
+		padding: 0.55rem 0.65rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: var(--color-bg-elevated);
+		color: var(--color-text);
+	}
+
+	.quick-contact-form textarea {
+		resize: vertical;
+		min-height: 6.5rem;
+	}
+
+	.quick-contact-form small {
+		font-size: 0.76rem;
+		color: var(--color-text-muted);
+	}
+
+	.quick-contact-turnstile {
+		margin-top: 0.3rem;
+	}
+
+	.quick-contact-actions {
+		display: grid;
+		gap: 0.3rem;
+	}
+
+	.quick-contact-actions button {
+		width: fit-content;
+		border: 1px solid var(--color-accent);
+		background: var(--color-accent);
+		color: #fff;
+		font: inherit;
+		font-weight: 700;
+		padding: 0.45rem 0.8rem;
+		border-radius: 999px;
+		cursor: pointer;
+	}
+
+	.quick-contact-actions button:hover {
+		background: var(--color-accent-strong);
+	}
+
+	.status {
+		margin: 0;
+		font-size: 0.82rem;
+		color: var(--color-text-muted);
+	}
+
+	.status[data-error='true'] {
+		color: #ef4444;
+	}
+
+	.quick-contact-fallback p {
+		margin-bottom: 0.5rem;
+	}
+
+	.honeypot {
+		position: absolute;
+		left: -9999px;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	@media (max-width: 720px) {
+		.quick-contact-trigger {
+			right: 0.7rem;
+			bottom: 0.7rem;
+		}
+
+		.quick-contact-panel {
+			right: 0.5rem;
+			bottom: 3.95rem;
+			width: min(30rem, calc(100vw - 1rem));
+		}
+	}
+
+	@media (max-width: 420px) {
+		.quick-contact-trigger {
+			padding: 0.55rem 0.82rem;
+		}
+
+		.quick-contact-panel {
+			max-height: 78vh;
+			overflow: auto;
+		}
+	}
+</style>
