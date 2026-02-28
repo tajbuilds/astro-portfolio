@@ -1,0 +1,41 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	width?: 'narrow' | 'wide' | 'full';
+	mainClass?: string;
+}
+
+const { title, description, image, width = 'narrow', mainClass } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<script is:inline>
+			(() => {
+				const storageKey = 'theme';
+				const storedTheme = localStorage.getItem(storageKey);
+				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light';
+				const theme = storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : systemTheme;
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+		<BaseHead title={title} description={description} image={image} />
+	</head>
+	<body>
+		<a class="skip-link" href="#content">Skip to content</a>
+		<Header />
+		<main id="content" class:list={["site-main", `site-main--${width}`, mainClass]}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
