@@ -54,6 +54,30 @@ Public/non-secret runtime vars are stored in `wrangler.json`.
 - Blog posts: `src/content/blog/*`
 - Architecture diagrams: `public/diagrams/*`
 
+## CMS (Decap)
+
+A browser-based editor is available at `/admin`.
+
+- Admin app: `public/admin/index.html`
+- CMS config: `public/admin/config.yml`
+- Content targets: `src/content/blog` and `src/content/work`
+
+Local CMS testing:
+
+```bash
+npx decap-server
+```
+
+Then open:
+
+- Site: `http://localhost:4321`
+- Admin: `http://localhost:4321/admin`
+
+Production auth:
+
+- The config uses the GitHub backend (`tajbuilds/astro-portfolio`).
+- For production login on a Cloudflare-hosted site, configure a GitHub OAuth proxy/bridge compatible with Decap and protect `main` with branch rules.
+
 ## Security and Privacy
 
 - No private keys or service secrets are committed.

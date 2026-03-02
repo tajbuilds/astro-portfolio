@@ -1,0 +1,74 @@
+backend:
+  name: github
+  repo: tajbuilds/astro-portfolio
+  branch: main
+  base_url: https://cms-auth.tajs.io
+  auth_endpoint: auth
+  squash_merges: true
+
+# Enables local editing with `npx decap-server` during development.
+local_backend: true
+
+publish_mode: editorial_workflow
+site_url: https://tajs.io
+display_url: https://tajs.io
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: blog
+    label: Blog
+    folder: src/content/blog
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    preview_path: "blog/{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text }
+      - {
+          label: Publish Date,
+          name: pubDate,
+          widget: datetime,
+          date_format: YYYY-MM-DD,
+          time_format: false,
+          format: YYYY-MM-DD,
+        }
+      - {
+          label: Updated Date,
+          name: updatedDate,
+          widget: datetime,
+          required: false,
+          date_format: YYYY-MM-DD,
+          time_format: false,
+          format: YYYY-MM-DD,
+        }
+      - { label: Hero Image, name: heroImage, widget: string, required: false }
+      - { label: Body, name: body, widget: markdown }
+
+  - name: work
+    label: Work Case Studies
+    folder: src/content/work
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    preview_path: "work/{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text }
+      - {
+          label: Date,
+          name: date,
+          widget: datetime,
+          date_format: YYYY-MM-DD,
+          time_format: false,
+          format: YYYY-MM-DD,
+        }
+      - { label: Tags, name: tags, widget: list, field: { label: Tag, name: tag, widget: string } }
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, required: false, default: false }
+      - { label: GitHub URL, name: github, widget: string, required: false }
+      - { label: Body, name: body, widget: markdown }
