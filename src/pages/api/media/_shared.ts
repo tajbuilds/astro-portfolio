@@ -58,7 +58,10 @@ export const isAuthorizedMediaRequest = (request: Request, configuredToken: stri
 		return { ok: false, status: 401, message: 'Unauthorized media access.' };
 	}
 
-	if (hasCookieAuth) {
+	const method = request.method.toUpperCase();
+	const requiresSameOriginCheck = method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS';
+
+	if (hasCookieAuth && requiresSameOriginCheck) {
 		const requestOrigin = new URL(request.url).origin;
 		const originHeader = request.headers.get('origin') || '';
 		const refererHeader = request.headers.get('referer') || '';

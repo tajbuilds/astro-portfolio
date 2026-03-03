@@ -179,7 +179,7 @@
 
           const meta = document.createElement("div");
           meta.className = "r2ml-meta";
-          meta.textContent = `${bytesLabel(item.size)} · ${item.uploadedAt || "unknown"}`;
+          meta.textContent = `${bytesLabel(item.size)} - ${item.uploadedAt || "unknown"}`;
 
           const actions = document.createElement("div");
           actions.className = "r2ml-actions";
