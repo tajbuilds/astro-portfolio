@@ -49,7 +49,26 @@ body {
 
 #nc-root [class*="AppHeader"] a,
 #nc-root [class*="TopBar"] a {
+  color: var(--admin-text) !important;
+  text-decoration: none !important;
+}
+
+#nc-root [class*="AppHeader"] a:hover,
+#nc-root [class*="TopBar"] a:hover {
   color: var(--admin-accent-strong) !important;
+}
+
+#nc-root [class*="AppHeader"] [href*="tajs.io"],
+#nc-root [class*="TopBar"] [href*="tajs.io"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: var(--admin-surface-alt);
+  font-weight: 600;
 }
 
 .admin-theme-toggle {
