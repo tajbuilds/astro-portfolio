@@ -11,6 +11,13 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
+	"r2_buckets": [
+		{
+			"binding": "MEDIA_BUCKET",
+			"bucket_name": "portfolio",
+			"preview_bucket_name": "portfolio"
+		}
+	],
 	"vars": {
 		"CONTACT_TO_EMAIL": "contact@tajs.io",
 		"CONTACT_FROM_EMAIL": "Portfolio Contact <noreply@tajs.io>",

@@ -45,6 +45,7 @@ Runtime secrets are configured in Cloudflare Dashboard (not committed):
 
 - `RESEND_API_KEY`
 - `TURNSTILE_SITE_SECRET`
+- `MEDIA_UPLOAD_TOKEN`
 
 Public/non-secret runtime vars are stored in `wrangler.json`.
 
@@ -53,6 +54,19 @@ Public/non-secret runtime vars are stored in `wrangler.json`.
 - Work case studies: `src/content/work/*`
 - Blog posts: `src/content/blog/*`
 - Architecture diagrams: `public/diagrams/*`
+
+## Private R2 Media
+
+R2 is bound to the Worker as `MEDIA_BUCKET` (bucket: `portfolio`) and remains private.
+
+- Upload endpoint (token-protected): `POST /api/media/upload`
+- Read endpoint (streams from private R2): `GET /api/media/<key>`
+
+Upload request requirements:
+
+- `Authorization: Bearer <MEDIA_UPLOAD_TOKEN>`
+- `multipart/form-data` with `file` field
+- Optional fields: `folder`, `name`
 
 ## CMS (Decap)
 

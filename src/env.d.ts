@@ -11,4 +11,6 @@ interface Env {
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SITE_SECRET: string;
   RESEND_API_KEY: string;
+  MEDIA_BUCKET: R2Bucket;
+  MEDIA_UPLOAD_TOKEN?: string;
 }
