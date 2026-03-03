@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { isAuthorizedMediaRequest, json } from './_shared';
 
 export const prerender = false;
 
@@ -11,7 +12,7 @@ const notFound = () =>
 export const GET: APIRoute = async ({ params, locals }) => {
 	const env = locals.runtime.env;
 	const rawKey = params.key || '';
-	const key = rawKey.replace(/^\/+/, '').trim();
+	const key = decodeURIComponent(rawKey).replace(/^\/+/, '').trim();
 
 	if (!env.MEDIA_BUCKET || !key) {
 		return notFound();
@@ -31,4 +32,27 @@ export const GET: APIRoute = async ({ params, locals }) => {
 		status: 200,
 		headers,
 	});
+};
+
+export const DELETE: APIRoute = async ({ params, locals, request }) => {
+	const env = locals.runtime.env;
+	const rawKey = params.key || '';
+	const key = decodeURIComponent(rawKey).replace(/^\/+/, '').trim();
+
+	if (!env.MEDIA_BUCKET || !key) {
+		return notFound();
+	}
+
+	const configuredToken = env.MEDIA_UPLOAD_TOKEN?.trim();
+	if (!configuredToken) {
+		return json(500, { ok: false, message: 'MEDIA_UPLOAD_TOKEN is not configured.' });
+	}
+
+	const authCheck = isAuthorizedMediaRequest(request, configuredToken);
+	if (!authCheck.ok) {
+		return json(authCheck.status, { ok: false, message: authCheck.message });
+	}
+
+	await env.MEDIA_BUCKET.delete(key);
+	return json(200, { ok: true, key });
 };

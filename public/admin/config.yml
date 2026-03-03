@@ -19,6 +19,7 @@ media_library:
   name: r2
   config:
     endpoint: /api/media/upload
+    list_endpoint: /api/media/list
     default_collection: shared
 
 collections:

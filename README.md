@@ -71,6 +71,8 @@ Public/non-secret runtime vars are stored in `wrangler.json`.
 R2 is bound to the Worker as `MEDIA_BUCKET` (bucket: `portfolio`) and remains private.
 
 - Upload endpoint (token-protected): `POST /api/media/upload`
+- List endpoint (token/cookie-protected): `GET /api/media/list`
+- Delete endpoint (token/cookie-protected): `DELETE /api/media/<key>`
 - Read endpoint (streams from private R2): `GET /api/media/<key>`
 
 Upload request requirements:
