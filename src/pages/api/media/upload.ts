@@ -14,6 +14,20 @@ const json = (status: number, payload: Record<string, unknown>) =>
 		},
 	});
 
+const parseCookies = (cookieHeader: string | null) =>
+	(cookieHeader || '')
+		.split(';')
+		.map((part) => part.trim())
+		.filter(Boolean)
+		.reduce<Record<string, string>>((acc, part) => {
+			const idx = part.indexOf('=');
+			if (idx <= 0) return acc;
+			const key = decodeURIComponent(part.slice(0, idx).trim());
+			const value = decodeURIComponent(part.slice(idx + 1).trim());
+			acc[key] = value;
+			return acc;
+		}, {});
+
 const sanitizeKey = (value: string) =>
 	value
 		.trim()
@@ -62,8 +76,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	const authHeader = request.headers.get('authorization') || '';
 	const providedToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-	if (!providedToken || providedToken !== configuredToken) {
+	const cookieToken = parseCookies(request.headers.get('cookie'))['cms_media_token']?.trim() || '';
+
+	const hasBearerAuth = providedToken === configuredToken;
+	const hasCookieAuth = cookieToken === configuredToken;
+	if (!hasBearerAuth && !hasCookieAuth) {
 		return json(401, { ok: false, message: 'Unauthorized media upload.' });
+	}
+
+	if (hasCookieAuth) {
+		const requestOrigin = new URL(request.url).origin;
+		const originHeader = request.headers.get('origin') || '';
+		const refererHeader = request.headers.get('referer') || '';
+		const sameOrigin =
+			(originHeader && originHeader === requestOrigin) ||
+			(refererHeader && refererHeader.startsWith(`${requestOrigin}/`));
+		if (!sameOrigin) {
+			return json(403, { ok: false, message: 'Cross-origin upload is blocked.' });
+		}
 	}
 
 	const contentType = request.headers.get('content-type') || '';

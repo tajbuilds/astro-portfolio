@@ -64,7 +64,9 @@ R2 is bound to the Worker as `MEDIA_BUCKET` (bucket: `portfolio`) and remains pr
 
 Upload request requirements:
 
-- `Authorization: Bearer <MEDIA_UPLOAD_TOKEN>`
+- Auth via either:
+  - `Authorization: Bearer <MEDIA_UPLOAD_TOKEN>`, or
+  - HttpOnly `cms_media_token` cookie (set after Decap OAuth login)
 - `multipart/form-data` with `file` field
 - Optional fields: `collection`, `folder`, `name`
 - Folder root is restricted to: `blog`, `work`, `shared`

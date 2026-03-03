@@ -15,6 +15,11 @@ display_url: https://tajs.io
 
 media_folder: public/uploads
 public_folder: /uploads
+media_library:
+  name: r2
+  config:
+    endpoint: /api/media/upload
+    default_collection: shared
 
 collections:
   - name: blog
