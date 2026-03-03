@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_ROOTS = new Set(['blog', 'work', 'shared']);
 
 const json = (status: number, payload: Record<string, unknown>) =>
 	new Response(JSON.stringify(payload), {
@@ -20,6 +21,15 @@ const sanitizeKey = (value: string) =>
 		.replace(/^\/+/, '')
 		.replace(/\.\.+/g, '.')
 		.replace(/\/{2,}/g, '/');
+
+const resolveFolder = (formData: FormData) => {
+	const collection = sanitizeKey(String(formData.get('collection') || '')).toLowerCase();
+	const folder = sanitizeKey(String(formData.get('folder') || '')).toLowerCase();
+	const candidate = collection || folder || 'shared';
+	const root = candidate.split('/')[0];
+	if (!ALLOWED_ROOTS.has(root)) return null;
+	return candidate;
+};
 
 const extensionFor = (contentType: string) => {
 	switch (contentType) {
@@ -71,7 +81,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		return json(400, { ok: false, message: `File must be between 1 byte and ${MAX_BYTES} bytes.` });
 	}
 
-	const folder = sanitizeKey(String(formData.get('folder') || 'uploads'));
+	const folder = resolveFolder(formData);
+	if (!folder) {
+		return json(400, {
+			ok: false,
+			message: 'Invalid folder. Use collection/folder rooted at blog, work, or shared.',
+		});
+	}
 	const baseName = sanitizeKey(String(formData.get('name') || '')).replace(/\.[^.]+$/, '');
 	const ext = extensionFor(file.type || 'application/octet-stream');
 	const stamp = new Date().toISOString().replaceAll(':', '-');

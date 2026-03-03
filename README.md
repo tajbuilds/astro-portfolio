@@ -66,7 +66,9 @@ Upload request requirements:
 
 - `Authorization: Bearer <MEDIA_UPLOAD_TOKEN>`
 - `multipart/form-data` with `file` field
-- Optional fields: `folder`, `name`
+- Optional fields: `collection`, `folder`, `name`
+- Folder root is restricted to: `blog`, `work`, `shared`
+  - Example paths: `blog/hero`, `work/diagrams`, `shared/avatar`
 
 ## CMS (Decap)
 
