@@ -1,0 +1,117 @@
+:root {
+  --admin-bg: #f3f6fb;
+  --admin-surface: #ffffff;
+  --admin-surface-alt: #eef3fb;
+  --admin-text: #0f172a;
+  --admin-muted: #4b5f79;
+  --admin-border: #cad6e6;
+  --admin-accent: #60a5fa;
+  --admin-accent-strong: #3b82f6;
+}
+
+:root[data-admin-theme="dark"] {
+  --admin-bg: #050d1d;
+  --admin-surface: #0f1a31;
+  --admin-surface-alt: #13213c;
+  --admin-text: #d7e4f5;
+  --admin-muted: #9db0c9;
+  --admin-border: #2a3d5c;
+  --admin-accent: #60a5fa;
+  --admin-accent-strong: #38bdf8;
+}
+
+html,
+body {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+#nc-root,
+#nc-root > div {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+#nc-root a {
+  color: var(--admin-accent-strong) !important;
+}
+
+#nc-root input,
+#nc-root textarea,
+#nc-root select {
+  background: var(--admin-surface-alt) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+#nc-root button {
+  border-color: var(--admin-border) !important;
+}
+
+#nc-root [class*="AppHeader"],
+#nc-root [class*="appHeader"],
+#nc-root [class*="Navbar"],
+#nc-root [class*="TopBar"] {
+  background: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+#nc-root [class*="Sidebar"],
+#nc-root [class*="CollectionSidebar"],
+#nc-root [class*="collectionSidebar"] {
+  background: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+#nc-root [class*="Card"],
+#nc-root [class*="Pane"],
+#nc-root [class*="EditorContainer"],
+#nc-root [class*="entryEditor"],
+#nc-root [class*="List"] > li,
+#nc-root [class*="ListCard"] {
+  background: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+#nc-root [class*="Toolbar"] button,
+#nc-root [class*="Button"] {
+  background: var(--admin-surface-alt) !important;
+  color: var(--admin-text) !important;
+}
+
+#nc-root [class*="Button"][class*="primary"],
+#nc-root [class*="Button"][class*="Primary"] {
+  background: var(--admin-accent) !important;
+  color: #071326 !important;
+  border-color: transparent !important;
+}
+
+#nc-root [class*="Badge"],
+#nc-root [class*="Tag"] {
+  background: color-mix(in srgb, var(--admin-accent) 25%, transparent) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+.admin-theme-toggle {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 10000;
+  height: 34px;
+  min-width: 94px;
+  border-radius: 999px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-theme-toggle:hover {
+  background: var(--admin-surface-alt);
+}

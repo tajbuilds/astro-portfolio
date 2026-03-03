@@ -9,9 +9,19 @@
     <link rel="icon" type="image/svg+xml" href="/admin/icon-light.svg" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/admin/icon-dark.svg" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="/admin/icon-light.svg" />
+    <script>
+      (() => {
+        const stored = localStorage.getItem("admin_theme") || localStorage.getItem("theme");
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored === "dark" || stored === "light" ? stored : systemDark ? "dark" : "light";
+        document.documentElement.dataset.adminTheme = theme;
+      })();
+    </script>
+    <link rel="stylesheet" href="/admin/admin-theme.css" />
     <title>Content Admin</title>
   </head>
   <body>
+    <script src="/admin/admin-theme.js"></script>
     <script src="https://unpkg.com/decap-cms@3.8.3/dist/decap-cms.js"></script>
     <script src="/admin/r2-media-library.js"></script>
   </body>
