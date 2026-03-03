@@ -1,0 +1,115 @@
+---
+interface Props {
+	term?: string;
+}
+
+const { term } = Astro.props;
+const env = Astro.locals.runtime?.env;
+
+const config = {
+	repo: env?.GISCUS_REPO || '',
+	repoId: env?.GISCUS_REPO_ID || '',
+	category: env?.GISCUS_CATEGORY || '',
+	categoryId: env?.GISCUS_CATEGORY_ID || '',
+	term: term || 'pathname',
+	lang: env?.GISCUS_LANG || 'en',
+};
+
+const enabled =
+	Boolean(config.repo) &&
+	Boolean(config.repoId) &&
+	Boolean(config.category) &&
+	Boolean(config.categoryId);
+---
+
+{
+	enabled && (
+		<section class="giscus-wrap" aria-label="Comments">
+			<h2>Comments</h2>
+			<div
+				id="giscus-container"
+				data-repo={config.repo}
+				data-repo-id={config.repoId}
+				data-category={config.category}
+				data-category-id={config.categoryId}
+				data-term={config.term}
+				data-lang={config.lang}
+			></div>
+			<script is:inline>
+				(() => {
+					const container = document.getElementById('giscus-container');
+					if (!(container instanceof HTMLElement)) return;
+
+					const repo = container.dataset.repo || '';
+					const repoId = container.dataset.repoId || '';
+					const category = container.dataset.category || '';
+					const categoryId = container.dataset.categoryId || '';
+					const term = container.dataset.term || 'pathname';
+					const lang = container.dataset.lang || 'en';
+					if (!repo || !repoId || !category || !categoryId) return;
+
+					const getTheme = () =>
+						document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+
+					const injectGiscus = () => {
+						if (container.querySelector('script[data-giscus="1"]')) return;
+						const script = document.createElement('script');
+						script.src = 'https://giscus.app/client.js';
+						script.async = true;
+						script.crossOrigin = 'anonymous';
+						script.dataset.giscus = '1';
+						script.setAttribute('data-repo', repo);
+						script.setAttribute('data-repo-id', repoId);
+						script.setAttribute('data-category', category);
+						script.setAttribute('data-category-id', categoryId);
+						script.setAttribute('data-mapping', term === 'pathname' ? 'pathname' : 'specific');
+						if (term !== 'pathname') script.setAttribute('data-term', term);
+						script.setAttribute('data-strict', '0');
+						script.setAttribute('data-reactions-enabled', '1');
+						script.setAttribute('data-emit-metadata', '0');
+						script.setAttribute('data-input-position', 'top');
+						script.setAttribute('data-theme', getTheme());
+						script.setAttribute('data-lang', lang);
+						container.appendChild(script);
+					};
+
+					const syncTheme = () => {
+						const frame = document.querySelector('iframe.giscus-frame');
+						if (!(frame instanceof HTMLIFrameElement) || !frame.contentWindow) return;
+						frame.contentWindow.postMessage(
+							{
+								giscus: {
+									setConfig: {
+										theme: getTheme(),
+									},
+								},
+							},
+							'https://giscus.app',
+						);
+					};
+
+					injectGiscus();
+					const observer = new MutationObserver(syncTheme);
+					observer.observe(document.documentElement, {
+						attributes: true,
+						attributeFilter: ['data-theme'],
+					});
+				})();
+			</script>
+		</section>
+	)
+}
+
+<style>
+	.giscus-wrap {
+		width: 720px;
+		max-width: calc(100% - 2em);
+		margin: var(--space-8) auto 0;
+		padding: 1em;
+	}
+
+	.giscus-wrap h2 {
+		margin: 0 0 var(--space-4);
+		font-size: 1.2rem;
+	}
+</style>
