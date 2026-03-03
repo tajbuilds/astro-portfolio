@@ -50,7 +50,7 @@ collections:
           time_format: false,
           format: YYYY-MM-DD,
         }
-      - { label: Hero Image, name: heroImage, widget: string, required: false }
+      - { label: Hero Image, name: heroImage, widget: image, required: false }
       - { label: Body, name: body, widget: markdown }
 
   - name: work
