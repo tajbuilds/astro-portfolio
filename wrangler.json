@@ -22,6 +22,11 @@
 		"CONTACT_TO_EMAIL": "contact@tajs.io",
 		"CONTACT_FROM_EMAIL": "Portfolio Contact <noreply@tajs.io>",
 		"CONTACT_SUBJECT_PREFIX": "[tajs.io] Contact Form",
-		"TURNSTILE_SITE_KEY": "0x4AAAAAACj5smKRjyW5M3sV"
+		"TURNSTILE_SITE_KEY": "0x4AAAAAACj5smKRjyW5M3sV",
+		"GISCUS_REPO": "tajbuilds/astro-portfolio",
+		"GISCUS_REPO_ID": "R_kgDORbBr2g",
+		"GISCUS_CATEGORY": "General",
+		"GISCUS_CATEGORY_ID": "DIC_kwDORbBr2s4C3kEU",
+		"GISCUS_LANG": "en"
 	}
 }
