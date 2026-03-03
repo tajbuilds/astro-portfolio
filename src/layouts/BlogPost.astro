@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import MainLayout from './MainLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import GiscusComments from '../components/GiscusComments.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -31,6 +32,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			<slot />
 		</div>
 	</article>
+	<GiscusComments />
 </MainLayout>
 
 <style>

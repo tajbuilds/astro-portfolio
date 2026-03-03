@@ -47,6 +47,14 @@ Runtime secrets are configured in Cloudflare Dashboard (not committed):
 - `TURNSTILE_SITE_SECRET`
 - `MEDIA_UPLOAD_TOKEN`
 
+Optional runtime vars:
+
+- `GISCUS_REPO` (e.g. `tajbuilds/astro-portfolio`)
+- `GISCUS_REPO_ID`
+- `GISCUS_CATEGORY`
+- `GISCUS_CATEGORY_ID`
+- `GISCUS_LANG` (default: `en`)
+
 Public/non-secret runtime vars are stored in `wrangler.json`.
 
 ## Content
@@ -95,6 +103,10 @@ Production auth:
 
 - The config uses the GitHub backend (`tajbuilds/astro-portfolio`).
 - For production login on a Cloudflare-hosted site, configure a GitHub OAuth proxy/bridge compatible with Decap and protect `main` with branch rules.
+
+## Blog Comments (Giscus)
+
+Blog post comments are powered by Giscus and only render when all required vars above are set.
 
 ## Security and Privacy
 
