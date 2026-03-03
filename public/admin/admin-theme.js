@@ -13,7 +13,7 @@
     localStorage.setItem(storageKey, next);
     const toggle = document.querySelector(".admin-theme-toggle");
     if (toggle) {
-      toggle.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
+      toggle.textContent = `Theme: ${next === "dark" ? "Dark" : "Light"}`;
       toggle.setAttribute("aria-label", `Switch to ${next === "dark" ? "light" : "dark"} mode`);
     }
   };
