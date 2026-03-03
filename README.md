@@ -8,7 +8,10 @@ This repo powers https://tajs.io and is focused on case studies across edge, aut
 
 - Astro (TypeScript)
 - Cloudflare Workers + static assets
+- Cloudflare R2 (private media storage via API)
 - Astro content collections for Work and Blog
+- Decap CMS + GitHub OAuth bridge
+- Giscus (GitHub Discussions comments)
 - Minimal client-side JavaScript (performance-first)
 
 ## Information Architecture
