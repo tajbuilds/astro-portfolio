@@ -6,7 +6,13 @@ export const prerender = false;
 
 export const GET: APIRoute = async () => {
 	try {
-		return ok({ contact: contactData });
+		return ok({
+			contact: {
+				...contactData,
+				formPath: '/api/mobile/contact/submit',
+				turnstileRequired: false,
+			},
+		});
 	} catch {
 		return fail(500, 'internal_error', 'Unable to load contact payload');
 	}
