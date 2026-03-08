@@ -9,9 +9,8 @@ This repository powers https://tajs.io and showcases structured case studies acr
 - Astro (TypeScript)
 - Cloudflare Workers (edge runtime + static assets)
 - Cloudflare R2 (private media storage via Worker API)
-- Astro Content Collections (Work, Blog)
+- Astro Content Collections (Work)
 - Decap CMS (GitHub backend)
-- Giscus (GitHub Discussions-powered comments)
 - Minimal client-side JavaScript (performance-first approach)
 
 ## Information Architecture
@@ -20,7 +19,6 @@ This repository powers https://tajs.io and showcases structured case studies acr
 - Work - Case studies with tags and categorisation
 - Work Detail - Structured architecture write-ups
 - About - Background and technical focus areas
-- Blog - Currently marked as coming soon
 - Contact - Turnstile-protected form with Resend delivery
 
 ## Local Development
@@ -54,20 +52,11 @@ These are not committed to the repository:
 - `TURNSTILE_SITE_SECRET`
 - `MEDIA_UPLOAD_TOKEN`
 
-## Optional Runtime Variables
-
-- `GISCUS_REPO` (e.g. `tajbuilds/astro-portfolio`)
-- `GISCUS_REPO_ID`
-- `GISCUS_CATEGORY`
-- `GISCUS_CATEGORY_ID`
-- `GISCUS_LANG` (default: `en`)
-
 Public, non-secret runtime variables are defined in `wrangler.json`.
 
 ## Content Structure
 
 - Work case studies -> `src/content/work/*`
-- Blog posts -> `src/content/blog/*`
 - Architecture diagrams -> `public/diagrams/*`
 
 ## Private R2 Media
@@ -91,13 +80,11 @@ Request format:
 
 Allowed folder roots:
 
-- `blog`
 - `work`
 - `shared`
 
 Example paths:
 
-- `blog/hero`
 - `work/diagrams`
 - `shared/avatar`
 
@@ -115,7 +102,7 @@ A browser-based editor is available at:
 
 - Admin app -> `public/admin/index.html`
 - CMS config -> `public/admin/config.yml`
-- Content targets -> `src/content/blog`, `src/content/work`
+- Content target -> `src/content/work`
 
 ### Local CMS Testing
 
@@ -134,9 +121,10 @@ Uses GitHub backend (`tajbuilds/astro-portfolio`).
 
 For Cloudflare-hosted production login, configure a GitHub OAuth proxy compatible with Decap and protect the `main` branch with branch protection rules.
 
-## Blog Comments (Giscus)
+## Data Layer
 
-Blog comments are powered by Giscus and render only when all required runtime variables are configured.
+Shared portfolio data and collection accessors live in `src/lib/data/portfolio-data.ts`.
+Both web pages and `/api/mobile/*` endpoints consume this layer to keep contracts stable.
 
 ## Security and Privacy
 

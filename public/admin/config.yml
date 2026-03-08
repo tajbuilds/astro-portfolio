@@ -23,37 +23,6 @@ media_library:
     default_collection: shared
 
 collections:
-  - name: blog
-    label: Blog
-    folder: src/content/blog
-    create: true
-    extension: md
-    format: frontmatter
-    slug: "{{slug}}"
-    preview_path: "blog/{{slug}}"
-    fields:
-      - { label: Title, name: title, widget: string }
-      - { label: Description, name: description, widget: text }
-      - {
-          label: Publish Date,
-          name: pubDate,
-          widget: datetime,
-          date_format: YYYY-MM-DD,
-          time_format: false,
-          format: YYYY-MM-DD,
-        }
-      - {
-          label: Updated Date,
-          name: updatedDate,
-          widget: datetime,
-          required: false,
-          date_format: YYYY-MM-DD,
-          time_format: false,
-          format: YYYY-MM-DD,
-        }
-      - { label: Hero Image, name: heroImage, widget: image, required: false }
-      - { label: Body, name: body, widget: markdown }
-
   - name: work
     label: Work Case Studies
     folder: src/content/work

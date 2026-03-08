@@ -1,4 +1,8 @@
-export const ALLOWED_ROOTS = new Set(['blog', 'work', 'shared']);
+export const ALLOWED_ROOTS = new Set(['work', 'shared']);
+
+type MediaAuthResult =
+	| { ok: true }
+	| { ok: false; status: number; message: string };
 
 export const json = (status: number, payload: Record<string, unknown>) =>
 	new Response(JSON.stringify(payload), {
@@ -47,7 +51,10 @@ export const resolveUploadFolder = (formData: FormData) => {
 	return candidate;
 };
 
-export const isAuthorizedMediaRequest = (request: Request, configuredToken: string) => {
+export const isAuthorizedMediaRequest = (
+	request: Request,
+	configuredToken: string,
+): MediaAuthResult => {
 	const authHeader = request.headers.get('authorization') || '';
 	const providedToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
 	const cookieToken = parseCookies(request.headers.get('cookie'))['cms_media_token']?.trim() || '';

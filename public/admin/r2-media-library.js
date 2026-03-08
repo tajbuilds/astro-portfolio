@@ -1,7 +1,7 @@
 (function () {
   if (!window.CMS) return;
 
-  const ROOTS = ["blog", "work", "shared"];
+  const ROOTS = ["work", "shared"];
 
   const detectCollectionFromHash = () => {
     const hash = window.location.hash || "";

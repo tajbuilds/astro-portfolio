@@ -1,28 +1,30 @@
 ---
-import { getCollection } from 'astro:content';
 import MainLayout from '../../../layouts/MainLayout.astro';
 import Container from '../../../components/Container.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import ProjectCard from '../../../components/ProjectCard.astro';
 import PillTag from '../../../components/PillTag.astro';
+import {
+	contentSlug,
+	getPublishedWorkEntries,
+	getPublishedWorkTags,
+	slugifyTag,
+} from '../../../lib/data/portfolio-data';
 
-const allWork = (await getCollection('work'))
-	.filter((entry) => !entry.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allWork = await getPublishedWorkEntries();
 
 export async function getStaticPaths() {
-	const items = (await getCollection('work')).filter((entry) => !entry.data.draft);
-	const tags = Array.from(new Set(items.flatMap((item) => item.data.tags)));
+	const tags = await getPublishedWorkTags();
 	return tags.map((tag) => ({
-		params: { tag: tag.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+		params: { tag: slugifyTag(tag) },
 		props: { tag },
 	}));
 }
 
 const { tag } = Astro.props;
-const tagSlug = String(tag).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const tagSlug = slugifyTag(String(tag));
 const filtered = allWork.filter((item) =>
-	item.data.tags.some((entry) => entry.toLowerCase().replace(/[^a-z0-9]+/g, '-') === tagSlug),
+	item.data.tags.some((entry) => slugifyTag(entry) === tagSlug),
 );
 ---
 
@@ -47,7 +49,7 @@ const filtered = allWork.filter((item) =>
 							description={item.data.description}
 							tags={item.data.tags}
 							date={item.data.date}
-							href={`/work/${item.id.replace(/\.(md|mdx)$/i, "")}/`}
+							href={`/work/${contentSlug(item.id)}/`}
 						/>
 					</li>
 				))

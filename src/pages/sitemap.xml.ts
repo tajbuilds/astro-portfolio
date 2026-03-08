@@ -1,10 +1,14 @@
-﻿import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import type { APIRoute } from 'astro';
+import {
+	contentSlug,
+	getPublishedWorkEntries,
+	getPublishedWorkTags,
+	slugifyTag,
+} from '../lib/data/portfolio-data';
 
 export const prerender = true;
 
 const toUrl = (origin: string, path: string) => `${origin}${path}`;
-const slugifyTag = (tag: string) => tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 const xmlEscape = (value: string) =>
 	value
@@ -16,26 +20,12 @@ const xmlEscape = (value: string) =>
 
 export const GET: APIRoute = async ({ request }) => {
 	const origin = new URL(request.url).origin;
-
-	const staticPaths = ['/', '/about/', '/blog/', '/contact/', '/work/'];
-
-	const [blogEntries, workEntries] = await Promise.all([
-		getCollection('blog', ({ data }) => !data.draft),
-		getCollection('work', ({ data }) => !data.draft),
-	]);
-
-	const workTagPaths = Array.from(
-		new Set(
-			workEntries
-				.flatMap((entry) => entry.data.tags ?? [])
-				.map((tag) => `/work/tags/${slugifyTag(tag)}/`),
-		),
-	).sort();
+	const staticPaths = ['/', '/about/', '/contact/', '/work/'];
+	const [workEntries, workTags] = await Promise.all([getPublishedWorkEntries(), getPublishedWorkTags()]);
 
 	const contentPaths = [
-		...blogEntries.map((entry) => `/blog/${entry.slug}/`),
-		...workEntries.map((entry) => `/work/${entry.slug}/`),
-		...workTagPaths,
+		...workEntries.map((entry) => `/work/${contentSlug(entry.id)}/`),
+		...workTags.map((tag) => `/work/tags/${slugifyTag(tag)}/`),
 	];
 
 	const allPaths = Array.from(new Set([...staticPaths, ...contentPaths])).sort();

@@ -1,8 +1,6 @@
 ﻿// @ts-check
 import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import react from "@astrojs/react";
 
 import cloudflare from "@astrojs/cloudflare";
 
@@ -12,7 +10,7 @@ const site = process.env.SITE_URL || process.env.PUBLIC_SITE_URL || "https://taj
 // https://astro.build/config
 export default defineConfig({
 	site,
-	integrations: [mdx(), sitemap(), react()],
+	integrations: [sitemap()],
 	adapter: cloudflare({
 		imageService: "compile",
 		platformProxy: {

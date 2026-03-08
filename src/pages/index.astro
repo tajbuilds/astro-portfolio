@@ -1,16 +1,13 @@
 ﻿---
-import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ButtonLink from '../components/ButtonLink.astro';
 import PillTag from '../components/PillTag.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { contentSlug, getFeaturedWorkEntries } from '../lib/data/portfolio-data';
 
-const featured = (await getCollection('work'))
-	.filter((entry) => !entry.data.draft && entry.data.featured)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-	.slice(0, 4);
+const featured = await getFeaturedWorkEntries(4);
 
 const techGroups = {
 	'Edge / Cloud': ['Cloudflare Workers', 'Routing & Rules', 'Access Control', 'Observability'],
@@ -71,7 +68,7 @@ const techGroups = {
 								title={item.data.title}
 								description={item.data.description}
 								tags={item.data.tags}
-								href={`/work/${item.id.replace(/\.(md|mdx)$/i, '')}/`}
+								href={`/work/${contentSlug(item.id)}/`}
 							/>
 						</li>
 					))}

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { fail, getWorkEntries, ok, toWorkSummary } from '../../../lib/mobile-api';
+import { ctaData, profileData } from '../../../lib/data/portfolio-data';
 
 export const prerender = false;
 
@@ -9,18 +10,9 @@ export const GET: APIRoute = async () => {
 		const featuredWork = work.filter((entry) => entry.data.featured).slice(0, 4).map(toWorkSummary);
 
 		return ok({
-			profile: {
-				name: 'Tajinder Singh',
-				role: 'Solutions Architect',
-				tagline: 'Architecture-first systems for edge, automation, and data',
-				avatarUrl: '/images/tajinder-singh-portrait.jpg',
-				location: 'United Kingdom',
-			},
+			profile: profileData,
 			featuredWork,
-			cta: {
-				primary: { label: 'View Work', path: '/work' },
-				secondary: { label: 'Contact', path: '/contact' },
-			},
+			cta: ctaData,
 		});
 	} catch {
 		return fail(500, 'internal_error', 'Unable to load home payload');

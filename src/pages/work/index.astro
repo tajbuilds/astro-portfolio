@@ -1,18 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
 import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
+import {
+	contentSlug,
+	getPublishedWorkEntries,
+	getPublishedWorkTags,
+	slugifyTag,
+} from '../../lib/data/portfolio-data';
 
-const workItems = (await getCollection('work'))
-	.filter((entry) => !entry.data.draft)
-	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).sort((a, b) =>
-	a.localeCompare(b),
-);
+const workItems = await getPublishedWorkEntries();
+const tags = await getPublishedWorkTags();
 ---
 
 <MainLayout
@@ -33,7 +33,7 @@ const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).so
 			<p>Filter by focus area:</p>
 			<div class="work-filter__tags">
 				<PillTag label="All" href="/work/" />
-				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`} />)}
+				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${slugifyTag(tag)}/`} />)}
 			</div>
 		</section>
 
@@ -47,7 +47,7 @@ const tags = Array.from(new Set(workItems.flatMap((item) => item.data.tags))).so
 								description={item.data.description}
 								tags={item.data.tags}
 								date={item.data.date}
-								href={`/work/${item.id.replace(/\.(md|mdx)$/i, "")}/`}
+								href={`/work/${contentSlug(item.id)}/`}
 							/>
 						</li>
 					))

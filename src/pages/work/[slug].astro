@@ -1,24 +1,20 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
-
-type WorkEntry = CollectionEntry<'work'>;
-const contentSlug = (id: string) => id.replace(/\.(md|mdx)$/i, '');
+import { contentSlug, type WorkEntry, getPublishedWorkEntries } from '../../lib/data/portfolio-data';
 
 export async function getStaticPaths() {
-	const sortedWork = (await getCollection('work'))
-		.filter((entry) => !entry.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	const sortedWork = await getPublishedWorkEntries();
 
 	return sortedWork.map((post, index) => ({
-		params: { slug: post.id.replace(/\.(md|mdx)$/i, '') },
+		params: { slug: contentSlug(post.id) },
 		props: {
 			post,
 			previous: sortedWork[index - 1]
-				? { title: sortedWork[index - 1].data.title, slug: sortedWork[index - 1].id.replace(/\.(md|mdx)$/i, '') }
+				? { title: sortedWork[index - 1].data.title, slug: contentSlug(sortedWork[index - 1].id) }
 				: null,
 			next: sortedWork[index + 1]
-				? { title: sortedWork[index + 1].data.title, slug: sortedWork[index + 1].id.replace(/\.(md|mdx)$/i, '') }
+				? { title: sortedWork[index + 1].data.title, slug: contentSlug(sortedWork[index + 1].id) }
 				: null,
 		},
 	}));

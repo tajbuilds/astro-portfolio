@@ -58,7 +58,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	if (!folder) {
 		return json(400, {
 			ok: false,
-			message: 'Invalid folder. Use collection/folder rooted at blog, work, or shared.',
+			message: 'Invalid folder. Use collection/folder rooted at work or shared.',
 		});
 	}
 	const baseName = sanitizeKey(String(formData.get('name') || '')).replace(/\.[^.]+$/, '');

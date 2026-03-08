@@ -1,12 +1,9 @@
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { type WorkEntry, getPublishedWorkEntries, contentSlug } from './data/portfolio-data';
 
 export const MOBILE_API_VERSION = '1.0';
 export const MOBILE_READ_CACHE =
 	'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
 
-type WorkEntry = CollectionEntry<'work'>;
-
-const contentSlug = (id: string) => id.replace(/\.(md|mdx)$/i, '');
 const isoDate = (value: Date) => value.toISOString().slice(0, 10);
 
 const pickSection = (sections: Record<string, string>, keys: string[]) => {
@@ -62,9 +59,7 @@ export const fail = (status: number, code: string, message: string) =>
 	);
 
 export const getWorkEntries = async () =>
-	(await getCollection('work'))
-		.filter((entry) => !entry.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+	getPublishedWorkEntries();
 
 export const toWorkSummary = (entry: WorkEntry) => ({
 	slug: contentSlug(entry.id),
@@ -73,7 +68,7 @@ export const toWorkSummary = (entry: WorkEntry) => ({
 	tags: entry.data.tags,
 	role: 'Solutions Architect',
 	timeline: String(entry.data.date.getUTCFullYear()),
-	coverImageUrl: '/blog-placeholder-1.jpg',
+	coverImageUrl: '/images/tajinder-singh-portrait.jpg',
 	publishedAt: isoDate(entry.data.date),
 	updatedAt: isoDate(entry.data.date),
 });

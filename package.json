@@ -1,6 +1,6 @@
 {
 	"name": "astro-portfolio",
-	"description": "Build a personal website, blog, or portfolio with Astro.",
+	"description": "Architecture-first personal portfolio built with Astro.",
 	"cloudflare": {
 		"label": "Astro Framework Starter",
 		"products": [
@@ -13,13 +13,8 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "12.6.12",
-		"@astrojs/mdx": "4.3.13",
-		"@astrojs/react": "^4.4.2",
-		"@astrojs/rss": "4.0.14",
 		"@astrojs/sitemap": "3.6.1",
 		"astro": "5.16.9",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {

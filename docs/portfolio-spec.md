@@ -30,7 +30,6 @@ Core routes:
 
 Optional routes (phase 2):
 
-- `/blog`
 - `/resume`
 
 ## Home Page Sections

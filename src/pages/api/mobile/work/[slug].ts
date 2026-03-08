@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { fail, getWorkEntries, ok, toWorkDetail } from '../../../../lib/mobile-api';
+import { fail, ok, toWorkDetail } from '../../../../lib/mobile-api';
+import { getWorkEntryBySlug } from '../../../../lib/data/portfolio-data';
 
 export const prerender = false;
 
@@ -10,9 +11,7 @@ export const GET: APIRoute = async ({ params }) => {
 			return fail(404, 'not_found', 'Work item not found');
 		}
 
-		const item = (await getWorkEntries()).find(
-			(entry) => entry.id.replace(/\.(md|mdx)$/i, '').toLowerCase() === slug,
-		);
+		const item = await getWorkEntryBySlug(slug);
 
 		if (!item) {
 			return fail(404, 'not_found', 'Work item not found');
