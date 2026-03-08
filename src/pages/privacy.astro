@@ -1,0 +1,106 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Container from '../components/Container.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { privacyData } from '../lib/data/portfolio-data';
+---
+
+<MainLayout title="Privacy Policy | Taj Builds" description="Privacy policy for the Taj Builds website and mobile application.">
+	<Container size="wide">
+		<section class="section">
+			<SectionHeading
+				eyebrow="Privacy"
+				title="Privacy Policy"
+				description="How Taj Builds handles information across the website and mobile application."
+			/>
+			<p class="updated"><strong>Last updated:</strong> {privacyData.lastUpdated}</p>
+			<div class="card">
+				{privacyData.introduction.map((paragraph) => <p>{paragraph}</p>)}
+			</div>
+		</section>
+
+		<section class="section stack">
+			{privacyData.sections.map((section) => (
+				<article class="card">
+					<h2>{section.title}</h2>
+					{section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+					{section.items?.map((item) => (
+						<div class="subsection">
+							<h3>{item.heading}</h3>
+							{item.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+							{item.bullets && (
+								<ul>
+									{item.bullets.map((bullet) => <li>{bullet}</li>)}
+								</ul>
+							)}
+						</div>
+					))}
+					{section.bullets && (
+						<ul>
+							{section.bullets.map((bullet) => <li>{bullet}</li>)}
+						</ul>
+					)}
+				</article>
+			))}
+		</section>
+
+		<section class="section">
+			<article class="card">
+				<h2>Contact</h2>
+				<p>If you have questions about this Privacy Policy or the services provided, you may contact:</p>
+				<p><strong>{privacyData.contact.name}</strong></p>
+				<p>Website: <a href={privacyData.contact.website}>{privacyData.contact.website}</a></p>
+				<p>Email: <a href={`mailto:${privacyData.contact.email}`}>{privacyData.contact.email}</a></p>
+			</article>
+		</section>
+	</Container>
+</MainLayout>
+
+<style>
+	.section {
+		margin-bottom: clamp(2.2rem, 5vw, 4.2rem);
+	}
+
+	.stack {
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.updated {
+		margin: 0 0 0.8rem;
+		color: var(--color-text-muted);
+	}
+
+	.card {
+		padding: 1.2rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+	}
+
+	.card h2 {
+		margin: 0 0 0.7rem;
+		font-size: 1.25rem;
+	}
+
+	.card h3 {
+		margin: 1rem 0 0.45rem;
+		font-size: 1.05rem;
+	}
+
+	.card p {
+		margin: 0.55rem 0;
+	}
+
+	.card ul {
+		margin: 0.55rem 0 0;
+		padding-left: 1.15rem;
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.subsection + .subsection {
+		margin-top: 0.75rem;
+	}
+</style>
+

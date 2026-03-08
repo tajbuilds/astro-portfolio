@@ -57,6 +57,7 @@ const today = new Date();
 				</a>
 			</div>
 			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
+			<a class="privacy-link" href="/privacy">Privacy</a>
 		</div>
 	</div>
 </footer>
@@ -94,6 +95,19 @@ const today = new Date();
 		margin: 0;
 		font-size: 0.88rem;
 		color: rgb(var(--gray));
+	}
+
+	.privacy-link {
+		font-size: 0.88rem;
+		color: var(--color-text-muted);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 120ms ease, border-color 120ms ease;
+	}
+
+	.privacy-link:hover {
+		color: var(--color-accent);
+		border-color: var(--color-accent);
 	}
 
 	.footer-links {

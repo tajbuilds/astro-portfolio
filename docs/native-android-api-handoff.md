@@ -13,6 +13,7 @@ Expose stable JSON endpoints for native Android consumption so the app does not 
 - `GET /api/mobile/work/[slug]`
 - `GET /api/mobile/about`
 - `GET /api/mobile/contact`
+- `GET /api/mobile/privacy`
 
 All endpoints return JSON.
 
@@ -25,6 +26,7 @@ All endpoints return JSON.
 - `http://localhost:4321/api/mobile/work/smart-edge-cache-proxy`
 - `http://localhost:4321/api/mobile/about`
 - `http://localhost:4321/api/mobile/contact`
+- `http://localhost:4321/api/mobile/privacy`
 
 ### Production
 
@@ -33,6 +35,7 @@ All endpoints return JSON.
 - `https://tajs.io/api/mobile/work/smart-edge-cache-proxy`
 - `https://tajs.io/api/mobile/about`
 - `https://tajs.io/api/mobile/contact`
+- `https://tajs.io/api/mobile/privacy`
 
 ## Current Work Slugs (as of 2026-03-07)
 
@@ -125,6 +128,15 @@ Returns:
 - `contact.turnstileRequired`
 - `contact.links[]`
 
+### `GET /api/mobile/privacy`
+
+Returns:
+
+- `privacy.lastUpdated`
+- `privacy.introduction[]`
+- `privacy.sections[]` (policy sections, nested headings, paragraphs, bullets)
+- `privacy.contact` (`name`, `website`, `email`)
+
 ## Caching
 
 Read endpoints send:
@@ -143,6 +155,7 @@ curl -s http://localhost:4321/api/mobile/work | jq
 curl -s http://localhost:4321/api/mobile/work/smart-edge-cache-proxy | jq
 curl -s http://localhost:4321/api/mobile/about | jq
 curl -s http://localhost:4321/api/mobile/contact | jq
+curl -s http://localhost:4321/api/mobile/privacy | jq
 ```
 
 ## File Map
@@ -155,6 +168,7 @@ Implemented files:
 - `src/pages/api/mobile/work/[slug].ts`
 - `src/pages/api/mobile/about.ts`
 - `src/pages/api/mobile/contact.ts`
+- `src/pages/api/mobile/privacy.ts`
 
 ## Android Consumer Expectations
 
