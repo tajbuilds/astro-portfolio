@@ -8,6 +8,7 @@ tags:
   - R2
   - Xano
   - Security
+coverImage: "/diagrams/edge-cache-proxy-flow.svg"
 featured: true
 draft: false
 ---

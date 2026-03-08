@@ -8,6 +8,7 @@ tags:
   - Server-Side Filtering
   - Secure Proxy
   - Travel Tech
+coverImage: "/diagrams/meilisearch-search-flow-v2.svg"
 featured: true
 draft: false
 ---

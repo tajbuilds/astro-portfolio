@@ -68,7 +68,7 @@ export const toWorkSummary = (entry: WorkEntry) => ({
 	tags: entry.data.tags,
 	role: 'Solutions Architect',
 	timeline: String(entry.data.date.getUTCFullYear()),
-	coverImageUrl: '/images/tajinder-singh-portrait.jpg',
+	coverImageUrl: entry.data.coverImage || '/images/work-default-cover.svg',
 	publishedAt: isoDate(entry.data.date),
 	updatedAt: isoDate(entry.data.date),
 });

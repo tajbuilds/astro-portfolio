@@ -8,6 +8,7 @@ tags:
   - Docker
   - GHCR
   - CI/CD
+coverImage: "/images/work-ml-workbench.svg"
 featured: true
 draft: false
 ---

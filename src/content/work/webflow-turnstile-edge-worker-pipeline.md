@@ -8,6 +8,7 @@ tags:
   - Verification
   - Secure Routing
   - Observability
+coverImage: "/diagrams/turnstile-edge-worker-flow.svg"
 featured: true
 draft: false
 ---
