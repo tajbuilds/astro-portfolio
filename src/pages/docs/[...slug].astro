@@ -1,0 +1,111 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { marked } from "marked";
+
+export const prerender = false;
+
+const slugParam = Astro.params.slug || "";
+const parts = slugParam.split("/").filter(Boolean);
+
+if (parts.length < 2 || parts[0] !== "case-studies") {
+	return new Response("Not found", { status: 404 });
+}
+
+const caseSlug = parts[1];
+const sectionPath = parts.slice(2).join("/");
+const targetSlugPath = sectionPath ? `${caseSlug}/${sectionPath}` : caseSlug;
+
+const db = Astro.locals?.runtime?.env?.DB as D1Database | undefined;
+
+if (!db) {
+	return new Response("D1 binding 'DB' is missing on this environment.", { status: 500 });
+}
+
+type CaseStudyRow = {
+	id: string;
+	title: string;
+	slug: string;
+	summary: string | null;
+};
+
+type DocumentRow = {
+	id: string;
+	title: string;
+	slug_path: string;
+	parent_id: string | null;
+	nav_order: number;
+	depth: number;
+	is_root: number;
+	body_md: string;
+	excerpt: string | null;
+};
+
+const caseStudy = await db
+	.prepare(
+		`SELECT id, title, slug, summary
+		 FROM case_studies
+		 WHERE slug = ?1 AND is_visible = 1
+		 LIMIT 1`
+	)
+	.bind(caseSlug)
+	.first<CaseStudyRow>();
+
+if (!caseStudy) {
+	return new Response("Not found", { status: 404 });
+}
+
+const docsResult = await db
+	.prepare(
+		`SELECT id, title, slug_path, parent_id, nav_order, depth, is_root, body_md, excerpt
+		 FROM documents
+		 WHERE case_study_id = ?1 AND is_published = 1
+		 ORDER BY depth ASC, nav_order ASC, title ASC`
+	)
+	.bind(caseStudy.id)
+	.all<DocumentRow>();
+
+const docs = docsResult.results || [];
+const currentDoc = docs.find((doc) => doc.slug_path === targetSlugPath);
+
+if (!currentDoc) {
+	return new Response("Not found", { status: 404 });
+}
+
+const toLink = (slugPath: string) => {
+	if (slugPath === caseSlug) return `/docs/case-studies/${caseSlug}/`;
+	const rel = slugPath.slice(caseSlug.length + 1);
+	return `/docs/case-studies/${caseSlug}/${rel}/`;
+};
+
+const sectionLinks = docs
+	.filter((doc) => doc.slug_path !== caseSlug)
+	.map((doc) => ({
+		label: doc.title,
+		link: toLink(doc.slug_path),
+	}));
+
+const sidebar = [
+	{
+		label: "Case Studies",
+		items: [
+			{
+				label: caseStudy.title,
+				link: `/docs/case-studies/${caseSlug}/`,
+			},
+			...sectionLinks,
+		],
+	},
+];
+
+const bodyHtml = await marked.parse(currentDoc.body_md || "");
+
+const frontmatter = {
+	title: currentDoc.title,
+	description: currentDoc.excerpt || caseStudy.summary || "Case study documentation",
+	editUrl: false,
+};
+---
+
+<StarlightPage frontmatter={frontmatter} sidebar={sidebar}>
+	<Fragment set:html={bodyHtml} />
+</StarlightPage>

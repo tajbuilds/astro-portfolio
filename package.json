@@ -16,6 +16,7 @@
 		"@astrojs/sitemap": "^3.7.1",
 		"@astrojs/starlight": "^0.38.1",
 		"astro": "^6.0.4",
+		"marked": "^15.0.12",
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {

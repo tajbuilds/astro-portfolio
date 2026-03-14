@@ -2,7 +2,7 @@
 	"name": "astro-portfolio",
 	"compatibility_date": "2025-10-08",
 	"compatibility_flags": ["nodejs_compat"],
-	"main": "./dist/_worker.js/index.js",
+	"main": "./node_modules/@astrojs/cloudflare/dist/entrypoints/server.js",
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS"
@@ -16,6 +16,13 @@
 			"binding": "MEDIA_BUCKET",
 			"bucket_name": "portfolio",
 			"preview_bucket_name": "portfolio"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "portfolio_content_prod",
+			"database_id": "6f2bad45-f456-491f-9754-4873fa815e9e"
 		}
 	],
 	"vars": {
