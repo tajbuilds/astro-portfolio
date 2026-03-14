@@ -1,0 +1,103 @@
+:root[data-theme='light'] {
+	--sl-color-white: #121826;
+	--sl-color-gray-1: #121826;
+	--sl-color-gray-2: #263247;
+	--sl-color-gray-3: #4e5d78;
+	--sl-color-gray-4: #6f7f9d;
+	--sl-color-gray-5: #b7c4da;
+	--sl-color-gray-6: #d6deea;
+	--sl-color-gray-7: #eef3f9;
+	--sl-color-black: #ffffff;
+
+	--sl-color-accent-low: #dbeafe;
+	--sl-color-accent: #2563eb;
+	--sl-color-accent-high: #1d4ed8;
+
+	--sl-color-text: #263247;
+	--sl-color-text-accent: #1d4ed8;
+	--sl-color-bg: #ffffff;
+	--sl-color-bg-nav: #eef3f9;
+	--sl-color-bg-sidebar: #f7f9fc;
+	--sl-color-bg-inline-code: #eef3f9;
+	--sl-color-hairline: #d6deea;
+	--sl-color-hairline-light: #d6deea;
+	--sl-color-hairline-shade: #d6deea;
+	--sl-color-backdrop-overlay: rgba(17, 24, 39, 0.45);
+	--sl-font: "Atkinson";
+}
+
+:root[data-theme='dark'] {
+	--sl-color-white: #e8eefc;
+	--sl-color-gray-1: #e8eefc;
+	--sl-color-gray-2: #c8d6ef;
+	--sl-color-gray-3: #a9b8d5;
+	--sl-color-gray-4: #7f95bb;
+	--sl-color-gray-5: #2a3854;
+	--sl-color-gray-6: #172238;
+	--sl-color-black: #0b1220;
+
+	--sl-color-accent-low: #1e3a8a;
+	--sl-color-accent: #60a5fa;
+	--sl-color-accent-high: #93c5fd;
+
+	--sl-color-text: #c8d6ef;
+	--sl-color-text-accent: #93c5fd;
+	--sl-color-bg: #0b1220;
+	--sl-color-bg-nav: #121a2b;
+	--sl-color-bg-sidebar: #121a2b;
+	--sl-color-bg-inline-code: #172238;
+	--sl-color-hairline: #2a3854;
+	--sl-color-hairline-light: #2a3854;
+	--sl-color-hairline-shade: #172238;
+	--sl-color-backdrop-overlay: rgba(3, 6, 12, 0.6);
+	--sl-font: "Atkinson";
+}
+
+:root:not([data-theme='light']) {
+	--sl-font: "Atkinson";
+}
+
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme='dark']) {
+		--sl-color-white: #121826;
+		--sl-color-gray-1: #121826;
+		--sl-color-gray-2: #263247;
+		--sl-color-gray-3: #4e5d78;
+		--sl-color-gray-4: #6f7f9d;
+		--sl-color-gray-5: #b7c4da;
+		--sl-color-gray-6: #d6deea;
+		--sl-color-gray-7: #eef3f9;
+		--sl-color-black: #ffffff;
+		--sl-color-accent-low: #dbeafe;
+		--sl-color-accent: #2563eb;
+		--sl-color-accent-high: #1d4ed8;
+		--sl-color-text: #263247;
+		--sl-color-text-accent: #1d4ed8;
+		--sl-color-bg: #ffffff;
+		--sl-color-bg-nav: #eef3f9;
+		--sl-color-bg-sidebar: #f7f9fc;
+		--sl-color-bg-inline-code: #eef3f9;
+		--sl-color-hairline: #d6deea;
+		--sl-color-hairline-light: #d6deea;
+		--sl-color-hairline-shade: #d6deea;
+		--sl-color-backdrop-overlay: rgba(17, 24, 39, 0.45);
+	}
+}
+
+main[data-page-type='docs'] {
+	background:
+		radial-gradient(circle at 12% 10%, rgba(37, 99, 235, 0.11), transparent 36%),
+		radial-gradient(circle at 90% 14%, rgba(14, 165, 233, 0.09), transparent 35%);
+}
+
+.mermaid {
+	overflow-x: auto;
+	padding: 0.5rem 0;
+}
+
+.mermaid svg {
+	display: block;
+	height: auto;
+	margin: 0 auto;
+	max-width: 100%;
+}
