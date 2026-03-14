@@ -1,33 +1,28 @@
 ---
 import { render } from 'astro:content';
 import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
-import { contentSlug, type WorkEntry, getPublishedWorkEntries } from '../../lib/data/portfolio-data';
+import { contentSlug, getPublishedWorkEntries } from '../../lib/data/portfolio-data';
 
-export async function getStaticPaths() {
-	const sortedWork = await getPublishedWorkEntries();
+const slug = Astro.params.slug?.toLowerCase() ?? '';
+const sortedWork = await getPublishedWorkEntries();
+const index = sortedWork.findIndex((entry) => contentSlug(entry.id).toLowerCase() === slug);
+const post = index >= 0 ? sortedWork[index] : null;
 
-	return sortedWork.map((post, index) => ({
-		params: { slug: contentSlug(post.id) },
-		props: {
-			post,
-			previous: sortedWork[index - 1]
-				? { title: sortedWork[index - 1].data.title, slug: contentSlug(sortedWork[index - 1].id) }
-				: null,
-			next: sortedWork[index + 1]
-				? { title: sortedWork[index + 1].data.title, slug: contentSlug(sortedWork[index + 1].id) }
-				: null,
-		},
-	}));
+if (!post) {
+	return Astro.redirect('/work/', 302);
 }
 
-interface Props {
-	post: WorkEntry;
-	previous: { title: string; slug: string } | null;
-	next: { title: string; slug: string } | null;
-}
+const previous =
+	sortedWork[index - 1]
+		? { title: sortedWork[index - 1].data.title, slug: contentSlug(sortedWork[index - 1].id) }
+		: undefined;
 
-const { post, previous, next } = Astro.props;
-const { Content } = await render(post);
+const next =
+	sortedWork[index + 1]
+		? { title: sortedWork[index + 1].data.title, slug: contentSlug(sortedWork[index + 1].id) }
+		: undefined;
+
+const { Content, headings } = await render(post);
 const words = post.body.split(/\s+/).filter(Boolean).length;
 const readingTime = Math.max(1, Math.ceil(words / 220));
 ---
@@ -39,9 +34,10 @@ const readingTime = Math.max(1, Math.ceil(words / 220));
 	tags={post.data.tags}
 	github={post.data.github}
 	externalCaseStudyUrl={post.data.externalCaseStudyUrl}
+	headings={headings}
 	readingTime={readingTime}
-	previous={previous ?? undefined}
-	next={next ?? undefined}
+	previous={previous}
+	next={next}
 >
 	<Content />
 </WorkCaseStudy>

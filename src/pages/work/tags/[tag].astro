@@ -7,22 +7,19 @@ import PillTag from '../../../components/PillTag.astro';
 import {
 	contentSlug,
 	getPublishedWorkEntries,
-	getPublishedWorkTags,
 	slugifyTag,
 } from '../../../lib/data/portfolio-data';
 
 const allWork = await getPublishedWorkEntries();
+const tagSlug = Astro.params.tag ?? '';
+const tag = allWork
+	.flatMap((item) => item.data.tags)
+	.find((entry) => slugifyTag(entry) === tagSlug);
 
-export async function getStaticPaths() {
-	const tags = await getPublishedWorkTags();
-	return tags.map((tag) => ({
-		params: { tag: slugifyTag(tag) },
-		props: { tag },
-	}));
+if (!tag) {
+	return Astro.redirect('/work/', 302);
 }
 
-const { tag } = Astro.props;
-const tagSlug = slugifyTag(String(tag));
 const filtered = allWork.filter((item) =>
 	item.data.tags.some((entry) => slugifyTag(entry) === tagSlug),
 );
@@ -78,4 +75,3 @@ const filtered = allWork.filter((item) =>
 		}
 	}
 </style>
-

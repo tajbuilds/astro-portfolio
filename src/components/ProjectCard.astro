@@ -14,25 +14,31 @@ interface Props {
 const { title, description, tags, href, date, compact = false } = Astro.props;
 ---
 
-<article class:list={['project-card', { 'project-card--compact': compact }]}>
-	<div class="project-card__meta">
-		{date && (
-			<p class="project-card__date">
-				<FormattedDate date={date} />
-			</p>
-		)}
-	</div>
-	<h3>
-		<a href={href}>{title}</a>
-	</h3>
-	<p>{description}</p>
-	<div class="project-card__tags">
-		{tags.map((tag) => <PillTag label={tag} />)}
-	</div>
-	<a class="project-card__cta" href={href}>Read case study ?</a>
-</article>
+<a class="project-card-link" href={href} aria-label={`Open case study: ${title}`}>
+	<article class:list={['project-card', { 'project-card--compact': compact }]}>
+		<div class="project-card__meta">
+			{date && (
+				<p class="project-card__date">
+					<FormattedDate date={date} />
+				</p>
+			)}
+		</div>
+		<h3>{title}</h3>
+		<p>{description}</p>
+		<div class="project-card__tags">
+			{tags.map((tag) => <PillTag label={tag} />)}
+		</div>
+		<span class="project-card__cta">Read case study -></span>
+	</article>
+</a>
 
 <style>
+	.project-card-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
 	.project-card {
 		display: grid;
 		gap: 0.85rem;
@@ -55,11 +61,6 @@ const { title, description, tags, href, date, compact = false } = Astro.props;
 	.project-card h3 {
 		margin: 0;
 		font-size: 1.2rem;
-	}
-
-	.project-card h3 a {
-		text-decoration: none;
-		color: var(--color-text);
 	}
 
 	.project-card p {
@@ -86,11 +87,11 @@ const { title, description, tags, href, date, compact = false } = Astro.props;
 	.project-card__cta {
 		font-size: 0.9rem;
 		font-weight: 700;
-		text-decoration: none;
 		color: var(--color-accent);
 	}
 
-	.project-card__cta:hover {
+	.project-card-link:hover .project-card__cta,
+	.project-card-link:focus-visible .project-card__cta {
 		color: var(--color-accent-strong);
 	}
 
