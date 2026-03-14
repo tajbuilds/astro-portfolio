@@ -41,26 +41,33 @@ export const contactData = {
 export const privacyData = {
 	lastUpdated: '14 March 2026',
 	introduction: [
-		'This Privacy Policy explains how the Taj Builds mobile application and the tajs.io website handle information.',
-		'The website and mobile application are operated by Tajinder Singh as a personal portfolio to showcase software architecture, engineering projects, and technical case studies.',
-		'We respect your privacy and are committed to protecting any information you may provide while using our services.',
+		'This Privacy Policy explains how tajs.io handles personal data for the website and contact workflows.',
+		'Tajs.io is operated by Tajinder Singh as a personal portfolio showcasing architecture, engineering projects, and technical case studies.',
+		'The policy is designed to align with UK GDPR and the Privacy and Electronic Communications Regulations (PECR), including consent requirements for non-essential analytics technologies.',
 	],
 	sections: [
+		{
+			title: 'Who Controls Your Data',
+			paragraphs: [
+				'Data controller: Tajinder Singh (tajs.io).',
+				'If you have a privacy request, contact details are listed at the bottom of this page.',
+			],
+		},
 		{
 			title: 'Information We Collect',
 			items: [
 				{
-					heading: 'Personal Information',
+					heading: 'Information you provide directly',
 					paragraphs: [
-						'The website and mobile application do not require user accounts and do not collect personal information directly from users for browsing.',
-						'You can browse the portfolio, case studies, and technical content without providing personal data.',
+						'Browsing does not require an account.',
+						'If you submit the contact form, the submitted details (such as name, email address, and message content) are processed to respond to your enquiry.',
 					],
 				},
 				{
-					heading: 'Automatically Collected Information',
+					heading: 'Technical and operational data',
 					paragraphs: [
-						'When accessing the website or app, certain technical information may be collected automatically by the hosting infrastructure to ensure the service operates correctly.',
-						'This information is used only for operational, security, and performance purposes.',
+						'When you visit the site, hosting and security services process technical request data so the service can operate safely and reliably.',
+						'This data is used for service delivery, abuse prevention, debugging, and performance monitoring.',
 					],
 					bullets: [
 						'IP address',
@@ -73,54 +80,83 @@ export const privacyData = {
 			],
 		},
 		{
-			title: 'Third-Party Services',
+			title: 'Legal Bases for Processing (UK GDPR)',
 			paragraphs: [
-				'The portfolio uses trusted third-party services to operate the website and infrastructure. These services may process limited technical information required for functionality.',
-				'Each third-party service operates under its own privacy policy.',
+				'Contractual necessity: to respond to contact requests you submit.',
+				'Legitimate interests: to secure, operate, and improve website reliability and performance.',
+				'Consent: for non-essential analytics, which are enabled only after an explicit Accept action.',
+			],
+		},
+		{
+			title: 'Third-Party Processors and Services',
+			paragraphs: [
+				'Trusted infrastructure and software providers are used to operate the website and contact workflows.',
+				'These providers may process limited data on behalf of tajs.io to deliver hosting, security, anti-abuse, email delivery, and analytics functionality.',
 			],
 			bullets: [
-				'Cloudflare - content delivery, caching, and security',
-				'GitHub - source code hosting',
-				'Resend or email delivery services - contact form processing',
-				'Cloudflare Turnstile - spam and bot protection',
-				'Matomo (self-hosted at stats.tajs.io) - privacy-focused website analytics',
+				'Cloudflare: hosting, caching, security, and bot mitigation',
+				'Cloudflare Turnstile: anti-spam and bot checks for forms',
+				'Resend (or configured email provider): contact form email delivery',
+				'GitHub: source code and deployment workflows',
+				'Matomo (self-hosted at stats.tajs.io): website analytics after consent',
 			],
 		},
 		{
 			title: 'Cookies and Tracking',
 			paragraphs: [
-				'The website uses an explicit consent model for analytics. Matomo tracking is loaded only after you click Accept in the analytics banner.',
-				'If you click Reject, analytics tracking is not loaded. You can change this choice anytime via Analytics settings in the site footer.',
-				'The website may still use minimal technically required cookies for security and functionality, such as bot protection.',
-				'No advertising cookies or behavioural profiling technologies are used.',
+				'Non-essential analytics tracking is disabled by default. Matomo is loaded only if you provide an unambiguous opt-in by clicking Accept on the analytics banner.',
+				'If you click Reject, analytics tracking is not loaded.',
+				'You can revisit or change this choice using Analytics settings in the site footer.',
+				'Technically necessary storage or cookies may still be used for core security and service operation (for example anti-abuse protection).',
+				'No advertising cookies, cross-site ad identifiers, or behavioural advertising profiling are used.',
 			],
 		},
 		{
-			title: 'Data Storage',
+			title: 'Data Retention',
 			paragraphs: [
-				'The portfolio site and mobile application do not maintain a user account database.',
-				'Technical logs generated by hosting providers may be retained for security, troubleshooting, and operational monitoring.',
+				'Contact form messages are kept only as long as reasonably necessary to handle enquiries and related follow-up.',
+				'Operational and security logs are retained for limited periods appropriate for security, incident response, and platform reliability.',
+				'Analytics data retention is controlled in Matomo settings and reviewed periodically.',
+			],
+		},
+		{
+			title: 'International Data Transfers',
+			paragraphs: [
+				'Some service providers may process data in countries outside the UK.',
+				'Where transfers occur, appropriate safeguards are used under applicable data protection law (for example contractual protections and provider security controls).',
+			],
+		},
+		{
+			title: 'Your Rights',
+			paragraphs: [
+				'Under UK GDPR, you may have rights including access, rectification, erasure, restriction, objection, and data portability (where applicable).',
+				'To exercise your rights, contact the email address listed below. Requests are handled in line with applicable legal timelines.',
+			],
+		},
+		{
+			title: 'Complaints',
+			paragraphs: [
+				'If you are not satisfied with how your data is handled, you can raise a concern with the UK Information Commissioner’s Office (ICO): https://ico.org.uk/make-a-complaint/.',
 			],
 		},
 		{
 			title: "Children's Privacy",
 			paragraphs: [
-				'The website and mobile application are not directed at children under the age of 13.',
-				'No personal information is knowingly collected from children.',
+				'This website is not directed at children under 13, and personal data is not knowingly collected from children.',
 			],
 		},
 		{
 			title: 'Security',
 			paragraphs: [
-				'Reasonable technical and organisational measures are implemented to protect the website and infrastructure from unauthorised access or misuse.',
-				'However, no system can guarantee absolute security.',
+				'Appropriate technical and organisational measures are used to reduce risks such as unauthorised access, misuse, and service abuse.',
+				'No internet service can be guaranteed to be fully secure.',
 			],
 		},
 		{
 			title: 'Changes to This Policy',
 			paragraphs: [
-				'This Privacy Policy may be updated periodically to reflect changes in services or legal requirements.',
-				'Updates will be posted on this page with an updated revision date.',
+				'This policy may be updated to reflect legal, technical, or service changes.',
+				'The Last updated date is revised when material updates are made.',
 			],
 		},
 	],
