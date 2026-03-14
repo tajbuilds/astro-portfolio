@@ -1,11 +1,14 @@
 import { defineConfig } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 const site = process.env.SITE_URL || process.env.PUBLIC_SITE_URL || "https://tajs.io";
 
 export default defineConfig({
-		site,
-		integrations: [
+	site,
+	output: "server",
+	adapter: cloudflare(),
+	integrations: [
 		starlight({
 			title: "Case Studies",
 			description: "Long-form architecture case studies.",
