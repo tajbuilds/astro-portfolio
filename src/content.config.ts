@@ -1,12 +1,6 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
-import { docsSchema } from "@astrojs/starlight/schema";
 import { z } from "zod";
-
-const docs = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/docs" }),
-	schema: docsSchema(),
-});
 
 const work = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/work" }),
@@ -23,4 +17,4 @@ const work = defineCollection({
 	}),
 });
 
-export const collections = { docs, work };
+export const collections = { work };
