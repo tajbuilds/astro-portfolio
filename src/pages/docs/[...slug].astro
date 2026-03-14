@@ -45,7 +45,7 @@ const caseStudy = await db
 	.prepare(
 		`SELECT id, title, slug, summary
 		 FROM case_studies
-		 WHERE slug = ?1 AND is_visible = 1
+		 WHERE slug = ?1
 		 LIMIT 1`
 	)
 	.bind(caseSlug)
@@ -59,7 +59,7 @@ const docsResult = await db
 	.prepare(
 		`SELECT id, title, slug_path, parent_id, nav_order, depth, is_root, body_md, excerpt
 		 FROM documents
-		 WHERE case_study_id = ?1 AND is_published = 1
+		 WHERE case_study_id = ?1
 		 ORDER BY depth ASC, nav_order ASC, title ASC`
 	)
 	.bind(caseStudy.id)
