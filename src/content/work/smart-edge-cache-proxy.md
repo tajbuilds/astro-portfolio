@@ -11,7 +11,7 @@ tags:
 coverImage: "/diagrams/edge-cache-proxy-flow.svg"
 featured: true
 draft: false
-externalCaseStudyUrl: "/docs/case-studies/overview-problem/"
+externalCaseStudyUrl: "/docs/case-studies/smart-edge-cache-proxy/"
 ---
 
 ## TL;DR
