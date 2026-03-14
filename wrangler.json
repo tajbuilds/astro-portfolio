@@ -24,6 +24,8 @@
 		"CONTACT_SUBJECT_PREFIX": "[tajs.io] Contact Form",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAACj5smKRjyW5M3sV",
 		"MATOMO_URL": "https://stats.tajs.io",
-		"MATOMO_SITE_ID": "1"
+		"MATOMO_SITE_ID": "1",
+		"PUBLIC_MATOMO_URL": "https://stats.tajs.io",
+		"PUBLIC_MATOMO_SITE_ID": "1"
 	}
 }

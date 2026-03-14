@@ -16,11 +16,10 @@ interface Props {
 const { title, description, image, width = 'narrow', mainClass } = Astro.props;
 const pathname = Astro.url.pathname;
 const showQuickContact = !pathname.startsWith('/contact');
-const runtimeEnv = Astro.locals.runtime?.env;
 const matomoUrl =
-	(runtimeEnv?.MATOMO_URL ?? import.meta.env.PUBLIC_MATOMO_URL ?? '').trim();
+	(import.meta.env.PUBLIC_MATOMO_URL ?? 'https://stats.tajs.io').trim();
 const matomoSiteId =
-	(runtimeEnv?.MATOMO_SITE_ID ?? import.meta.env.PUBLIC_MATOMO_SITE_ID ?? '').trim();
+	(import.meta.env.PUBLIC_MATOMO_SITE_ID ?? '1').trim();
 ---
 
 <!doctype html>
