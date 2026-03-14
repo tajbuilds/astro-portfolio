@@ -58,9 +58,22 @@ const today = new Date();
 			</div>
 			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
 			<a class="privacy-link" href="/privacy">Privacy</a>
+			<button id="analytics-settings-trigger" type="button" class="privacy-link analytics-settings-button">
+				Analytics settings
+			</button>
 		</div>
 	</div>
 </footer>
+
+<script is:inline>
+	(() => {
+		const trigger = document.getElementById('analytics-settings-trigger');
+		if (!(trigger instanceof HTMLButtonElement)) return;
+		trigger.addEventListener('click', () => {
+			window.dispatchEvent(new Event('analytics:open-settings'));
+		});
+	})();
+</script>
 
 <style>
 	footer {
@@ -98,11 +111,20 @@ const today = new Date();
 	}
 
 	.privacy-link {
+		font-family: inherit;
 		font-size: 0.88rem;
 		color: var(--color-text-muted);
 		text-decoration: none;
 		border-bottom: 1px solid transparent;
 		transition: color 120ms ease, border-color 120ms ease;
+	}
+
+	.analytics-settings-button {
+		appearance: none;
+		background: transparent;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
 	}
 
 	.privacy-link:hover {
@@ -143,5 +165,4 @@ const today = new Date();
 		height: 1.1rem;
 	}
 </style>
-
 

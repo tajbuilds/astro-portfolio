@@ -39,7 +39,7 @@ export const contactData = {
 } as const;
 
 export const privacyData = {
-	lastUpdated: '8 March 2026',
+	lastUpdated: '14 March 2026',
 	introduction: [
 		'This Privacy Policy explains how the Taj Builds mobile application and the tajs.io website handle information.',
 		'The website and mobile application are operated by Tajinder Singh as a personal portfolio to showcase software architecture, engineering projects, and technical case studies.',
@@ -83,13 +83,16 @@ export const privacyData = {
 				'GitHub - source code hosting',
 				'Resend or email delivery services - contact form processing',
 				'Cloudflare Turnstile - spam and bot protection',
+				'Matomo (self-hosted at stats.tajs.io) - privacy-focused website analytics',
 			],
 		},
 		{
 			title: 'Cookies and Tracking',
 			paragraphs: [
-				'The website may use minimal cookies required for security and functionality, such as bot protection or performance optimisation.',
-				'No advertising cookies or behavioural tracking technologies are used.',
+				'The website uses an explicit consent model for analytics. Matomo tracking is loaded only after you click Accept in the analytics banner.',
+				'If you click Reject, analytics tracking is not loaded. You can change this choice anytime via Analytics settings in the site footer.',
+				'The website may still use minimal technically required cookies for security and functionality, such as bot protection.',
+				'No advertising cookies or behavioural profiling technologies are used.',
 			],
 		},
 		{

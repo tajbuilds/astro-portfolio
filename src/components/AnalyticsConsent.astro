@@ -48,6 +48,13 @@ const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
 						banner.removeAttribute('hidden');
 					};
 
+					const openSettings = () => {
+						localStorage.removeItem(storageKey);
+						showBanner();
+						const acceptBtn = banner.querySelector('button[data-consent="accept"]');
+						if (acceptBtn instanceof HTMLButtonElement) acceptBtn.focus();
+					};
+
 					const loadMatomo = () => {
 						if (loaded) return;
 						loaded = true;
@@ -91,6 +98,8 @@ const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
 							if (value === 'reject') setDecision(rejected);
 						});
 					});
+
+					window.addEventListener('analytics:open-settings', openSettings);
 				})();
 			</script>
 		</>
