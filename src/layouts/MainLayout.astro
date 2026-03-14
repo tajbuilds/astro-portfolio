@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuickContact from '../components/QuickContact.astro';
+import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 
 interface Props {
 	title: string;
@@ -15,6 +16,11 @@ interface Props {
 const { title, description, image, width = 'narrow', mainClass } = Astro.props;
 const pathname = Astro.url.pathname;
 const showQuickContact = !pathname.startsWith('/contact');
+const runtimeEnv = Astro.locals.runtime?.env;
+const matomoUrl =
+	(runtimeEnv?.MATOMO_URL ?? import.meta.env.PUBLIC_MATOMO_URL ?? '').trim();
+const matomoSiteId =
+	(runtimeEnv?.MATOMO_SITE_ID ?? import.meta.env.PUBLIC_MATOMO_SITE_ID ?? '').trim();
 ---
 
 <!doctype html>
@@ -41,6 +47,7 @@ const showQuickContact = !pathname.startsWith('/contact');
 		</main>
 		<Footer />
 		{showQuickContact && <QuickContact />}
+		<AnalyticsConsent matomoUrl={matomoUrl} matomoSiteId={matomoSiteId} />
 		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
 
 		<script is:inline>

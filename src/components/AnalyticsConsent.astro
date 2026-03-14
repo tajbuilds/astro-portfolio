@@ -1,0 +1,167 @@
+---
+interface Props {
+	matomoUrl: string;
+	matomoSiteId: string;
+}
+
+const { matomoUrl, matomoSiteId } = Astro.props;
+const normalizedUrl = matomoUrl.trim().replace(/\/+$/, '');
+const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
+---
+
+{
+	enabled && (
+		<>
+			<section
+				id="analytics-consent"
+				class="analytics-consent"
+				role="dialog"
+				aria-live="polite"
+				aria-label="Analytics consent"
+				hidden
+			>
+				<p class="analytics-consent__title">Analytics preference</p>
+				<p class="analytics-consent__copy">
+					This site uses privacy-friendly analytics to understand usage patterns. You can accept or
+					reject tracking.
+				</p>
+				<div class="analytics-consent__actions">
+					<button type="button" data-consent="accept">Accept</button>
+					<button type="button" data-consent="reject">Reject</button>
+				</div>
+			</section>
+
+			<script is:inline define:vars={{ normalizedUrl, matomoSiteId }}>
+				(() => {
+					const storageKey = 'analytics-consent-v1';
+					const accepted = 'accepted';
+					const rejected = 'rejected';
+					const banner = document.getElementById('analytics-consent');
+					if (!(banner instanceof HTMLElement)) return;
+
+					let loaded = false;
+
+					const hideBanner = () => {
+						banner.setAttribute('hidden', 'hidden');
+					};
+
+					const showBanner = () => {
+						banner.removeAttribute('hidden');
+					};
+
+					const loadMatomo = () => {
+						if (loaded) return;
+						loaded = true;
+
+						const trackerUrl = `${normalizedUrl}/matomo.php`;
+						const scriptUrl = `${normalizedUrl}/matomo.js`;
+						window._paq = window._paq || [];
+						window._paq.push(['trackPageView']);
+						window._paq.push(['enableLinkTracking']);
+						window._paq.push(['setTrackerUrl', trackerUrl]);
+						window._paq.push(['setSiteId', matomoSiteId]);
+
+						const script = document.createElement('script');
+						script.async = true;
+						script.src = scriptUrl;
+						document.head.appendChild(script);
+					};
+
+					const setDecision = (value) => {
+						localStorage.setItem(storageKey, value);
+						if (value === accepted) {
+							loadMatomo();
+						}
+						hideBanner();
+					};
+
+					const decision = localStorage.getItem(storageKey);
+					if (decision === accepted) {
+						loadMatomo();
+						hideBanner();
+					} else if (decision === rejected) {
+						hideBanner();
+					} else {
+						showBanner();
+					}
+
+					banner.querySelectorAll('button[data-consent]').forEach((button) => {
+						button.addEventListener('click', () => {
+							const value = button.getAttribute('data-consent');
+							if (value === 'accept') setDecision(accepted);
+							if (value === 'reject') setDecision(rejected);
+						});
+					});
+				})();
+			</script>
+		</>
+	)
+}
+
+<style>
+	.analytics-consent {
+		position: fixed;
+		right: 1rem;
+		bottom: 1rem;
+		z-index: 120;
+		width: min(26rem, calc(100vw - 2rem));
+		padding: 0.95rem 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
+		box-shadow: var(--shadow-md);
+		backdrop-filter: blur(6px);
+	}
+
+	.analytics-consent__title {
+		margin: 0 0 0.35rem;
+		font-size: 0.9rem;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	.analytics-consent__copy {
+		margin: 0;
+		font-size: 0.84rem;
+		line-height: 1.45;
+		color: var(--color-text-muted);
+	}
+
+	.analytics-consent__actions {
+		margin-top: 0.8rem;
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.analytics-consent__actions button {
+		appearance: none;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+		color: var(--color-text);
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 700;
+		padding: 0.38rem 0.72rem;
+		cursor: pointer;
+		transition: transform 120ms ease, border-color 120ms ease, background-color 120ms ease;
+	}
+
+	.analytics-consent__actions button:hover {
+		transform: translateY(-1px);
+		border-color: var(--color-accent);
+	}
+
+	.analytics-consent__actions button[data-consent='accept'] {
+		background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg-elevated));
+		border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+	}
+
+	@media (max-width: 560px) {
+		.analytics-consent {
+			left: 1rem;
+			right: 1rem;
+			width: auto;
+		}
+	}
+</style>
