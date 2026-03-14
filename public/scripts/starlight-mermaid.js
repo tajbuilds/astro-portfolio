@@ -43,24 +43,38 @@ function cssVar(name, fallback) {
 }
 
 function currentThemeConfig() {
+	const explicitTheme = document.documentElement.dataset.theme;
+	const isDark = explicitTheme
+		? explicitTheme === "dark"
+		: window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 	return {
 		startOnLoad: false,
 		securityLevel: "loose",
 		theme: "base",
+		darkMode: isDark,
 		themeVariables: {
-			background: cssVar("--color-bg-elevated", "#ffffff"),
-			primaryColor: cssVar("--color-bg-elevated", "#ffffff"),
-			primaryTextColor: cssVar("--color-text", "#111827"),
+			background: "transparent",
+			primaryColor: isDark
+				? cssVar("--color-surface", "#172238")
+				: cssVar("--color-bg-elevated", "#ffffff"),
+			primaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
 			primaryBorderColor: cssVar("--color-border", "#d1d5db"),
-			secondaryColor: cssVar("--color-surface", "#f3f4f6"),
-			secondaryTextColor: cssVar("--color-text", "#111827"),
+			secondaryColor: isDark
+				? cssVar("--color-bg-elevated", "#121a2b")
+				: cssVar("--color-surface", "#f3f4f6"),
+			secondaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
 			secondaryBorderColor: cssVar("--color-border", "#d1d5db"),
-			lineColor: cssVar("--color-border", "#9ca3af"),
-			textColor: cssVar("--color-text", "#111827"),
-			tertiaryColor: cssVar("--color-bg", "#f8fafc"),
-			tertiaryTextColor: cssVar("--color-text", "#111827"),
+			lineColor: isDark
+				? cssVar("--color-accent", "#60a5fa")
+				: cssVar("--color-border", "#9ca3af"),
+			textColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
+			tertiaryColor: cssVar("--color-bg", isDark ? "#0b1220" : "#f8fafc"),
+			tertiaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
 			tertiaryBorderColor: cssVar("--color-border", "#d1d5db"),
-			clusterBkg: cssVar("--color-bg-elevated", "#ffffff"),
+			clusterBkg: isDark
+				? cssVar("--color-bg-elevated", "#121a2b")
+				: cssVar("--color-bg-elevated", "#ffffff"),
 			clusterBorder: cssVar("--color-border", "#d1d5db"),
 		},
 	};

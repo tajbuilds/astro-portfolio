@@ -300,7 +300,47 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 		padding: 0.65rem;
 		border: 1px solid var(--color-border);
 		border-radius: 0.75rem;
-		background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+		background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+	}
+
+	.docs-prose :global(.mermaid svg) {
+		max-width: 100%;
+		height: auto;
+		background: transparent !important;
+	}
+
+	.docs-prose :global(.mermaid .node rect),
+	.docs-prose :global(.mermaid .node circle),
+	.docs-prose :global(.mermaid .node ellipse),
+	.docs-prose :global(.mermaid .node polygon),
+	.docs-prose :global(.mermaid .node path) {
+		fill: color-mix(in srgb, var(--color-bg-elevated) 90%, var(--color-accent) 10%) !important;
+		stroke: var(--color-border) !important;
+	}
+
+	.docs-prose :global(.mermaid .cluster rect) {
+		fill: color-mix(in srgb, var(--color-surface) 80%, transparent) !important;
+		stroke: var(--color-border) !important;
+	}
+
+	.docs-prose :global(.mermaid .edgePath .path),
+	.docs-prose :global(.mermaid .flowchart-link),
+	.docs-prose :global(.mermaid .messageLine0),
+	.docs-prose :global(.mermaid .messageLine1) {
+		stroke: color-mix(in srgb, var(--color-accent) 55%, var(--color-border) 45%) !important;
+	}
+
+	.docs-prose :global(.mermaid text),
+	.docs-prose :global(.mermaid .nodeLabel),
+	.docs-prose :global(.mermaid .label),
+	.docs-prose :global(.mermaid span) {
+		fill: var(--color-text) !important;
+		color: var(--color-text) !important;
+	}
+
+	.docs-prose :global(.mermaid .edgeLabel),
+	.docs-prose :global(.mermaid .labelBox) {
+		background: color-mix(in srgb, var(--color-bg-elevated) 95%, transparent) !important;
 	}
 	@media (max-width: 900px) {
 		.docs-shell {
