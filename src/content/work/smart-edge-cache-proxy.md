@@ -11,6 +11,7 @@ tags:
 coverImage: "/diagrams/edge-cache-proxy-flow.svg"
 featured: true
 draft: false
+externalCaseStudyUrl: "https://wiki.tajs.io/s/2933d895-5b90-4f87-9d2a-3fa30cd2ad11"
 ---
 
 ## TL;DR
@@ -93,6 +94,5 @@ All API traffic is routed through a Cloudflare Worker in front of `protected-api
 - Add automated cleanup for superseded R2 objects after purge-version rotations.
 - Add pre-publish KV policy validation to reduce misconfiguration risk.
 - Expand cache observability with endpoint-level trend views and anomaly alerts.
-
 
 

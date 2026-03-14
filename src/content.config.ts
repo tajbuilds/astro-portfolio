@@ -12,6 +12,7 @@ const work = defineCollection({
 		featured: z.boolean().default(false),
 		draft: z.boolean().optional(),
 		github: z.string().url().optional(),
+		externalCaseStudyUrl: z.string().url().optional(),
 	}),
 });
 
