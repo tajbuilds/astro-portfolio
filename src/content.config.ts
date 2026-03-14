@@ -1,8 +1,15 @@
 import { defineCollection } from "astro:content";
-import { z } from "astro/zod";
+import { glob } from "astro/loaders";
+import { docsSchema } from "@astrojs/starlight/schema";
+import { z } from "zod";
+
+const docs = defineCollection({
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/docs" }),
+	schema: docsSchema(),
+});
 
 const work = defineCollection({
-	type: "content",
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/work" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
@@ -12,8 +19,8 @@ const work = defineCollection({
 		featured: z.boolean().default(false),
 		draft: z.boolean().optional(),
 		github: z.string().url().optional(),
-		externalCaseStudyUrl: z.string().url().optional(),
+		externalCaseStudyUrl: z.string().min(1).optional(),
 	}),
 });
 
-export const collections = { work };
+export const collections = { docs, work };

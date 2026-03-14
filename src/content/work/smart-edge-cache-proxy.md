@@ -1,7 +1,7 @@
-﻿---
+---
 title: "Smart Edge Cache Proxy: Deterministic Caching, Tiering & Safer Purge"
 description: "Impact: Lower origin pressure, predictable caching behavior, and safer purge operations with deterministic invalidation."
-date: 2025-09-06
+date: "2025-09-06T00:00:00.000Z"
 tags:
   - Cloudflare Workers
   - Edge Caching
@@ -11,7 +11,7 @@ tags:
 coverImage: "/diagrams/edge-cache-proxy-flow.svg"
 featured: true
 draft: false
-externalCaseStudyUrl: "https://wiki.tajs.io/s/2933d895-5b90-4f87-9d2a-3fa30cd2ad11"
+externalCaseStudyUrl: "/docs/case-studies/smart-edge-cache-proxy/"
 ---
 
 ## TL;DR
@@ -94,5 +94,4 @@ All API traffic is routed through a Cloudflare Worker in front of `protected-api
 - Add automated cleanup for superseded R2 objects after purge-version rotations.
 - Add pre-publish KV policy validation to reduce misconfiguration risk.
 - Expand cache observability with endpoint-level trend views and anomaly alerts.
-
 

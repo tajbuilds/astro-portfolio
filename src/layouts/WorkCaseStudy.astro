@@ -1,4 +1,4 @@
-﻿---
+---
 import MainLayout from './MainLayout.astro';
 import PillTag from '../components/PillTag.astro';
 import FormattedDate from '../components/FormattedDate.astro';
@@ -8,6 +8,12 @@ interface AdjacentLink {
 	slug: string;
 }
 
+interface WorkHeading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
 interface Props {
 	title: string;
 	description: string;
@@ -15,12 +21,15 @@ interface Props {
 	tags: string[];
 	github?: string;
 	externalCaseStudyUrl?: string;
+	headings?: WorkHeading[];
 	readingTime?: number;
 	previous?: AdjacentLink;
 	next?: AdjacentLink;
 }
 
-const { title, description, date, tags, github, externalCaseStudyUrl, readingTime, previous, next } = Astro.props;
+const { title, description, date, tags, github, externalCaseStudyUrl, headings = [], readingTime, previous, next } = Astro.props;
+const isExternalCaseStudyLink = Boolean(externalCaseStudyUrl && /^https?:\/\//i.test(externalCaseStudyUrl));
+const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 ---
 
 <MainLayout title={`${title} | Work`} description={description} width="full">
@@ -41,25 +50,48 @@ const { title, description, date, tags, github, externalCaseStudyUrl, readingTim
 				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${tag.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`} />)}
 			</div>
 		</header>
-		<div class="work-prose">
-			<slot />
+		<div class="work-body">
+			{tocItems.length > 0 && (
+				<aside class="work-toc" aria-label="On this page">
+					<p class="work-toc__label">On this page</p>
+					<nav>
+						<ul>
+							{tocItems.map((item) => (
+								<li class:list={{ 'is-sub': item.depth === 3 }}>
+									<a href={`#${item.slug}`} data-toc-link>{item.text}</a>
+								</li>
+							))}
+						</ul>
+					</nav>
+				</aside>
+			)}
+
+			<div class="work-content">
+				<div class="work-prose">
+					<slot />
+				</div>
+				{externalCaseStudyUrl && (
+					<section class="work-full-case-study" aria-label="Full case study link">
+						<p class="work-full-case-study__eyebrow">Want the full implementation detail?</p>
+						<p class="work-full-case-study__copy">
+							Read the complete case study with deeper architecture decisions, section-by-section
+							breakdown, and implementation reasoning.
+						</p>
+						<a
+							href={externalCaseStudyUrl}
+							target={isExternalCaseStudyLink ? "_blank" : undefined}
+							rel={isExternalCaseStudyLink ? "noreferrer noopener" : undefined}
+						>
+							Read Full Case Study
+						</a>
+					</section>
+				)}
+				<nav class="work-nav" aria-label="Case study navigation">
+					{previous ? <a href={`/work/${previous.slug}/`}>&larr; {previous.title}</a> : <span />}
+					{next ? <a href={`/work/${next.slug}/`}>{next.title} &rarr;</a> : <span />}
+				</nav>
+			</div>
 		</div>
-		{externalCaseStudyUrl && (
-			<section class="work-full-case-study" aria-label="Full case study link">
-				<p class="work-full-case-study__eyebrow">Want the full implementation detail?</p>
-				<p class="work-full-case-study__copy">
-					Read the complete case study with deeper architecture decisions, section-by-section breakdown,
-					and implementation reasoning.
-				</p>
-				<a href={externalCaseStudyUrl} target="_blank" rel="noreferrer noopener">
-					Read Full Case Study
-				</a>
-			</section>
-		)}
-		<nav class="work-nav" aria-label="Case study navigation">
-			{previous ? <a href={`/work/${previous.slug}/`}>&larr; {previous.title}</a> : <span />}
-			{next ? <a href={`/work/${next.slug}/`}>{next.title} &rarr;</a> : <span />}
-		</nav>
 	</article>
 
 	<dialog id="diagram-lightbox" class="diagram-lightbox" aria-label="Expanded diagram view">
@@ -208,6 +240,43 @@ const { title, description, date, tags, github, externalCaseStudyUrl, readingTim
 	})();
 </script>
 
+<script is:inline>
+	(() => {
+		const links = Array.from(document.querySelectorAll('.work-toc a[data-toc-link]'));
+		if (links.length === 0) return;
+
+		const targets = links
+			.map((link) => {
+				const hash = link.getAttribute('href')?.replace('#', '');
+				if (!hash) return null;
+				const section = document.getElementById(hash);
+				return section ? { link, section } : null;
+			})
+			.filter(Boolean);
+
+		if (targets.length === 0) return;
+
+		const activate = (id) => {
+			targets.forEach(({ link }) => link.removeAttribute('aria-current'));
+			const active = targets.find(({ section }) => section.id === id);
+			if (active) active.link.setAttribute('aria-current', 'true');
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+				if (visible[0]) activate(visible[0].target.id);
+			},
+			{ rootMargin: '-20% 0px -70% 0px', threshold: [0, 1] },
+		);
+
+		targets.forEach(({ section }) => observer.observe(section));
+		activate(targets[0].section.id);
+	})();
+</script>
+
 <style>
 	.work-article {
 		max-width: min(62rem, 100%);
@@ -269,10 +338,76 @@ const { title, description, date, tags, github, externalCaseStudyUrl, readingTim
 		gap: 0.45rem;
 	}
 
+	.work-body {
+		display: grid;
+		grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+		gap: clamp(1rem, 2.2vw, 2rem);
+		align-items: start;
+	}
+
+	.work-content {
+		display: grid;
+		gap: 1.2rem;
+		min-width: 0;
+	}
+
+	.work-toc {
+		position: sticky;
+		top: 5.2rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+		padding: 0.9rem;
+		max-height: calc(100vh - 7rem);
+		overflow: auto;
+	}
+
+	.work-toc__label {
+		margin: 0 0 0.5rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.work-toc ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.25rem;
+	}
+
+	.work-toc li.is-sub {
+		padding-left: 0.6rem;
+	}
+
+	.work-toc a {
+		display: block;
+		padding: 0.33rem 0.5rem;
+		border-radius: 0.45rem;
+		text-decoration: none;
+		font-size: 0.84rem;
+		color: var(--color-text-muted);
+		transition: background-color 130ms ease, color 130ms ease;
+	}
+
+	.work-toc a:hover {
+		color: var(--color-text);
+		background: color-mix(in srgb, var(--color-accent) 11%, transparent);
+	}
+
+	.work-toc a[aria-current='true'] {
+		color: var(--color-text);
+		font-weight: 700;
+		background: color-mix(in srgb, var(--color-accent) 17%, transparent);
+	}
+
 	.work-prose {
-		max-width: 56rem;
 		display: grid;
 		gap: 1rem;
+		min-width: 0;
 	}
 
 	.work-prose :global(img.zoomable-diagram) {
@@ -469,6 +604,29 @@ const { title, description, date, tags, github, externalCaseStudyUrl, readingTim
 	}
 
 	@media (max-width: 720px) {
+		.work-body {
+			grid-template-columns: 1fr;
+		}
+
+		.work-toc {
+			position: static;
+			max-height: none;
+			overflow-x: auto;
+		}
+
+		.work-toc ul {
+			display: flex;
+			gap: 0.45rem;
+		}
+
+		.work-toc li.is-sub {
+			padding-left: 0;
+		}
+
+		.work-toc a {
+			white-space: nowrap;
+		}
+
 		.work-nav {
 			grid-template-columns: 1fr;
 		}
