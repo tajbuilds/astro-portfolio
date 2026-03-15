@@ -1,7 +1,7 @@
 ---
 title: "Webflow -> Turnstile -> Edge Worker Pipeline"
 description: "Impact: Reduced abusive submissions with verification-first edge routing, safer forwarding, and request-level observability."
-date: 2026-01-12
+date: "2026-01-12T00:00:00.000Z"
 tags:
   - Cloudflare Workers
   - Turnstile

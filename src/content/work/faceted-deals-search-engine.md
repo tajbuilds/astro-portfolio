@@ -1,7 +1,7 @@
-﻿---
+---
 title: "Faceted Deals Search Engine: Scalable Server-Side Discovery"
 description: "Impact: Sub-second filtering, deterministic faceting, and secure query routing across 50k+ products."
-date: 2025-11-18
+date: "2025-11-18T00:00:00.000Z"
 tags:
   - Meilisearch
   - Faceted Search
