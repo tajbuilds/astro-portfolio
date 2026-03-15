@@ -28,12 +28,15 @@ const matomoSiteId =
 		<script is:inline>
 			(() => {
 				const storageKey = 'theme';
+				const allowedThemes = new Set(['system', 'light', 'dark', 'paper', 'ocean']);
 				const storedTheme = localStorage.getItem(storageKey);
+				const preferredTheme = allowedThemes.has(storedTheme || '') ? storedTheme : 'system';
 				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
 					? 'dark'
 					: 'light';
-				const theme = storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : systemTheme;
-				document.documentElement.dataset.theme = theme;
+				const resolvedTheme = preferredTheme === 'system' ? systemTheme : preferredTheme;
+				document.documentElement.dataset.theme = resolvedTheme;
+				document.documentElement.dataset.themePreference = preferredTheme;
 			})();
 		</script>
 		<BaseHead title={title} description={description} image={image} />

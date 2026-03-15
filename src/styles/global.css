@@ -8,6 +8,7 @@
 	--color-accent: #2563eb;
 	--color-accent-strong: #1d4ed8;
 	--color-focus: #0ea5e9;
+	--theme-color-scheme: light;
 
 	--bg-gradient-top-1: rgba(37, 99, 235, 0.11);
 	--bg-gradient-top-2: rgba(14, 165, 233, 0.09);
@@ -63,6 +64,7 @@
 	--color-accent: #60a5fa;
 	--color-accent-strong: #93c5fd;
 	--color-focus: #38bdf8;
+	--theme-color-scheme: dark;
 
 	--bg-gradient-top-1: rgba(96, 165, 250, 0.16);
 	--bg-gradient-top-2: rgba(34, 211, 238, 0.11);
@@ -84,8 +86,84 @@
 	--diagram-cluster-bg: #122039;
 }
 
+:root[data-theme="paper"],
+[data-theme="paper"] {
+	--color-bg: #f4eee3;
+	--color-bg-elevated: #fbf7ef;
+	--color-surface: #efe4d2;
+	--color-text: #251b16;
+	--color-text-muted: #6d5a50;
+	--color-border: #d9c7b6;
+	--color-accent: #b25a3c;
+	--color-accent-strong: #8f432a;
+	--color-focus: #c26c39;
+	--theme-color-scheme: light;
+
+	--bg-gradient-top-1: rgba(178, 90, 60, 0.12);
+	--bg-gradient-top-2: rgba(211, 157, 95, 0.11);
+	--bg-gradient-base: #f8f1e7;
+
+	--shadow-sm: 0 2px 10px rgba(61, 35, 25, 0.08);
+	--shadow-md: 0 14px 34px rgba(61, 35, 25, 0.13);
+
+	--font-sans: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+	--diagram-bg: #efe4d6;
+	--diagram-node-bg: #fbf6ef;
+	--diagram-node-border: #c9aa8f;
+	--diagram-text: #33231b;
+	--diagram-line: #a25636;
+	--diagram-cluster-bg: #e8d6c5;
+
+	--accent: var(--color-accent);
+	--accent-dark: var(--color-accent-strong);
+	--black: 37, 27, 22;
+	--gray: 109, 90, 80;
+	--gray-light: 217, 199, 182;
+	--gray-dark: 68, 47, 39;
+	--gray-gradient: rgba(241, 230, 215, 0.76), #fbf7ef;
+	--box-shadow: var(--shadow-md);
+}
+
+:root[data-theme="ocean"],
+[data-theme="ocean"] {
+	--color-bg: #07161d;
+	--color-bg-elevated: #0c212a;
+	--color-surface: #113140;
+	--color-text: #e6fbff;
+	--color-text-muted: #8db3c0;
+	--color-border: #1f4f60;
+	--color-accent: #24c8d8;
+	--color-accent-strong: #7be7f1;
+	--color-focus: #47e4ff;
+	--theme-color-scheme: dark;
+
+	--bg-gradient-top-1: rgba(36, 200, 216, 0.18);
+	--bg-gradient-top-2: rgba(62, 146, 255, 0.12);
+	--bg-gradient-base: #061019;
+
+	--shadow-sm: 0 2px 10px rgba(2, 10, 16, 0.5);
+	--shadow-md: 0 14px 34px rgba(2, 10, 16, 0.62);
+
+	--font-sans: "IBM Plex Sans", "Atkinson", "Segoe UI", sans-serif;
+	--diagram-bg: #0b2430;
+	--diagram-node-bg: #143341;
+	--diagram-node-border: #2f7387;
+	--diagram-text: #e5fbff;
+	--diagram-line: #56e0f1;
+	--diagram-cluster-bg: #0f2c39;
+
+	--accent: var(--color-accent);
+	--accent-dark: var(--color-accent-strong);
+	--black: 230, 251, 255;
+	--gray: 141, 179, 192;
+	--gray-light: 31, 79, 96;
+	--gray-dark: 215, 244, 248;
+	--gray-gradient: rgba(9, 27, 36, 0.88), #07161d;
+	--box-shadow: var(--shadow-md);
+}
+
 @media (prefers-color-scheme: dark) {
-	:root:not([data-theme="light"]) {
+	:root:not([data-theme]) {
 		--color-bg: #0b1220;
 		--color-bg-elevated: #121a2b;
 		--color-surface: #172238;
@@ -95,6 +173,7 @@
 		--color-accent: #60a5fa;
 		--color-accent-strong: #93c5fd;
 		--color-focus: #38bdf8;
+		--theme-color-scheme: dark;
 
 		--bg-gradient-top-1: rgba(96, 165, 250, 0.16);
 		--bg-gradient-top-2: rgba(34, 211, 238, 0.11);
@@ -139,7 +218,7 @@
 
 html {
 	scroll-behavior: smooth;
-	color-scheme: light dark;
+	color-scheme: var(--theme-color-scheme, light dark);
 }
 
 body {
