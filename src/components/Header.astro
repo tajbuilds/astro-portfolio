@@ -14,7 +14,14 @@ import { SITE_BRAND } from '../consts';
 				<HeaderLink href="/contact">Contact</HeaderLink>
 			</div>
 			<div class="theme-picker" id="theme-picker">
-				<label class="theme-picker__control" for="theme-select">
+				<button
+					id="theme-picker-button"
+					class="theme-picker__button"
+					type="button"
+					aria-haspopup="menu"
+					aria-expanded="false"
+					aria-controls="theme-picker-menu"
+				>
 					<span class="theme-picker__icon" aria-hidden="true">
 						<svg viewBox="0 0 24 24" fill="none" focusable="false">
 							<path
@@ -26,20 +33,22 @@ import { SITE_BRAND } from '../consts';
 							/>
 						</svg>
 					</span>
-					<span class="sr-only">Select theme</span>
-					<select id="theme-select" class="theme-picker__select" aria-label="Select theme">
-						<option value="system">System</option>
-						<option value="light">Light</option>
-						<option value="dark">Dark</option>
-						<option value="paper">Paper</option>
-						<option value="ocean">Ocean</option>
-					</select>
+					<span class="theme-picker__label" id="theme-picker-label">System</span>
 					<span class="theme-picker__chevron" aria-hidden="true">
 						<svg viewBox="0 0 16 16" fill="none" focusable="false">
 							<path d="M4 6.5 8 10l4-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
 					</span>
-				</label>
+				</button>
+				<div id="theme-picker-menu" class="theme-picker__menu" role="menu" hidden>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="system" aria-checked="false">System</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="light" aria-checked="false">Light</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="dark" aria-checked="false">Midnight</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="mist" aria-checked="false">Mist</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="forest" aria-checked="false">Forest</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="dusk" aria-checked="false">Dusk</button>
+					<button type="button" class="theme-picker__option" role="menuitemradio" data-theme-option="sand" aria-checked="false">Sand</button>
+				</div>
 			</div>
 		</div>
 	</nav>
@@ -48,13 +57,16 @@ import { SITE_BRAND } from '../consts';
 <script is:inline>
 	(() => {
 		const storageKey = 'theme';
-		const allowedThemes = new Set(['system', 'light', 'dark', 'paper', 'ocean']);
+		const allowedThemes = new Set(['system', 'light', 'dark', 'mist', 'forest', 'dusk', 'sand']);
 		const root = document.documentElement;
 		const picker = document.getElementById('theme-picker');
-		const select = document.getElementById('theme-select');
+		const button = document.getElementById('theme-picker-button');
+		const label = document.getElementById('theme-picker-label');
+		const menu = document.getElementById('theme-picker-menu');
+		const options = Array.from(document.querySelectorAll('[data-theme-option]'));
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-		if (!(picker instanceof HTMLElement) || !(select instanceof HTMLSelectElement)) {
+		if (!(picker instanceof HTMLElement) || !(button instanceof HTMLButtonElement) || !(label instanceof HTMLElement) || !(menu instanceof HTMLDivElement)) {
 			return;
 		}
 
@@ -73,9 +85,39 @@ import { SITE_BRAND } from '../consts';
 		const themeLabels = {
 			system: 'Theme: System',
 			light: 'Theme: Light',
-			dark: 'Theme: Dark',
-			paper: 'Theme: Paper',
-			ocean: 'Theme: Ocean',
+			dark: 'Theme: Midnight',
+			mist: 'Theme: Mist',
+			forest: 'Theme: Forest',
+			dusk: 'Theme: Dusk',
+			sand: 'Theme: Sand',
+		};
+
+		const buttonLabels = {
+			system: 'System',
+			light: 'Light',
+			dark: 'Midnight',
+			mist: 'Mist',
+			forest: 'Forest',
+			dusk: 'Dusk',
+			sand: 'Sand',
+		};
+
+		const closeMenu = () => {
+			picker.dataset.open = 'false';
+			button.setAttribute('aria-expanded', 'false');
+			window.setTimeout(() => {
+				if (button.getAttribute('aria-expanded') === 'false') {
+					menu.hidden = true;
+				}
+			}, 140);
+		};
+
+		const openMenu = () => {
+			menu.hidden = false;
+			button.setAttribute('aria-expanded', 'true');
+			requestAnimationFrame(() => {
+				picker.dataset.open = 'true';
+			});
 		};
 
 		const applyTheme = (preference) => {
@@ -83,16 +125,65 @@ import { SITE_BRAND } from '../consts';
 			root.dataset.theme = resolvedTheme;
 			root.dataset.themePreference = preference;
 			picker.dataset.theme = resolvedTheme;
-			select.value = preference;
-			select.title = themeLabels[preference] || 'Theme';
+			button.title = themeLabels[preference] || 'Theme';
+			label.textContent = buttonLabels[preference] || 'System';
+			options.forEach((option) => {
+				if (!(option instanceof HTMLButtonElement)) return;
+				option.setAttribute('aria-checked', String(option.dataset.themeOption === preference));
+			});
 		};
 
 		applyTheme(getStoredPreference());
 
-		select.addEventListener('change', () => {
-			const nextTheme = allowedThemes.has(select.value) ? select.value : 'system';
-			localStorage.setItem(storageKey, nextTheme);
-			applyTheme(nextTheme);
+		button.addEventListener('click', () => {
+			if (menu.hidden) openMenu();
+			else closeMenu();
+		});
+
+		options.forEach((option) => {
+			if (!(option instanceof HTMLButtonElement)) return;
+			option.addEventListener('click', () => {
+				const nextTheme = allowedThemes.has(option.dataset.themeOption || '') ? option.dataset.themeOption : 'system';
+				localStorage.setItem(storageKey, nextTheme);
+				applyTheme(nextTheme);
+				closeMenu();
+				button.focus();
+			});
+		});
+
+		document.addEventListener('click', (event) => {
+			if (!(event.target instanceof Node)) return;
+			if (!picker.contains(event.target)) closeMenu();
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') {
+				closeMenu();
+				button.focus();
+			}
+		});
+
+		menu.addEventListener('keydown', (event) => {
+			const currentIndex = options.findIndex((option) => option === document.activeElement);
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				const next = options[(currentIndex + 1 + options.length) % options.length];
+				if (next instanceof HTMLButtonElement) next.focus();
+			}
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				const next = options[(currentIndex - 1 + options.length) % options.length];
+				if (next instanceof HTMLButtonElement) next.focus();
+			}
+		});
+
+		button.addEventListener('keydown', (event) => {
+			if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				openMenu();
+				const checked = options.find((option) => option instanceof HTMLButtonElement && option.getAttribute('aria-checked') === 'true');
+				if (checked instanceof HTMLButtonElement) checked.focus();
+			}
 		});
 
 		mediaQuery.addEventListener('change', () => {
@@ -148,27 +239,49 @@ import { SITE_BRAND } from '../consts';
 	.theme-picker {
 		display: inline-flex;
 		align-items: center;
+		position: relative;
+		isolation: isolate;
 	}
 
-	.theme-picker__control {
+	.theme-picker__button {
 		position: relative;
 		display: inline-flex;
 		align-items: center;
-		min-width: 9rem;
-		padding: 0;
+		justify-content: flex-start;
+		min-width: 6.45rem;
+		padding: 0.45rem 1.75rem 0.45rem 1.8rem;
 		border: 1px solid var(--color-border);
-		background: var(--color-bg-elevated);
+		background: color-mix(in srgb, var(--color-bg-elevated) 88%, var(--color-surface));
 		box-shadow: var(--shadow-sm);
 		border-radius: 999px;
-		transition: transform 120ms ease, border-color 120ms ease;
+		color-scheme: var(--theme-color-scheme, light);
+		color: var(--color-text);
+		font: inherit;
+		cursor: pointer;
+		overflow: hidden;
+		transition: transform 120ms ease, border-color 120ms ease, background 180ms ease, box-shadow 180ms ease;
 	}
 
-	.theme-picker__control:hover {
+	.theme-picker__button::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 55%);
+		opacity: 0;
+		transition: opacity 180ms ease;
+	}
+
+	.theme-picker__button:hover {
 		transform: translateY(-1px);
 		border-color: var(--color-accent);
 	}
 
-	.theme-picker__control:active {
+	.theme-picker__button:hover::before,
+	.theme-picker[data-open='true'] .theme-picker__button::before {
+		opacity: 1;
+	}
+
+	.theme-picker__button:active {
 		transform: translateY(0);
 	}
 
@@ -191,6 +304,12 @@ import { SITE_BRAND } from '../consts';
 		right: 0.72rem;
 		width: 0.9rem;
 		height: 0.9rem;
+		transition: transform 180ms ease, color 180ms ease;
+	}
+
+	.theme-picker[data-open='true'] .theme-picker__chevron {
+		transform: translateY(-50%) rotate(180deg);
+		color: var(--color-accent);
 	}
 
 	.theme-picker__icon svg,
@@ -200,34 +319,102 @@ import { SITE_BRAND } from '../consts';
 		height: 100%;
 	}
 
-	.theme-picker__select {
-		appearance: none;
+	.theme-picker__label {
+		display: block;
+		position: relative;
+		z-index: 1;
+		padding-right: 0.15rem;
+		font-size: 0.88rem;
+		line-height: 1.2;
+	}
+
+	.theme-picker__button:focus {
+		outline: none;
+	}
+
+	.theme-picker__button:focus-visible {
+		border-color: var(--color-accent);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 16%, transparent), var(--shadow-sm);
+	}
+
+	.theme-picker__menu {
+		position: absolute;
+		top: calc(100% + 0.45rem);
+		right: 0;
+		z-index: 110;
+		min-width: 100%;
+		padding: 0.35rem;
+		border: 1px solid var(--color-border);
+		border-radius: 0.8rem;
+		background: color-mix(in srgb, var(--color-bg-elevated) 94%, var(--color-surface));
+		box-shadow: var(--shadow-md);
+		transform-origin: top right;
+		opacity: 0;
+		transform: translateY(-0.35rem) scale(0.97);
+		transition: opacity 140ms ease, transform 140ms ease;
+	}
+
+	.theme-picker[data-open='true'] .theme-picker__menu {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+
+	.theme-picker__option {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 		width: 100%;
-		padding: 0.52rem 2rem 0.52rem 2rem;
+		padding: 0.48rem 0.6rem;
 		border: 0;
-		border-radius: 999px;
+		border-radius: 0.5rem;
 		background: transparent;
 		color: var(--color-text);
 		font: inherit;
 		font-size: 0.88rem;
-		line-height: 1.2;
+		text-align: left;
 		cursor: pointer;
 	}
 
-	.theme-picker__select:focus {
+	.theme-picker__option:hover,
+	.theme-picker__option:focus-visible {
+		background: color-mix(in srgb, var(--color-accent) 12%, transparent);
 		outline: none;
 	}
 
-	.theme-picker__select option {
-		color: #121826;
+	.theme-picker__option[aria-checked='true'] {
+		color: var(--color-accent-strong);
+		background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+		font-weight: 600;
 	}
 
-	.theme-picker[data-theme='paper'] .theme-picker__icon {
-		color: #a25636;
+	.theme-picker__option[aria-checked='true']::after {
+		content: '•';
+		font-size: 1.1rem;
 	}
 
-	.theme-picker[data-theme='ocean'] .theme-picker__icon {
-		color: #57e3f4;
+	.theme-picker[data-theme='mist'] .theme-picker__icon {
+		color: #5b82a6;
+	}
+
+	.theme-picker[data-theme='forest'] .theme-picker__icon {
+		color: #8bc7a2;
+	}
+
+	.theme-picker[data-theme='dusk'] .theme-picker__icon {
+		color: #c6a7f2;
+	}
+
+	.theme-picker[data-theme='sand'] .theme-picker__icon {
+		color: #b68d5f;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.theme-picker__button,
+		.theme-picker__button::before,
+		.theme-picker__chevron,
+		.theme-picker__menu {
+			transition: none;
+		}
 	}
 
 	@media (max-width: 980px) {
