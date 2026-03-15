@@ -80,6 +80,22 @@ const toLink = (slugPath: string) => {
 
 const navDocs = docs.filter((doc) => doc.slug_path !== caseSlug);
 
+const sectionSegments = currentDoc.slug_path === caseSlug
+	? []
+	: currentDoc.slug_path.slice(caseSlug.length + 1).split('/').filter(Boolean);
+
+const breadcrumbs = [
+	{ label: 'Docs', href: '/docs/' },
+	{ label: caseStudy.title, href: `/docs/case-studies/${caseSlug}/` },
+];
+
+for (let i = 0; i < sectionSegments.length; i += 1) {
+	const slugPath = `${caseSlug}/${sectionSegments.slice(0, i + 1).join('/')}`;
+	const doc = docs.find((item) => item.slug_path === slugPath);
+	if (!doc) continue;
+	breadcrumbs.push({ label: doc.title, href: toLink(slugPath) });
+}
+
 const bodyHtml = await marked.parse(currentDoc.body_md || "");
 ---
 
@@ -92,6 +108,11 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 		<aside class="docs-nav">
 			<p class="docs-nav__label">Case Study</p>
 			<h1 class="docs-nav__title">{caseStudy.title}</h1>
+			<div class="docs-search" data-doc-search-root>
+				<label for="docs-search-input" class="sr-only">Search docs</label>
+				<input id="docs-search-input" type="search" placeholder="Search docs..." autocomplete="off" data-doc-search-input />
+				<div class="docs-search-results" data-doc-search-results hidden></div>
+			</div>
 			<nav aria-label="Case study navigation">
 				<ul>
 					<li>
@@ -111,20 +132,181 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 		</aside>
 		<article class="docs-content">
 			<header>
+				<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+					<ol>
+						{breadcrumbs.map((crumb, index) => (
+							<li>
+								{index === breadcrumbs.length - 1 ? (
+									<span aria-current="page">{crumb.label}</span>
+								) : (
+									<a href={crumb.href}>{crumb.label}</a>
+								)}
+							</li>
+						))}
+					</ol>
+				</nav>
 				<p class="docs-content__eyebrow">Case Study</p>
 				<h2>{currentDoc.title}</h2>
 			</header>
-			<div class="docs-prose">
+			<div class="docs-prose" data-doc-content>
 				<Fragment set:html={bodyHtml} />
 			</div>
 		</article>
+		<aside class="docs-right-rail" aria-label="On this page" data-doc-rail>
+			<p class="docs-right-rail__label">On this page</p>
+			<ul class="docs-right-rail__list" data-doc-toc-list></ul>
+		</aside>
 	</section>
 </MainLayout>
+
+<script is:inline>
+	(() => {
+		const content = document.querySelector('[data-doc-content]');
+		const tocList = document.querySelector('[data-doc-toc-list]');
+		const rail = document.querySelector('[data-doc-rail]');
+		if (!(content instanceof HTMLElement) || !(tocList instanceof HTMLElement) || !(rail instanceof HTMLElement)) return;
+
+		const slugCounts = new Map();
+		const slugify = (value) => {
+			const base = value
+				.toLowerCase()
+				.trim()
+				.replace(/[^a-z0-9\s-]/g, '')
+				.replace(/\s+/g, '-')
+				.replace(/-+/g, '-') || 'section';
+			const seen = slugCounts.get(base) || 0;
+			slugCounts.set(base, seen + 1);
+			return seen === 0 ? base : `${base}-${seen}`;
+		};
+
+		const headings = Array.from(content.querySelectorAll('h2, h3'));
+		if (headings.length === 0) {
+			rail.classList.add('is-empty');
+			return;
+		}
+
+		const items = headings.map((heading) => {
+			if (!heading.id) heading.id = slugify(heading.textContent || 'section');
+			const item = document.createElement('li');
+			if (heading.tagName.toLowerCase() === 'h3') item.classList.add('is-sub');
+
+			const link = document.createElement('a');
+			link.href = `#${heading.id}`;
+			link.textContent = (heading.textContent || '').trim();
+			item.appendChild(link);
+			tocList.appendChild(item);
+			return { heading, link };
+		});
+
+		if (!('IntersectionObserver' in window)) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+				if (visible.length === 0) return;
+				const currentId = visible[0].target.id;
+				items.forEach(({ heading, link }) => {
+					if (heading.id === currentId) {
+						link.setAttribute('aria-current', 'true');
+					} else {
+						link.removeAttribute('aria-current');
+					}
+				});
+			},
+			{
+				rootMargin: '-22% 0px -70% 0px',
+				threshold: [0, 1],
+			}
+		);
+
+		items.forEach(({ heading }) => observer.observe(heading));
+	})();
+
+	(() => {
+		const root = document.querySelector('[data-doc-search-root]');
+		if (!(root instanceof HTMLElement)) return;
+
+		const input = root.querySelector('[data-doc-search-input]');
+		const results = root.querySelector('[data-doc-search-results]');
+		if (!(input instanceof HTMLInputElement) || !(results instanceof HTMLDivElement)) return;
+
+		let debounceId = 0;
+
+		const hide = () => {
+			results.hidden = true;
+			results.replaceChildren();
+		};
+
+		const render = (items) => {
+			results.replaceChildren();
+			results.hidden = false;
+
+			if (!Array.isArray(items) || items.length === 0) {
+				const empty = document.createElement('p');
+				empty.className = 'docs-search-results__empty';
+				empty.textContent = 'No results.';
+				results.appendChild(empty);
+				return;
+			}
+
+			for (const item of items) {
+				if (!item || typeof item.href !== 'string') continue;
+				const link = document.createElement('a');
+				link.className = 'docs-search-results__item';
+				link.href = item.href;
+
+				const title = document.createElement('strong');
+				title.textContent = typeof item.title === 'string' ? item.title : 'Untitled';
+
+				const meta = document.createElement('span');
+				meta.textContent = typeof item.caseTitle === 'string' ? item.caseTitle : '';
+
+				link.appendChild(title);
+				link.appendChild(meta);
+				results.appendChild(link);
+			}
+		};
+
+		input.addEventListener('input', () => {
+			const q = input.value.trim();
+			window.clearTimeout(debounceId);
+
+			if (q.length < 2) {
+				hide();
+				return;
+			}
+
+			debounceId = window.setTimeout(async () => {
+				try {
+					const response = await fetch(`/api/docs/search?q=${encodeURIComponent(q)}&limit=8`, {
+						headers: { accept: 'application/json' },
+					});
+					if (!response.ok) {
+						hide();
+						return;
+					}
+					const payload = await response.json();
+					render(payload.items);
+				} catch {
+					hide();
+				}
+			}, 180);
+		});
+
+		document.addEventListener('click', (event) => {
+			if (!(event.target instanceof Node)) return;
+			if (!root.contains(event.target)) hide();
+		});
+	})();
+</script>
 
 <style>
 	.docs-shell {
 		display: grid;
-		grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+		grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr) minmax(12rem, 16rem);
 		gap: 1.25rem;
 	}
 	.docs-nav {
@@ -147,6 +329,49 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 	.docs-nav__title {
 		margin: 0 0 0.8rem;
 		font-size: 1.15rem;
+	}
+	.docs-search {
+		position: relative;
+		margin-bottom: 0.8rem;
+	}
+	.docs-search input {
+		width: 100%;
+		padding: 0.58rem 0.62rem;
+		border-radius: 0.58rem;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text);
+	}
+	.docs-search-results {
+		position: absolute;
+		top: calc(100% + 0.3rem);
+		left: 0;
+		right: 0;
+		z-index: 25;
+		display: grid;
+		gap: 0.22rem;
+		padding: 0.35rem;
+		border: 1px solid var(--color-border);
+		border-radius: 0.6rem;
+		background: var(--color-bg-elevated);
+		box-shadow: var(--shadow-md);
+	}
+	.docs-search-results__item {
+		display: grid;
+		gap: 0.1rem;
+		padding: 0.4rem 0.45rem;
+		border-radius: 0.46rem;
+		text-decoration: none;
+	}
+	.docs-search-results__item span {
+		font-size: 0.81rem;
+		color: var(--color-text-muted);
+	}
+	.docs-search-results__empty {
+		margin: 0;
+		padding: 0.36rem 0.4rem;
+		font-size: 0.9rem;
+		color: var(--color-text-muted);
 	}
 	.docs-nav ul {
 		list-style: none;
@@ -177,6 +402,30 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		background: var(--color-bg-elevated);
+	}
+	.docs-breadcrumbs {
+		margin-bottom: 0.55rem;
+	}
+	.docs-breadcrumbs ol {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		font-size: 0.84rem;
+	}
+	.docs-breadcrumbs li {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+	.docs-breadcrumbs li:not(:last-child)::after {
+		content: '/';
+		color: var(--color-text-muted);
+	}
+	.docs-breadcrumbs span[aria-current='page'] {
+		color: var(--color-text-muted);
 	}
 
 	.docs-content > header h2 {
@@ -292,6 +541,57 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 		margin-top: 0.5rem;
 		color: var(--color-text-muted);
 		font-size: 0.9rem;
+	}
+	.docs-right-rail {
+		position: sticky;
+		top: 5rem;
+		align-self: start;
+		max-height: calc(100vh - 6rem);
+		overflow: auto;
+		padding: 0.9rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-bg-elevated);
+	}
+	.docs-right-rail.is-empty {
+		display: none;
+	}
+	.docs-right-rail__label {
+		margin: 0 0 0.55rem;
+		font-size: 0.73rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.docs-right-rail__list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 0.28rem;
+	}
+	.docs-right-rail__list li.is-sub {
+		padding-left: 0.62rem;
+	}
+	.docs-right-rail__list a {
+		display: block;
+		padding: 0.26rem 0.38rem;
+		border-radius: 0.42rem;
+		text-decoration: none;
+		font-size: 0.88rem;
+	}
+	.docs-right-rail__list a[aria-current='true'] {
+		background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+		color: var(--color-text);
+		font-weight: 700;
+	}
+
+	@media (max-width: 1180px) {
+		.docs-shell {
+			grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+		}
+		.docs-right-rail {
+			display: none;
+		}
 	}
 
 	@media (max-width: 900px) {

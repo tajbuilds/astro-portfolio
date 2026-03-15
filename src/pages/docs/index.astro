@@ -1,0 +1,332 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { env } from 'cloudflare:workers';
+
+export const prerender = false;
+
+type CaseStudyCard = {
+	slug: string;
+	title: string;
+	summary: string | null;
+	docs_total: number;
+};
+
+type RecentDoc = {
+	case_slug: string;
+	case_title: string;
+	doc_title: string;
+	slug_path: string;
+	excerpt: string | null;
+};
+
+const db = env.DB as D1Database | undefined;
+if (!db) {
+	return new Response("D1 binding 'DB' is missing on this environment.", { status: 500 });
+}
+
+const caseStudiesResult = await db
+	.prepare(
+		`SELECT cs.slug AS slug,
+		        cs.title AS title,
+		        cs.summary AS summary,
+		        COUNT(d.id) AS docs_total
+		 FROM case_studies cs
+		 LEFT JOIN documents d ON d.case_study_id = cs.id
+		 WHERE cs.is_visible = 1
+		 GROUP BY cs.id, cs.slug, cs.title, cs.summary, cs.nav_order
+		 ORDER BY cs.nav_order ASC, cs.title ASC`
+	)
+	.all<CaseStudyCard>();
+
+const recentDocsResult = await db
+	.prepare(
+		`SELECT cs.slug AS case_slug,
+		        cs.title AS case_title,
+		        d.title AS doc_title,
+		        d.slug_path AS slug_path,
+		        d.excerpt AS excerpt
+		 FROM documents d
+		 JOIN case_studies cs ON cs.id = d.case_study_id
+		 WHERE cs.is_visible = 1
+		 ORDER BY cs.nav_order ASC, d.nav_order ASC, d.title ASC
+		 LIMIT 10`
+	)
+	.all<RecentDoc>();
+
+const caseStudies = caseStudiesResult.results || [];
+const recentDocs = recentDocsResult.results || [];
+
+const toDocHref = (caseSlug: string, slugPath: string) => {
+	if (slugPath === caseSlug) return `/docs/case-studies/${caseSlug}/`;
+	const rel = slugPath.startsWith(`${caseSlug}/`) ? slugPath.slice(caseSlug.length + 1) : '';
+	return rel ? `/docs/case-studies/${caseSlug}/${rel}/` : `/docs/case-studies/${caseSlug}/`;
+};
+---
+
+<MainLayout
+	title="Docs | Tajinder Singh"
+	description="Architecture documentation and deep technical case-study sections backed by D1."
+	width="wide"
+>
+	<section class="docs-home">
+		<header class="docs-home__hero">
+			<p class="docs-home__eyebrow">Documentation</p>
+			<h1>Architecture Docs</h1>
+			<p>
+				Long-form technical breakdowns sourced from D1 and synced from Outline. Browse case studies, drill
+				into sections, and use search to jump directly to specific architecture decisions.
+			</p>
+			<form class="docs-home__search" action="/docs/" data-docs-home-search>
+				<label for="docs-home-search-input" class="sr-only">Search docs</label>
+				<input id="docs-home-search-input" type="search" name="q" placeholder="Search docs..." autocomplete="off" />
+				<div class="docs-home-search-results" data-docs-home-search-results hidden></div>
+			</form>
+		</header>
+
+		<section class="docs-home__grid" aria-label="Case studies">
+			{caseStudies.map((item) => (
+				<article class="docs-home-card">
+					<h2>
+						<a href={`/docs/case-studies/${item.slug}/`}>{item.title}</a>
+					</h2>
+					<p>{item.summary || 'Explore implementation details, constraints, and architecture decisions.'}</p>
+					<p class="docs-home-card__meta">{item.docs_total} section{item.docs_total === 1 ? '' : 's'}</p>
+				</article>
+			))}
+		</section>
+
+		<section class="docs-home__recent" aria-label="Document sections">
+			<h2>Section Index</h2>
+			<ul>
+				{recentDocs.map((doc) => (
+					<li>
+						<a href={toDocHref(doc.case_slug, doc.slug_path)}>{doc.doc_title}</a>
+						<span>{doc.case_title}</span>
+					</li>
+				))}
+			</ul>
+		</section>
+	</section>
+</MainLayout>
+
+<script is:inline>
+	(() => {
+		const root = document.querySelector('[data-docs-home-search]');
+		if (!(root instanceof HTMLFormElement)) return;
+
+		const input = root.querySelector('input[type="search"]');
+		const resultBox = root.querySelector('[data-docs-home-search-results]');
+		if (!(input instanceof HTMLInputElement) || !(resultBox instanceof HTMLDivElement)) return;
+
+		let debounceId = 0;
+
+		const hideResults = () => {
+			resultBox.hidden = true;
+			resultBox.replaceChildren();
+		};
+
+		const renderItems = (items) => {
+			resultBox.replaceChildren();
+			resultBox.hidden = false;
+
+			if (!Array.isArray(items) || items.length === 0) {
+				const empty = document.createElement('p');
+				empty.className = 'docs-home-search-results__empty';
+				empty.textContent = 'No results.';
+				resultBox.appendChild(empty);
+				return;
+			}
+
+			for (const item of items) {
+				if (!item || typeof item.href !== 'string') continue;
+				const link = document.createElement('a');
+				link.className = 'docs-home-search-results__item';
+				link.href = item.href;
+
+				const title = document.createElement('strong');
+				title.textContent = typeof item.title === 'string' ? item.title : 'Untitled';
+
+				const meta = document.createElement('span');
+				meta.textContent = typeof item.caseTitle === 'string' ? item.caseTitle : '';
+
+				link.appendChild(title);
+				link.appendChild(meta);
+				resultBox.appendChild(link);
+			}
+		};
+
+		input.addEventListener('input', () => {
+			const q = input.value.trim();
+			window.clearTimeout(debounceId);
+
+			if (q.length < 2) {
+				hideResults();
+				return;
+			}
+
+			debounceId = window.setTimeout(async () => {
+				try {
+					const res = await fetch(`/api/docs/search?q=${encodeURIComponent(q)}&limit=8`, {
+						headers: { accept: 'application/json' },
+					});
+					if (!res.ok) {
+						hideResults();
+						return;
+					}
+					const payload = await res.json();
+					renderItems(payload.items);
+				} catch {
+					hideResults();
+				}
+			}, 180);
+		});
+
+		document.addEventListener('click', (event) => {
+			if (!(event.target instanceof Node)) return;
+			if (!root.contains(event.target)) hideResults();
+		});
+	})();
+</script>
+
+<style>
+	.docs-home {
+		display: grid;
+		gap: 1.2rem;
+	}
+
+	.docs-home__hero {
+		padding: 1.2rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-bg-elevated);
+	}
+
+	.docs-home__eyebrow {
+		margin: 0 0 0.3rem;
+		font-size: 0.74rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.docs-home__hero h1 {
+		margin: 0;
+		font-size: clamp(1.9rem, 1.3rem + 2vw, 2.7rem);
+	}
+
+	.docs-home__hero p {
+		margin-top: 0.65rem;
+	}
+
+	.docs-home__search {
+		position: relative;
+		margin-top: 0.8rem;
+	}
+
+	.docs-home__search input {
+		width: 100%;
+		padding: 0.65rem 0.8rem;
+		border-radius: 0.65rem;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text);
+	}
+
+	.docs-home-search-results {
+		position: absolute;
+		top: calc(100% + 0.35rem);
+		left: 0;
+		right: 0;
+		z-index: 30;
+		display: grid;
+		gap: 0.3rem;
+		padding: 0.45rem;
+		border: 1px solid var(--color-border);
+		border-radius: 0.65rem;
+		background: var(--color-bg-elevated);
+		box-shadow: var(--shadow-md);
+	}
+
+	.docs-home-search-results__item {
+		display: grid;
+		gap: 0.15rem;
+		padding: 0.45rem 0.5rem;
+		border-radius: 0.5rem;
+		text-decoration: none;
+	}
+
+	.docs-home-search-results__item span {
+		font-size: 0.84rem;
+		color: var(--color-text-muted);
+	}
+
+	.docs-home-search-results__empty {
+		margin: 0;
+		padding: 0.3rem 0.45rem;
+		font-size: 0.9rem;
+		color: var(--color-text-muted);
+	}
+
+	.docs-home__grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.9rem;
+	}
+
+	.docs-home-card {
+		padding: 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-bg-elevated);
+	}
+
+	.docs-home-card h2 {
+		margin: 0;
+		font-size: 1.2rem;
+	}
+
+	.docs-home-card p {
+		margin: 0.55rem 0 0;
+	}
+
+	.docs-home-card__meta {
+		font-size: 0.82rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.docs-home__recent {
+		padding: 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-bg-elevated);
+	}
+
+	.docs-home__recent h2 {
+		margin: 0;
+		font-size: 1.15rem;
+	}
+
+	.docs-home__recent ul {
+		list-style: none;
+		padding: 0;
+		margin: 0.8rem 0 0;
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.docs-home__recent li {
+		display: grid;
+		gap: 0.15rem;
+	}
+
+	.docs-home__recent span {
+		font-size: 0.85rem;
+		color: var(--color-text-muted);
+	}
+
+	@media (max-width: 860px) {
+		.docs-home__grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
