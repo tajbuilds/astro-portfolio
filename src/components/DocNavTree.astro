@@ -1,0 +1,42 @@
+---
+import DocNavTree from './DocNavTree.astro';
+
+export interface NavNode {
+	id: string;
+	title: string;
+	slug_path: string;
+	nav_order: number;
+	children: NavNode[];
+}
+
+interface Props {
+	nodes: NavNode[];
+	currentSlugPath: string;
+	toLink: (s: string) => string;
+}
+
+const { nodes, currentSlugPath, toLink } = Astro.props;
+
+function isAncestorOf(node: NavNode, target: string): boolean {
+	if (node.slug_path === target) return true;
+	return node.children.some((c) => isAncestorOf(c, target));
+}
+---
+
+{nodes.map((node) => {
+	const isCurrent = node.slug_path === currentSlugPath;
+	const isAncestor = !isCurrent && isAncestorOf(node, currentSlugPath);
+	const hasKids = node.children.length > 0;
+	return (
+		<li class:list={[{ 'is-current': isCurrent, 'is-ancestor': isAncestor, 'has-children': hasKids }]}>
+			<a href={toLink(node.slug_path)} aria-current={isCurrent ? 'page' : undefined}>
+				{node.title}
+			</a>
+			{hasKids && (
+				<ul class="nav-sub">
+					<DocNavTree nodes={node.children} currentSlugPath={currentSlugPath} toLink={toLink} />
+				</ul>
+			)}
+		</li>
+	);
+})}
