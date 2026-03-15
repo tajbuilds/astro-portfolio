@@ -30,7 +30,7 @@ function convertMermaidBlocks() {
 		}
 
 		const container = document.createElement("div");
-		container.className = "mermaid";
+		container.className = "mermaid diagram-mermaid";
 		container.dataset.mermaidSource = normalizeMermaidSource(getMermaidSource(pre, block));
 		pre.dataset.mermaidConverted = "true";
 		pre.replaceWith(container);
@@ -56,26 +56,26 @@ function currentThemeConfig() {
 		themeVariables: {
 			background: "transparent",
 			primaryColor: isDark
-				? cssVar("--color-surface", "#172238")
-				: cssVar("--color-bg-elevated", "#ffffff"),
-			primaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
-			primaryBorderColor: cssVar("--color-border", "#d1d5db"),
+				? cssVar("--diagram-node-bg", "#1a2740")
+				: cssVar("--diagram-node-bg", "#ffffff"),
+			primaryTextColor: cssVar("--diagram-text", isDark ? "#e8eefc" : "#142033"),
+			primaryBorderColor: cssVar("--diagram-node-border", "#c9d6ea"),
 			secondaryColor: isDark
-				? cssVar("--color-bg-elevated", "#121a2b")
-				: cssVar("--color-surface", "#f3f4f6"),
-			secondaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
-			secondaryBorderColor: cssVar("--color-border", "#d1d5db"),
+				? cssVar("--diagram-cluster-bg", "#122039")
+				: cssVar("--diagram-cluster-bg", "#edf3fb"),
+			secondaryTextColor: cssVar("--diagram-text", isDark ? "#e8eefc" : "#142033"),
+			secondaryBorderColor: cssVar("--diagram-node-border", "#c9d6ea"),
 			lineColor: isDark
-				? cssVar("--color-accent", "#60a5fa")
-				: cssVar("--color-border", "#9ca3af"),
-			textColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
-			tertiaryColor: cssVar("--color-bg", isDark ? "#0b1220" : "#f8fafc"),
-			tertiaryTextColor: cssVar("--color-text", isDark ? "#e8eefc" : "#111827"),
-			tertiaryBorderColor: cssVar("--color-border", "#d1d5db"),
+				? cssVar("--diagram-line", "#7fb4ff")
+				: cssVar("--diagram-line", "#5f7ea8"),
+			textColor: cssVar("--diagram-text", isDark ? "#e8eefc" : "#142033"),
+			tertiaryColor: cssVar("--diagram-bg", isDark ? "#0d1628" : "#f5f8fc"),
+			tertiaryTextColor: cssVar("--diagram-text", isDark ? "#e8eefc" : "#142033"),
+			tertiaryBorderColor: cssVar("--diagram-node-border", "#c9d6ea"),
 			clusterBkg: isDark
-				? cssVar("--color-bg-elevated", "#121a2b")
-				: cssVar("--color-bg-elevated", "#ffffff"),
-			clusterBorder: cssVar("--color-border", "#d1d5db"),
+				? cssVar("--diagram-cluster-bg", "#122039")
+				: cssVar("--diagram-cluster-bg", "#edf3fb"),
+			clusterBorder: cssVar("--diagram-node-border", "#c9d6ea"),
 		},
 	};
 }

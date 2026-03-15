@@ -34,6 +34,12 @@
 	--container-full: 100rem;
 
 	--font-sans: "Atkinson", "IBM Plex Sans", "Segoe UI", sans-serif;
+	--diagram-bg: #f5f8fc;
+	--diagram-node-bg: #ffffff;
+	--diagram-node-border: #c9d6ea;
+	--diagram-text: #142033;
+	--diagram-line: #5f7ea8;
+	--diagram-cluster-bg: #edf3fb;
 
 	/* Backward-compatible tokens used by starter components */
 	--accent: var(--color-accent);
@@ -70,6 +76,12 @@
 	--gray-light: 37, 51, 78;
 	--gray-dark: 226, 235, 252;
 	--gray-gradient: rgba(12, 18, 34, 0.84), #0b1220;
+	--diagram-bg: #0d1628;
+	--diagram-node-bg: #1a2740;
+	--diagram-node-border: #385173;
+	--diagram-text: #e8eefc;
+	--diagram-line: #7fb4ff;
+	--diagram-cluster-bg: #122039;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,11 +105,17 @@
 
 		--black: 232, 238, 252;
 		--gray: 169, 184, 213;
-		--gray-light: 37, 51, 78;
-		--gray-dark: 226, 235, 252;
-		--gray-gradient: rgba(12, 18, 34, 0.84), #0b1220;
+			--gray-light: 37, 51, 78;
+			--gray-dark: 226, 235, 252;
+			--gray-gradient: rgba(12, 18, 34, 0.84), #0b1220;
+			--diagram-bg: #0d1628;
+			--diagram-node-bg: #1a2740;
+			--diagram-node-border: #385173;
+			--diagram-text: #e8eefc;
+			--diagram-line: #7fb4ff;
+			--diagram-cluster-bg: #122039;
+		}
 	}
-}
 
 @font-face {
 	font-family: "Atkinson";
@@ -336,10 +354,62 @@ hr {
 	}
 }
 
-@media (max-width: 640px) {
-	.back-to-top {
-		display: none;
+	@media (max-width: 640px) {
+		.back-to-top {
+			display: none;
+		}
 	}
-}
 
+	.mermaid,
+	.diagram-mermaid {
+		overflow-x: auto;
+		padding: 0.8rem;
+		border: 1px solid var(--diagram-node-border);
+		border-radius: 0.75rem;
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--diagram-bg) 92%, transparent),
+			color-mix(in srgb, var(--diagram-bg) 82%, transparent)
+		);
+	}
+
+	.mermaid svg,
+	.diagram-mermaid svg {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		background: transparent !important;
+	}
+
+	.mermaid .node rect,
+	.mermaid .node circle,
+	.mermaid .node ellipse,
+	.mermaid .node polygon,
+	.mermaid .node path {
+		fill: var(--diagram-node-bg) !important;
+		stroke: var(--diagram-node-border) !important;
+		stroke-width: 1.35px !important;
+	}
+
+	.mermaid .cluster rect {
+		fill: color-mix(in srgb, var(--diagram-cluster-bg) 90%, transparent) !important;
+		stroke: var(--diagram-node-border) !important;
+	}
+
+	.mermaid .edgePath .path,
+	.mermaid .flowchart-link,
+	.mermaid .messageLine0,
+	.mermaid .messageLine1 {
+		stroke: var(--diagram-line) !important;
+		stroke-width: 1.45px !important;
+	}
+
+	.mermaid text,
+	.mermaid .nodeLabel,
+	.mermaid .label,
+	.mermaid span {
+		fill: var(--diagram-text) !important;
+		color: var(--diagram-text) !important;
+		font-weight: 560 !important;
+	}
 
