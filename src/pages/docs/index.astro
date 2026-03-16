@@ -4,542 +4,253 @@ import { env } from "cloudflare:workers";
 
 export const prerender = false;
 
-type CaseStudyCard = {
-slug: string;
-title: string;
-summary: string | null;
-docs_total: number;
-};
-
-type RecentDoc = {
-case_slug: string;
-case_title: string;
-doc_title: string;
-slug_path: string;
-excerpt: string | null;
+type CaseStudyIndexItem = {
+	slug: string;
+	title: string;
 };
 
 const db = env.DB as D1Database | undefined;
 if (!db) {
-return new Response("D1 binding 'DB' is missing on this environment.", { status: 500 });
+    return new Response("D1 binding 'DB' is missing on this environment.", { status: 500 });
 }
 
 const caseStudiesResult = await db
-.prepare(
-`SELECT cs.slug AS slug,
-        cs.title AS title,
-        cs.summary AS summary,
-        COUNT(d.id) AS docs_total
- FROM case_studies cs
- LEFT JOIN documents d ON d.case_study_id = cs.id
- WHERE cs.is_visible = 1
- GROUP BY cs.id, cs.slug, cs.title, cs.summary, cs.nav_order
- ORDER BY cs.nav_order ASC, cs.title ASC`
-)
-.all<CaseStudyCard>();
-
-const recentDocsResult = await db
-.prepare(
-`SELECT cs.slug AS case_slug,
-        cs.title AS case_title,
-        d.title AS doc_title,
-        d.slug_path AS slug_path,
-        d.excerpt AS excerpt
- FROM documents d
- JOIN case_studies cs ON cs.id = d.case_study_id
- WHERE cs.is_visible = 1
- ORDER BY cs.nav_order ASC, d.nav_order ASC, d.title ASC
- LIMIT 18`
-)
-.all<RecentDoc>();
+    .prepare(
+        `SELECT cs.slug AS slug,
+                cs.title AS title
+         FROM case_studies cs
+         WHERE cs.is_visible = 1
+         ORDER BY cs.nav_order ASC, cs.title ASC`
+    )
+    .all<CaseStudyIndexItem>();
 
 const caseStudies = caseStudiesResult.results || [];
-const recentDocs = recentDocsResult.results || [];
-
-const toDocHref = (caseSlug: string, slugPath: string) => {
-if (slugPath === caseSlug) return `/docs/case-studies/${caseSlug}/`;
-const rel = slugPath.startsWith(`${caseSlug}/`) ? slugPath.slice(caseSlug.length + 1) : "";
-return rel ? `/docs/case-studies/${caseSlug}/${rel}/` : `/docs/case-studies/${caseSlug}/`;
-};
 ---
 
 <MainLayout
-title="Docs | Tajinder Singh"
-description="Architecture documentation and deep technical case-study sections backed by D1."
-width="full"
-mainClass="docs-pg"
+    title="Docs Index | Tajinder Singh"
+    description="Book-style chapter index for case-study documentation backed by D1."
+    width="full"
+    mainClass="docs-index-page"
 >
-<div class="docs-shell">
-<aside class="docs-sidebar">
-<div class="docs-sidebar__inner">
-<p class="docs-sidebar__eyebrow">Knowledge Base</p>
-<h1 class="docs-sidebar__title">Architecture Docs</h1>
-<p class="docs-sidebar__copy">
-Detailed technical docs synced from Outline and served from D1.
-</p>
+    <section class="docs-index-shell" aria-labelledby="docs-index-title" data-docs-index>
+        <div class="docs-index-book">
+            <header class="docs-index-head">
+                <p class="docs-index-kicker">Documentation</p>
+                <h1 id="docs-index-title">Case Study Chapters</h1>
+                <p class="docs-index-subtitle">
+                    Book-style index of chapter titles. Choose a case study to open its full documentation.
+                </p>
+                <label class="docs-index-search-label" for="docs-index-search">Find chapter</label>
+                <input
+                    id="docs-index-search"
+                    class="docs-index-search"
+                    type="search"
+                    placeholder="Search case studies..."
+                    autocomplete="off"
+                    data-docs-index-search
+                />
+            </header>
 
-<form class="docs-search" action="/docs/" data-docs-home-search>
-<label for="docs-home-search-input" class="sr-only">Search docs</label>
-<input
-id="docs-home-search-input"
-type="search"
-name="q"
-placeholder="Search docs..."
-autocomplete="off"
-/>
-<div class="docs-search-results" data-docs-home-search-results hidden></div>
-</form>
-
-<nav aria-label="Case studies">
-<p class="docs-sidebar__group-label">Case Studies</p>
-<ul class="docs-case-list">
-{caseStudies.map((item) => (
-<li>
-<a href={`/docs/case-studies/${item.slug}/`}>
-<span>{item.title}</span>
-<small>{item.docs_total}</small>
-</a>
-</li>
-))}
-</ul>
-</nav>
-</div>
-</aside>
-
-<div class="docs-body">
-<article class="docs-article">
-<nav class="docs-breadcrumbs" aria-label="Breadcrumb">
-<ol>
-<li><span aria-current="page">Docs</span></li>
-</ol>
-</nav>
-
-<h2 class="docs-page-title">Documentation Home</h2>
-<p class="docs-lede">
-Use this hub to navigate technical case-study docs with deep architecture sections,
-decision logs, and implementation details.
-</p>
-
-<section class="docs-section" aria-labelledby="docs-cases-title">
-<h3 id="docs-cases-title">Case Study Index</h3>
-<ul class="docs-case-grid">
-{caseStudies.map((item) => (
-<li>
-<a href={`/docs/case-studies/${item.slug}/`} class="docs-case-card">
-<strong>{item.title}</strong>
-<span>{item.summary || "Explore implementation details and architecture decisions."}</span>
-<em>{item.docs_total} section{item.docs_total === 1 ? "" : "s"}</em>
-</a>
-</li>
-))}
-</ul>
-</section>
-
-<section class="docs-section" aria-labelledby="docs-recent-title">
-<h3 id="docs-recent-title">Recent Sections</h3>
-<ul class="docs-recent-list">
-{recentDocs.map((doc) => (
-<li>
-<a href={toDocHref(doc.case_slug, doc.slug_path)}>{doc.doc_title}</a>
-<span>{doc.case_title}</span>
-</li>
-))}
-</ul>
-</section>
-</article>
-</div>
-
-<aside class="docs-rail" aria-label="Quick links">
-<p class="docs-rail__label">Quick Links</p>
-<ul class="docs-rail__list">
-<li><a href="/work/">Portfolio Case Studies</a></li>
-<li><a href="/about/">About</a></li>
-<li><a href="/contact/">Contact</a></li>
-</ul>
-
-<p class="docs-rail__label">Jump to Case</p>
-<ul class="docs-rail__list">
-{caseStudies.slice(0, 8).map((item) => (
-<li><a href={`/docs/case-studies/${item.slug}/`}>{item.title}</a></li>
-))}
-</ul>
-</aside>
-</div>
+            <div class="docs-index-viewport" data-docs-index-viewport>
+                <ol class="docs-index-list" data-docs-index-list>
+                    {caseStudies.map((item, index) => (
+                        <li data-title={item.title.toLowerCase()}>
+                            <a href={`/docs/case-studies/${item.slug}/`}>
+                                <span class="docs-index-serial">{String(index + 1).padStart(2, "0")}</span>
+                                <span class="docs-index-title">{item.title}</span>
+                            </a>
+                        </li>
+                    ))}
+                </ol>
+                <p class="docs-index-empty" data-docs-index-empty hidden>No matching case study.</p>
+            </div>
+        </div>
+    </section>
 </MainLayout>
 
 <script is:inline>
-(() => {
-const root = document.querySelector('[data-docs-home-search]');
-if (!(root instanceof HTMLFormElement)) return;
+    (() => {
+        const root = document.querySelector('[data-docs-index]');
+        if (!(root instanceof HTMLElement)) return;
 
-const input = root.querySelector('input[type="search"]');
-const resultBox = root.querySelector('[data-docs-home-search-results]');
-if (!(input instanceof HTMLInputElement) || !(resultBox instanceof HTMLDivElement)) return;
+        const search = root.querySelector('[data-docs-index-search]');
+        const list = root.querySelector('[data-docs-index-list]');
+        const empty = root.querySelector('[data-docs-index-empty]');
+        if (!(search instanceof HTMLInputElement) || !(list instanceof HTMLOListElement) || !(empty instanceof HTMLParagraphElement)) return;
 
-let debounceId = 0;
+        const items = Array.from(list.querySelectorAll('li'));
 
-const hideResults = () => {
-resultBox.hidden = true;
-resultBox.replaceChildren();
-};
+        const filter = () => {
+            const query = search.value.trim().toLowerCase();
+            let visibleCount = 0;
 
-const renderItems = (items) => {
-resultBox.replaceChildren();
-resultBox.hidden = false;
+            for (const item of items) {
+                if (!(item instanceof HTMLLIElement)) continue;
+                const title = item.dataset.title || '';
+                const show = query.length === 0 || title.includes(query);
+                item.hidden = !show;
+                if (show) visibleCount += 1;
+            }
 
-if (!Array.isArray(items) || items.length === 0) {
-const empty = document.createElement('p');
-empty.className = 'docs-search-results__empty';
-empty.textContent = 'No results.';
-resultBox.appendChild(empty);
-return;
-}
+            empty.hidden = visibleCount !== 0;
+            list.hidden = visibleCount === 0;
+        };
 
-for (const item of items) {
-if (!item || typeof item.href !== 'string') continue;
-const link = document.createElement('a');
-link.className = 'docs-search-results__item';
-link.href = item.href;
-
-const title = document.createElement('strong');
-title.textContent = typeof item.title === 'string' ? item.title : 'Untitled';
-
-const meta = document.createElement('span');
-meta.textContent = typeof item.caseTitle === 'string' ? item.caseTitle : '';
-
-link.appendChild(title);
-link.appendChild(meta);
-resultBox.appendChild(link);
-}
-};
-
-input.addEventListener('input', () => {
-const q = input.value.trim();
-window.clearTimeout(debounceId);
-
-if (q.length < 2) {
-hideResults();
-return;
-}
-
-debounceId = window.setTimeout(async () => {
-try {
-const res = await fetch(`/api/docs/search?q=${encodeURIComponent(q)}&limit=8`, {
-headers: { accept: 'application/json' },
-});
-if (!res.ok) {
-hideResults();
-return;
-}
-const payload = await res.json();
-renderItems(payload.items);
-} catch {
-hideResults();
-}
-}, 180);
-});
-
-document.addEventListener('click', (event) => {
-if (!(event.target instanceof Node)) return;
-if (!root.contains(event.target)) hideResults();
-});
-})();
+        search.addEventListener('input', filter);
+    })();
 </script>
 
 <style>
-:global(.site-main.docs-pg) {
-padding: 0;
-}
+    :global(.site-main.docs-index-page) {
+        padding: 0;
+    }
 
-.docs-shell {
-display: grid;
-grid-template-columns: 280px 1fr 220px;
-min-height: calc(100vh - 4rem);
-border-top: 1px solid var(--color-border);
-}
+    .docs-index-shell {
+        min-height: calc(100vh - 4rem);
+        padding: clamp(1rem, 2vw, 2.2rem);
+        display: grid;
+        align-items: center;
+        background: radial-gradient(circle at 10% -15%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 45%);
+    }
 
-.docs-sidebar {
-position: sticky;
-top: 0;
-height: 100vh;
-overflow-y: auto;
-border-right: 1px solid var(--color-border);
-}
+    .docs-index-book {
+        width: min(100%, 78rem);
+        margin-inline: auto;
+        border: 1px solid var(--color-border);
+        border-radius: 1rem;
+        background: color-mix(in srgb, var(--color-bg-elevated) 90%, var(--color-surface));
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
 
-.docs-sidebar__inner {
-padding: 1.5rem 1rem 2rem;
-}
+    .docs-index-head {
+        padding: clamp(1rem, 2vw, 1.6rem);
+        border-bottom: 1px solid var(--color-border);
+        display: grid;
+        gap: 0.45rem;
+    }
 
-.docs-sidebar__eyebrow {
-margin: 0 0 0.2rem;
-font-size: 0.68rem;
-letter-spacing: 0.1em;
-text-transform: uppercase;
-color: var(--color-text-muted);
-}
+    .docs-index-kicker {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
 
-.docs-sidebar__title {
-margin: 0;
-font-size: 1.35rem;
-line-height: 1.2;
-}
+    .docs-index-head h1 {
+        margin: 0;
+        font-size: clamp(1.2rem, 1rem + 1.3vw, 1.95rem);
+        line-height: 1.2;
+    }
 
-.docs-sidebar__copy {
-margin: 0.5rem 0 1rem;
-font-size: 0.88rem;
-color: var(--color-text-muted);
-}
+    .docs-index-subtitle {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.95rem;
+        max-width: 70ch;
+    }
 
-.docs-sidebar__group-label {
-margin: 1.1rem 0 0.35rem;
-font-size: 0.72rem;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-color: var(--color-text-muted);
-}
+    .docs-index-search-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        margin-top: 0.15rem;
+    }
 
-.docs-search {
-position: relative;
-}
+    .docs-index-search {
+        width: min(100%, 28rem);
+        border-radius: 0.62rem;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        color: var(--color-text);
+        padding: 0.56rem 0.7rem;
+        font: inherit;
+    }
 
-.docs-search input {
-width: 100%;
-padding: 0.5rem 0.6rem;
-border-radius: 0.5rem;
-border: 1px solid var(--color-border);
-background: var(--color-surface);
-color: var(--color-text);
-}
+    .docs-index-search:focus-visible {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+    }
 
-.docs-search-results {
-position: absolute;
-top: calc(100% + 4px);
-left: 0;
-right: 0;
-z-index: 40;
-display: grid;
-gap: 0.15rem;
-padding: 0.3rem;
-border: 1px solid var(--color-border);
-border-radius: 0.55rem;
-background: var(--color-bg-elevated);
-box-shadow: var(--shadow-md);
-}
+    .docs-index-viewport {
+        max-height: min(68vh, 44rem);
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+        padding: 0.8rem;
+    }
 
-.docs-search-results__item {
-display: grid;
-gap: 0.1rem;
-padding: 0.38rem 0.42rem;
-border-radius: 0.38rem;
-text-decoration: none;
-}
+    .docs-index-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: chapter;
+        display: grid;
+        gap: 0.24rem;
+    }
 
-.docs-search-results__item span {
-font-size: 0.76rem;
-color: var(--color-text-muted);
-}
+    .docs-index-list li a {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.56rem 0.62rem;
+        border-radius: 0.6rem;
+        text-decoration: none;
+        color: var(--color-text);
+        border: 1px solid transparent;
+        transition: background-color 120ms ease, border-color 120ms ease;
+    }
 
-.docs-search-results__empty {
-margin: 0;
-padding: 0.35rem 0.42rem;
-font-size: 0.84rem;
-color: var(--color-text-muted);
-}
+    .docs-index-list li a:hover,
+    .docs-index-list li a:focus-visible {
+        outline: none;
+        background: color-mix(in srgb, var(--color-accent) 11%, transparent);
+        border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+    }
 
-.docs-case-list {
-list-style: none;
-padding: 0;
-margin: 0;
-display: grid;
-gap: 0.2rem;
-}
+    .docs-index-serial {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        color: var(--color-text-muted);
+        letter-spacing: 0.04em;
+        min-width: 2.2rem;
+    }
 
-.docs-case-list a {
-display: flex;
-justify-content: space-between;
-gap: 0.6rem;
-padding: 0.3rem 0.45rem;
-border-radius: 0.38rem;
-text-decoration: none;
-color: var(--color-text-muted);
-}
+    .docs-index-title {
+        font-size: 0.98rem;
+        line-height: 1.35;
+    }
 
-.docs-case-list a:hover {
-background: var(--color-surface);
-color: var(--color-text);
-}
+    .docs-index-empty {
+        margin: 0.35rem;
+        padding: 0.75rem;
+        border: 1px dashed var(--color-border);
+        border-radius: 0.62rem;
+        color: var(--color-text-muted);
+        text-align: center;
+    }
 
-.docs-case-list small {
-font-size: 0.74rem;
-color: var(--color-text-muted);
-}
+    @media (max-width: 700px) {
+        .docs-index-shell {
+            min-height: auto;
+            padding: 0.8rem;
+        }
 
-.docs-body {
-min-width: 0;
-}
+        .docs-index-head {
+            padding: 0.9rem;
+        }
 
-.docs-article {
-margin: 0 auto;
-padding: 2.5rem 3rem 4rem;
-max-width: 74ch;
-}
+        .docs-index-viewport {
+            max-height: 70vh;
+            padding: 0.65rem;
+        }
 
-.docs-breadcrumbs ol {
-list-style: none;
-padding: 0;
-margin: 0 0 1rem;
-font-size: 0.8rem;
-color: var(--color-text-muted);
-}
-
-.docs-page-title {
-margin: 0;
-font-size: clamp(1.65rem, 1.2rem + 1.3vw, 2.3rem);
-line-height: 1.2;
-}
-
-.docs-lede {
-margin-top: 0.7rem;
-font-size: 1rem;
-}
-
-.docs-section {
-margin-top: 2rem;
-}
-
-.docs-section > h3 {
-margin: 0;
-font-size: 1.2rem;
-padding-bottom: 0.3rem;
-border-bottom: 1px solid var(--color-border);
-}
-
-.docs-case-grid {
-list-style: none;
-padding: 0;
-margin: 0.9rem 0 0;
-display: grid;
-grid-template-columns: repeat(2, minmax(0, 1fr));
-gap: 0.7rem;
-}
-
-.docs-case-card {
-display: grid;
-gap: 0.35rem;
-padding: 0.8rem;
-text-decoration: none;
-border: 1px solid var(--color-border);
-border-radius: 0.62rem;
-background: var(--color-bg-elevated);
-}
-
-.docs-case-card strong {
-font-size: 0.98rem;
-color: var(--color-text);
-}
-
-.docs-case-card span {
-font-size: 0.88rem;
-color: var(--color-text-muted);
-}
-
-.docs-case-card em {
-font-style: normal;
-font-size: 0.76rem;
-letter-spacing: 0.04em;
-text-transform: uppercase;
-color: var(--color-text-muted);
-}
-
-.docs-recent-list {
-list-style: none;
-padding: 0;
-margin: 0.9rem 0 0;
-display: grid;
-gap: 0.45rem;
-}
-
-.docs-recent-list li {
-display: grid;
-gap: 0.12rem;
-}
-
-.docs-recent-list span {
-font-size: 0.82rem;
-color: var(--color-text-muted);
-}
-
-.docs-rail {
-position: sticky;
-top: 0;
-height: 100vh;
-overflow-y: auto;
-padding: 2.5rem 1rem 2rem;
-border-left: 1px solid var(--color-border);
-}
-
-.docs-rail__label {
-margin: 0 0 0.45rem;
-font-size: 0.68rem;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: var(--color-text-muted);
-}
-
-.docs-rail__list {
-list-style: none;
-padding: 0;
-margin: 0 0 1.15rem;
-display: grid;
-gap: 0.2rem;
-}
-
-.docs-rail__list a {
-display: block;
-padding: 0.22rem 0.34rem;
-font-size: 0.84rem;
-border-radius: 0.34rem;
-text-decoration: none;
-color: var(--color-text-muted);
-}
-
-.docs-rail__list a:hover {
-color: var(--color-text);
-background: var(--color-surface);
-}
-
-@media (max-width: 1200px) {
-.docs-shell {
-grid-template-columns: 260px 1fr;
-}
-
-.docs-rail {
-display: none;
-}
-}
-
-@media (max-width: 900px) {
-.docs-shell {
-grid-template-columns: 1fr;
-}
-
-.docs-sidebar {
-position: relative;
-height: auto;
-border-right: none;
-border-bottom: 1px solid var(--color-border);
-}
-
-.docs-sidebar__inner {
-padding: 1rem;
-}
-
-.docs-article {
-padding: 1.5rem 1.2rem 2.5rem;
-}
-
-.docs-case-grid {
-grid-template-columns: 1fr;
-}
-}
+        .docs-index-list li a {
+            gap: 0.55rem;
+            padding: 0.5rem 0.52rem;
+        }
+    }
 </style>
