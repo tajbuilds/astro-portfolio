@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import {
 	contentSlug,
 	getPublishedWorkEntries,
@@ -6,7 +7,16 @@ import {
 	slugifyTag,
 } from '../lib/data/portfolio-data';
 
-export const prerender = true;
+export const prerender = false;
+
+type CaseStudyRow = {
+	id: string;
+	slug: string;
+};
+
+type DocumentRow = {
+	slug_path: string;
+};
 
 const toUrl = (origin: string, path: string) => `${origin}${path}`;
 
@@ -20,7 +30,7 @@ const xmlEscape = (value: string) =>
 
 export const GET: APIRoute = async ({ request }) => {
 	const origin = new URL(request.url).origin;
-	const staticPaths = ['/', '/about/', '/contact/', '/work/'];
+	const staticPaths = ['/', '/about/', '/contact/', '/work/', '/docs/'];
 	const [workEntries, workTags] = await Promise.all([getPublishedWorkEntries(), getPublishedWorkTags()]);
 
 	const contentPaths = [
@@ -28,7 +38,45 @@ export const GET: APIRoute = async ({ request }) => {
 		...workTags.map((tag) => `/work/tags/${slugifyTag(tag)}/`),
 	];
 
-	const allPaths = Array.from(new Set([...staticPaths, ...contentPaths])).sort();
+	const docsPaths: string[] = [];
+	const db = env.DB as D1Database | undefined;
+
+	if (db) {
+		const caseStudiesResult = await db
+			.prepare(
+				`SELECT id, slug
+				 FROM case_studies
+				 WHERE is_visible = 1
+				 ORDER BY nav_order ASC, title ASC`
+			)
+			.all<CaseStudyRow>();
+
+		for (const caseStudy of caseStudiesResult.results || []) {
+			docsPaths.push(`/docs/case-studies/${caseStudy.slug}/`);
+
+			const docsResult = await db
+				.prepare(
+					`SELECT slug_path
+					 FROM documents
+					 WHERE case_study_id = ?1
+					 ORDER BY depth ASC, nav_order ASC, title ASC`
+				)
+				.bind(caseStudy.id)
+				.all<DocumentRow>();
+
+			for (const doc of docsResult.results || []) {
+				const slugPath = doc.slug_path || '';
+				if (!slugPath || slugPath === caseStudy.slug) continue;
+				const rel = slugPath.startsWith(`${caseStudy.slug}/`)
+					? slugPath.slice(caseStudy.slug.length + 1)
+					: '';
+				if (!rel) continue;
+				docsPaths.push(`/docs/case-studies/${caseStudy.slug}/${rel}/`);
+			}
+		}
+	}
+
+	const allPaths = Array.from(new Set([...staticPaths, ...contentPaths, ...docsPaths])).sort();
 
 	const urls = allPaths
 		.map((path) => `  <url><loc>${xmlEscape(toUrl(origin, path))}</loc></url>`)

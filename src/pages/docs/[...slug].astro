@@ -121,6 +121,7 @@ const bodyHtml = await marked.parse(currentDoc.body_md || "");
 <MainLayout
 title={`${currentDoc.title} | ${caseStudy.title}`}
 description={currentDoc.excerpt || caseStudy.summary || "Case study documentation"}
+type="article"
 width="full"
 mainClass="docs-pg"
 >
