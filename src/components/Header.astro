@@ -444,11 +444,48 @@ import { SITE_BRAND } from '../consts';
 		}
 
 		nav {
-			flex-direction: column;
+			flex-direction: row;
+			justify-content: space-between;
+			gap: 0.45rem;
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+
+		nav::-webkit-scrollbar {
+			display: none;
+		}
+
+		.brand {
+			flex: 0 0 auto;
+			font-size: 0.84rem;
+			letter-spacing: 0.02em;
+		}
+
+		.nav-controls {
+			flex: 0 0 auto;
+			flex-direction: row;
+			justify-content: flex-end;
+			gap: 0.5rem;
 		}
 
 		.internal-links {
 			justify-content: center;
+			flex-wrap: nowrap;
+			gap: 0.35rem;
+		}
+
+		.theme-picker__button {
+			min-width: 3.05rem;
+			padding-inline: 1.55rem;
+		}
+
+		.theme-picker__label {
+			display: none;
+		}
+
+		.theme-picker__menu {
+			min-width: 8.5rem;
 		}
 	}
 </style>
