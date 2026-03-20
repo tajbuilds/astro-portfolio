@@ -3,11 +3,8 @@ title: "Internal ML Workbench Modernization"
 description: "Impact: Converted a stale AutoML app into a modular, containerized, self-hosted workbench with reproducible training and CI-backed delivery."
 date: "2026-02-18T00:00:00.000Z"
 tags:
-  - Streamlit
-  - Scikit-learn
-  - Docker
-  - GHCR
-  - CI/CD
+  - Machine Learning
+  - Platform Architecture
 coverImage: "/images/work-ml-workbench.svg"
 featured: true
 draft: false

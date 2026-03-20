@@ -4,10 +4,7 @@ description: "Impact: Reduced abusive submissions with verification-first edge r
 date: "2026-01-12T00:00:00.000Z"
 tags:
   - Cloudflare Workers
-  - Turnstile
-  - Verification
-  - Secure Routing
-  - Observability
+  - Edge Security
 coverImage: "/diagrams/turnstile-edge-worker-flow.svg"
 featured: true
 draft: false
@@ -99,5 +96,4 @@ A Cloudflare Worker acts as the controlled gateway for form traffic before autom
 - Tighten per-form host/action binding policies.
 - Add route-level rate limiting and adaptive challenge escalation.
 - Expand dashboards for block-reason trends and targeted form monitoring.
-
 

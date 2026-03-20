@@ -12,6 +12,7 @@ interface Props {
 }
 
 const { title, description, tags, href, date, compact = false } = Astro.props;
+const displayTags = tags.slice(0, 3);
 ---
 
 <a class="project-card-link" href={href} aria-label={`Open case study: ${title}`}>
@@ -26,7 +27,7 @@ const { title, description, tags, href, date, compact = false } = Astro.props;
 		<h3>{title}</h3>
 		<p>{description}</p>
 		<div class="project-card__tags">
-			{tags.map((tag) => <PillTag label={tag} />)}
+			{displayTags.map((tag) => <PillTag label={tag} />)}
 		</div>
 		<span class="project-card__cta">Read case study -></span>
 	</article>
