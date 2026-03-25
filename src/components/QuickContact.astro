@@ -41,8 +41,7 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 					</label>
 					<label>
 						<span>Message</span>
-						<textarea name="message" rows="2" required minlength="30" maxlength="2500"></textarea>
-						<small>Minimum 30 characters and 29 words.</small>
+						<textarea name="message" rows="2" required></textarea>
 					</label>
 					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
 					<div class="quick-contact-actions">
@@ -74,9 +73,6 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		const statusEl = document.getElementById('quick-contact-status');
 		const firstInput = form?.querySelector('input[name="name"]');
 		const turnstileTarget = document.getElementById('quick-contact-turnstile-widget');
-		const MIN_MESSAGE_CHARS = 30;
-		const MIN_MESSAGE_WORDS = 29;
-		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
 		const footer = document.querySelector('footer');
 
 		let previousFocus = null;
@@ -201,13 +197,8 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 				return;
 			}
 
-			if (payload.message.trim().length < MIN_MESSAGE_CHARS) {
-				setStatus('Message needs at least 30 characters.', true);
-				return;
-			}
-
-			if (wordCount(payload.message) < MIN_MESSAGE_WORDS) {
-				setStatus('Message needs at least 29 words.', true);
+			if (!payload.message.trim()) {
+				setStatus('Please enter your message.', true);
 				return;
 			}
 
@@ -432,4 +423,3 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		}
 	}
 </style>
-

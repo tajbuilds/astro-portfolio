@@ -32,8 +32,7 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 
 					<label>
 						<span>Message</span>
-						<textarea name="message" rows="6" required minlength="30" maxlength="2500"></textarea>
-						<small class="field-hint">Minimum 30 characters and 29 words.</small>
+						<textarea name="message" rows="6" required></textarea>
 					</label>
 
 					<input class="honeypot" type="text" name="company" tabindex="-1" autocomplete="off" />
@@ -121,10 +120,6 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		const statusEl = document.getElementById('contact-status');
 		if (!(form instanceof HTMLFormElement) || !(statusEl instanceof HTMLElement)) return;
 
-		const MIN_MESSAGE_CHARS = 30;
-		const MIN_MESSAGE_WORDS = 29;
-		const wordCount = (value) => value.trim().split(/\s+/).filter(Boolean).length;
-
 		const setStatus = (message, isError = false) => {
 			statusEl.textContent = message;
 			statusEl.dataset.error = isError ? 'true' : 'false';
@@ -153,13 +148,8 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 				return;
 			}
 
-			if (payload.message.trim().length < MIN_MESSAGE_CHARS) {
-				setStatus('Please enter a message with at least 30 characters.', true);
-				return;
-			}
-
-			if (wordCount(payload.message) < MIN_MESSAGE_WORDS) {
-				setStatus('Please provide a bit more detail (minimum 29 words).', true);
+			if (!payload.message.trim()) {
+				setStatus('Please enter your message.', true);
 				return;
 			}
 
@@ -365,7 +355,6 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		}
 	}
 </style>
-
 
 
 

@@ -6,9 +6,6 @@ export const prerender = false;
 const MIN_NAME_LEN = 2;
 const MAX_NAME_LEN = 120;
 const MAX_EMAIL_LEN = 190;
-const MIN_MESSAGE_CHARS = 30;
-const MIN_MESSAGE_WORDS = 29;
-const MAX_MESSAGE_LEN = 2500;
 
 const json = (status: number, payload: Record<string, unknown>) =>
 	new Response(JSON.stringify(payload), {
@@ -30,7 +27,6 @@ const escapeHtml = (value: string) =>
 		.replaceAll("'", '&#39;');
 
 const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const wordCount = (value: string) => value.trim().split(/\s+/).filter(Boolean).length;
 
 const parseInput = async (request: Request) => {
 	const contentType = request.headers.get('content-type') || '';
@@ -79,12 +75,8 @@ export const POST: APIRoute = async ({ request }) => {
 		return json(400, { ok: false, message: 'Please enter a valid email address.' });
 	}
 
-	if (!message || message.length < MIN_MESSAGE_CHARS || message.length > MAX_MESSAGE_LEN) {
-		return json(400, { ok: false, message: 'Please enter a message with at least 30 characters.' });
-	}
-
-	if (wordCount(message) < MIN_MESSAGE_WORDS) {
-		return json(400, { ok: false, message: 'Please provide more detail (minimum 29 words).' });
+	if (!message) {
+		return json(400, { ok: false, message: 'Please enter your message.' });
 	}
 
 	if (!token) {
