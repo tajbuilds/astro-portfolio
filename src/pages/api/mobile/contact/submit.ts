@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
@@ -41,8 +42,7 @@ const parseInput = async (request: Request) => {
 	};
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+export const POST: APIRoute = async ({ request }) => {
 	if (!env.RESEND_API_KEY || !env.CONTACT_TO_EMAIL || !env.CONTACT_FROM_EMAIL) {
 		return json(500, { ok: false, message: 'Email service is not configured yet.' });
 	}
@@ -119,4 +119,3 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	return json(200, { ok: true, message: 'Message sent successfully.' });
 };
-

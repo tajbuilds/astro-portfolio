@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { isAuthorizedMediaRequest, json } from './_shared';
 
 export const prerender = false;
@@ -9,8 +10,7 @@ const notFound = () =>
 		headers: { 'cache-control': 'no-store' },
 	});
 
-export const GET: APIRoute = async ({ params, locals }) => {
-	const env = locals.runtime.env;
+export const GET: APIRoute = async ({ params }) => {
 	const rawKey = params.key || '';
 	const key = decodeURIComponent(rawKey).replace(/^\/+/, '').trim();
 
@@ -34,8 +34,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
 	});
 };
 
-export const DELETE: APIRoute = async ({ params, locals, request }) => {
-	const env = locals.runtime.env;
+export const DELETE: APIRoute = async ({ params, request }) => {
 	const rawKey = params.key || '';
 	const key = decodeURIComponent(rawKey).replace(/^\/+/, '').trim();
 

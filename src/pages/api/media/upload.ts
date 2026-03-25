@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { isAuthorizedMediaRequest, json, resolveUploadFolder, sanitizeKey } from './_shared';
 
 export const prerender = false;
@@ -22,8 +23,7 @@ const extensionFor = (contentType: string) => {
 	}
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+export const POST: APIRoute = async ({ request }) => {
 
 	if (!env.MEDIA_BUCKET) {
 		return json(500, { ok: false, message: 'MEDIA_BUCKET binding is missing.' });

@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { inferContentType, isAuthorizedMediaRequest, json, pickCollectionRoot } from './_shared';
 
 export const prerender = false;
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-export const GET: APIRoute = async ({ request, locals }) => {
-	const env = locals.runtime.env;
+export const GET: APIRoute = async ({ request }) => {
 	if (!env.MEDIA_BUCKET) {
 		return json(500, { ok: false, message: 'MEDIA_BUCKET binding is missing.' });
 	}

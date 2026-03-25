@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
@@ -27,8 +28,8 @@ const normalizeQuery = (value: string) =>
 		.replace(/\s+/g, ' ')
 		.trim();
 
-export const GET: APIRoute = async ({ url, locals }) => {
-	const db = locals.runtime.env.DB as D1Database | undefined;
+export const GET: APIRoute = async ({ url }) => {
+	const db = env.DB as D1Database | undefined;
 	if (!db) return json(500, { ok: false, message: "D1 binding 'DB' is missing on this environment." });
 
 	const q = normalizeQuery(clean(url.searchParams.get('q')));
