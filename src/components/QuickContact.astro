@@ -127,6 +127,9 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		const openModal = async () => {
 			previousFocus = document.activeElement;
 			modal.hidden = false;
+			requestAnimationFrame(() => {
+				modal.dataset.open = 'true';
+			});
 			document.body.style.overflow = 'hidden';
 			if (firstInput instanceof HTMLElement) firstInput.focus();
 
@@ -140,9 +143,12 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		};
 
 		const closeModal = () => {
-			modal.hidden = true;
-			document.body.style.overflow = '';
-			if (previousFocus instanceof HTMLElement) previousFocus.focus();
+			modal.dataset.open = 'false';
+			window.setTimeout(() => {
+				modal.hidden = true;
+				document.body.style.overflow = '';
+				if (previousFocus instanceof HTMLElement) previousFocus.focus();
+			}, 220);
 		};
 
 		trigger.addEventListener('click', openModal);
@@ -251,11 +257,34 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		border-radius: 999px;
 		cursor: pointer;
 		box-shadow: var(--shadow-sm);
-		transition: bottom 180ms ease, transform 120ms ease, background-color 120ms ease;
+		transition:
+			bottom var(--motion-base) var(--ease-standard),
+			transform var(--motion-fast) var(--ease-standard),
+			background-color var(--motion-fast) var(--ease-standard),
+			box-shadow var(--motion-base) var(--ease-standard);
+	}
+
+	.quick-contact-trigger::after {
+		content: '';
+		position: absolute;
+		inset: -0.3rem;
+		border-radius: inherit;
+		border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+		opacity: 0;
+		transform: scale(0.92);
+		transition: opacity var(--motion-base) var(--ease-standard), transform var(--motion-base) var(--ease-emphasis);
+		pointer-events: none;
 	}
 
 	.quick-contact-trigger:hover {
 		background: var(--color-accent-strong);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.quick-contact-trigger:hover::after {
+		opacity: 1;
+		transform: scale(1);
 	}
 
 	.quick-contact-trigger.is-over-footer {
@@ -272,6 +301,9 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		position: absolute;
 		inset: 0;
 		background: rgba(2, 6, 23, 0.64);
+		backdrop-filter: blur(8px);
+		opacity: 0;
+		transition: opacity var(--motion-base) var(--ease-standard);
 	}
 
 	.quick-contact-panel {
@@ -283,7 +315,22 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: var(--color-bg-elevated);
-		box-shadow: var(--shadow-md);
+		box-shadow: var(--shadow-lg);
+		opacity: 0;
+		transform: translate3d(0, 12px, 0) scale(0.97);
+		transform-origin: bottom right;
+		transition:
+			opacity var(--motion-base) var(--ease-standard),
+			transform var(--motion-base) var(--ease-emphasis);
+	}
+
+	.quick-contact-modal[data-open='true'] .quick-contact-backdrop {
+		opacity: 1;
+	}
+
+	.quick-contact-modal[data-open='true'] .quick-contact-panel {
+		opacity: 1;
+		transform: translate3d(0, 0, 0) scale(1);
 	}
 
 	.quick-contact-close {
@@ -420,6 +467,19 @@ const hasTurnstile = Boolean(turnstileSiteKey);
 		.quick-contact-panel {
 			max-height: 78vh;
 			overflow: auto;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.quick-contact-trigger,
+		.quick-contact-trigger::after,
+		.quick-contact-backdrop,
+		.quick-contact-panel {
+			transition: none;
+		}
+
+		.quick-contact-trigger:hover {
+			transform: none;
 		}
 	}
 </style>

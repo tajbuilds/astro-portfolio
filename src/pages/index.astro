@@ -22,19 +22,19 @@ const techGroups = {
 		<section class="hero section">
 			<div class="hero__layout">
 				<div class="hero__content">
-					<p class="hero__eyebrow">Solutions Architect · Edge, Automation &amp; Data Platforms</p>
-					<h1>Tajinder Singh</h1>
-					<p class="hero__mission">
+					<p class="hero__eyebrow hero__stagger hero__stagger--1">Solutions Architect · Edge, Automation &amp; Data Platforms</p>
+					<h1 class="hero__stagger hero__stagger--2">Tajinder Singh</h1>
+					<p class="hero__mission hero__stagger hero__stagger--3">
 						I design verification-first, automation-driven platform architectures that reduce operational
 						friction, harden edge entry points, and move data reliably from edge events into
 						production systems.
 					</p>
-					<div class="hero__actions">
+					<div class="hero__actions hero__stagger hero__stagger--4">
 						<ButtonLink href="/work">View Work</ButtonLink>
 						<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
 					</div>
-					<p class="hero__focus-title">Core Focus Areas</p>
-					<div class="hero__pills">
+					<p class="hero__focus-title hero__stagger hero__stagger--5">Core Focus Areas</p>
+					<div class="hero__pills hero__stagger hero__stagger--6">
 						<PillTag label="Cloudflare Workers" />
 						<PillTag label="Secure Verification Paths" />
 						<PillTag label="Event-Driven Automation" />
@@ -42,7 +42,7 @@ const techGroups = {
 						<PillTag label="Data Pipelines" />
 					</div>
 				</div>
-				<figure class="hero__avatar" aria-hidden="true">
+				<figure class="hero__avatar hero__stagger hero__stagger--4" aria-hidden="true">
 					<img
 						src="/images/tajinder-singh-portrait.jpg"
 						alt=""
@@ -55,15 +55,17 @@ const techGroups = {
 		</section>
 
 		<section class="section">
+			<div data-reveal="soft">
 			<SectionHeading
 				eyebrow="Work"
 				title="Featured Case Studies"
 				description="Selected implementations with measurable operational impact."
 			/>
+			</div>
 			{featured.length ? (
 				<ul class="grid grid--cards">
 					{featured.map((item) => (
-						<li>
+						<li data-reveal="soft">
 							<ProjectCard
 								title={item.data.title}
 								description={item.data.description}
@@ -79,23 +81,25 @@ const techGroups = {
 		</section>
 
 		<section class="section">
-			<SectionHeading eyebrow="What I Do" title="Architecture Domains" />
+			<div data-reveal="soft">
+				<SectionHeading eyebrow="What I Do" title="Architecture Domains" />
+			</div>
 			<div class="grid grid--three">
-				<article class="info-card">
+				<article class="info-card" data-reveal="soft">
 					<h3>Edge &amp; Verification Architecture</h3>
 					<p>
 						Workers-based routing, request validation, and hardened verification paths designed to stop
 						abuse before it reaches origin systems.
 					</p>
 				</article>
-				<article class="info-card">
+				<article class="info-card" data-reveal="soft">
 					<h3>Automation &amp; Orchestration</h3>
 					<p>
 						Event-driven workflows that replace brittle manual operations with resilient, observable
 						automation pipelines.
 					</p>
 				</article>
-				<article class="info-card">
+				<article class="info-card" data-reveal="soft">
 					<h3>Search &amp; Data Platforms</h3>
 					<p>
 						Structured ingestion architecture, schema governance, and faceted discovery systems that scale
@@ -106,15 +110,17 @@ const techGroups = {
 		</section>
 
 		<section class="section">
-			<SectionHeading eyebrow="Selected Technology" title="Platform-Fit Tooling" />
-			<p class="section-intro">
+			<div data-reveal="soft">
+				<SectionHeading eyebrow="Selected Technology" title="Platform-Fit Tooling" />
+			</div>
+			<p class="section-intro" data-reveal="soft">
 				I work across platform boundaries, selecting tools based on architectural fit rather than trend
 				alignment.
 			</p>
 			<div class="grid grid--stack">
 				{
 					Object.entries(techGroups).map(([group, tech]) => (
-						<section class="tech-group">
+						<section class="tech-group" data-reveal="soft">
 							<h3>{group}</h3>
 							<div class="tech-group__items">
 								{tech.map((item) => <PillTag label={item} />)}
@@ -125,7 +131,7 @@ const techGroups = {
 			</div>
 		</section>
 
-		<section class="section now">
+		<section class="section now" data-reveal="soft">
 			<SectionHeading eyebrow="Now" title="Currently Building" />
 			<p>
 				Designing verification-first edge pipelines that connect Cloudflare entry points to orchestration
@@ -134,7 +140,7 @@ const techGroups = {
 			</p>
 		</section>
 
-		<section class="section contact-cta">
+		<section class="section contact-cta" data-reveal="soft">
 			<SectionHeading eyebrow="Contact" title="Let's Build Useful Systems" />
 			<p>
 				If you are shipping automation-heavy products or edge-first platforms, I can help design
@@ -156,13 +162,44 @@ const techGroups = {
 	}
 
 	.hero {
+		position: relative;
+		overflow: hidden;
 		padding: clamp(1.1rem, 3vw, 2rem);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.hero::before,
+	.hero::after {
+		content: '';
+		position: absolute;
+		border-radius: 999px;
+		filter: blur(24px);
+		pointer-events: none;
+		opacity: 0.55;
+	}
+
+	.hero::before {
+		top: -2.2rem;
+		right: 10%;
+		width: 14rem;
+		height: 14rem;
+		background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+	}
+
+	.hero::after {
+		bottom: -4rem;
+		left: -2rem;
+		width: 12rem;
+		height: 12rem;
+		background: color-mix(in srgb, var(--color-focus) 12%, transparent);
 	}
 
 	.hero__layout {
+		position: relative;
+		z-index: 1;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		gap: 1rem;
@@ -219,6 +256,7 @@ const techGroups = {
 		border-radius: 999px;
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 95%, transparent);
+		box-shadow: 0 0 0 0.35rem color-mix(in srgb, var(--color-accent) 10%, transparent), var(--shadow-md);
 	}
 
 	.hero__avatar img {
@@ -231,6 +269,36 @@ const techGroups = {
 	.section-intro {
 		margin: -0.5rem 0 1rem;
 		max-width: 58rem;
+	}
+
+	.hero__stagger {
+		opacity: 0;
+		transform: translate3d(0, 18px, 0);
+		animation: hero-rise 720ms var(--ease-emphasis) forwards;
+	}
+
+	.hero__stagger--1 {
+		animation-delay: 70ms;
+	}
+
+	.hero__stagger--2 {
+		animation-delay: 130ms;
+	}
+
+	.hero__stagger--3 {
+		animation-delay: 200ms;
+	}
+
+	.hero__stagger--4 {
+		animation-delay: 270ms;
+	}
+
+	.hero__stagger--5 {
+		animation-delay: 340ms;
+	}
+
+	.hero__stagger--6 {
+		animation-delay: 410ms;
 	}
 
 	.grid {
@@ -291,6 +359,18 @@ const techGroups = {
 		text-decoration: none;
 	}
 
+	@keyframes hero-rise {
+		from {
+			opacity: 0;
+			transform: translate3d(0, 18px, 0);
+		}
+
+		to {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+	}
+
 	@media (max-width: 980px) {
 		.grid--cards,
 		.grid--three,
@@ -304,6 +384,14 @@ const techGroups = {
 
 		.hero__avatar {
 			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__stagger {
+			opacity: 1;
+			transform: none;
+			animation: none;
 		}
 	}
 </style>

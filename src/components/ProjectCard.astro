@@ -29,7 +29,7 @@ const displayTags = tags.slice(0, 3);
 		<div class="project-card__tags">
 			{displayTags.map((tag) => <PillTag label={tag} />)}
 		</div>
-		<span class="project-card__cta">Read case study -></span>
+		<span class="project-card__cta">Read case study <span aria-hidden="true">-></span></span>
 	</article>
 </a>
 
@@ -42,6 +42,8 @@ const displayTags = tags.slice(0, 3);
 	}
 
 	.project-card {
+		position: relative;
+		isolation: isolate;
 		display: grid;
 		gap: 0.85rem;
 		height: 100%;
@@ -50,14 +52,41 @@ const displayTags = tags.slice(0, 3);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
 		box-shadow: var(--shadow-sm);
-		transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+		overflow: hidden;
+		transition:
+			border-color var(--motion-fast) var(--ease-standard),
+			box-shadow var(--motion-base) var(--ease-standard),
+			transform var(--motion-base) var(--ease-emphasis),
+			background-color var(--motion-base) var(--ease-standard);
+	}
+
+	.project-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(130deg, color-mix(in srgb, var(--color-accent) 14%, transparent), transparent 42%),
+			linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.08) 50%, transparent 82%);
+		opacity: 0;
+		transform: translateX(-14%);
+		transition:
+			opacity var(--motion-base) var(--ease-standard),
+			transform 680ms var(--ease-emphasis);
+		pointer-events: none;
 	}
 
 	.project-card:hover,
 	.project-card:focus-within {
 		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
-		box-shadow: var(--shadow-md);
-		transform: translateY(-2px);
+		box-shadow: var(--shadow-lg);
+		transform: translateY(-5px);
+		background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
+	}
+
+	.project-card:hover::before,
+	.project-card:focus-within::before {
+		opacity: 1;
+		transform: translateX(12%);
 	}
 
 	.project-card h3 {
@@ -90,14 +119,31 @@ const displayTags = tags.slice(0, 3);
 		font-size: 0.9rem;
 		font-weight: 700;
 		color: var(--color-accent);
+		transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
 	}
 
 	.project-card-link:hover .project-card__cta,
 	.project-card-link:focus-visible .project-card__cta {
 		color: var(--color-accent-strong);
+		transform: translateX(4px);
 	}
 
 	.project-card--compact {
 		padding: 1rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-card,
+		.project-card::before,
+		.project-card__cta {
+			transition: none;
+		}
+
+		.project-card:hover,
+		.project-card:focus-within,
+		.project-card-link:hover .project-card__cta,
+		.project-card-link:focus-visible .project-card__cta {
+			transform: none;
+		}
 	}
 </style>

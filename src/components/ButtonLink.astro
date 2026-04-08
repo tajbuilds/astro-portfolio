@@ -14,6 +14,7 @@ const { href, variant = 'primary', class: className } = Astro.props;
 
 <style>
 	.button-link {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -24,11 +25,31 @@ const { href, variant = 'primary', class: className } = Astro.props;
 		text-decoration: none;
 		border-radius: var(--radius-sm);
 		border: 1px solid transparent;
-		transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease;
+		box-shadow: var(--shadow-sm);
+		overflow: hidden;
+		transition:
+			transform var(--motion-fast) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard),
+			background-color var(--motion-base) var(--ease-standard),
+			box-shadow var(--motion-base) var(--ease-standard);
+	}
+
+	.button-link::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(120deg, transparent 16%, rgba(255, 255, 255, 0.18) 50%, transparent 84%);
+		transform: translateX(-120%);
+		transition: transform 620ms var(--ease-emphasis);
 	}
 
 	.button-link:hover {
-		transform: translateY(-1px);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.button-link:hover::before {
+		transform: translateX(120%);
 	}
 
 	.button-link--primary {
@@ -50,5 +71,16 @@ const { href, variant = 'primary', class: className } = Astro.props;
 	.button-link--secondary:hover {
 		border-color: var(--color-accent);
 		color: var(--color-text);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.button-link,
+		.button-link::before {
+			transition: none;
+		}
+
+		.button-link:hover {
+			transform: none;
+		}
 	}
 </style>
