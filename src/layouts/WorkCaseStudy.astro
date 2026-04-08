@@ -34,8 +34,8 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 
 <MainLayout title={`${title} | Work`} description={description} width="full">
 	<article class="work-article">
-		<a class="back-link" href="/work">&larr; Back to Work</a>
-		<header class="work-header">
+		<a class="back-link" href="/work" data-reveal="soft">&larr; Back to Work</a>
+		<header class="work-header" data-reveal="soft">
 			<p class="work-label">Case Study</p>
 			<h1>{title}</h1>
 			<p class="work-description">{description}</p>
@@ -52,7 +52,7 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 		</header>
 		<div class="work-body">
 			{tocItems.length > 0 && (
-				<aside class="work-toc" aria-label="On this page">
+				<aside class="work-toc" aria-label="On this page" data-reveal="left">
 					<p class="work-toc__label">On this page</p>
 					<nav>
 						<ul>
@@ -67,11 +67,11 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 			)}
 
 			<div class="work-content">
-				<div class="work-prose">
+				<div class="work-prose" data-reveal="soft">
 					<slot />
 				</div>
 				{externalCaseStudyUrl && (
-					<section class="work-full-case-study" aria-label="Full case study link">
+					<section class="work-full-case-study" aria-label="Full case study link" data-reveal="soft">
 						<p class="work-full-case-study__eyebrow">Want the full implementation detail?</p>
 						<p class="work-full-case-study__copy">
 							Read the complete case study with deeper architecture decisions, section-by-section
@@ -86,7 +86,7 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 						</a>
 					</section>
 				)}
-				<nav class="work-nav" aria-label="Case study navigation">
+				<nav class="work-nav" aria-label="Case study navigation" data-reveal="soft">
 					{previous ? <a href={`/work/${previous.slug}/`}>&larr; {previous.title}</a> : <span />}
 					{next ? <a href={`/work/${next.slug}/`}>{next.title} &rarr;</a> : <span />}
 				</nav>
@@ -292,12 +292,29 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 	}
 
 	.work-header {
+		position: relative;
+		overflow: hidden;
 		display: grid;
 		gap: 1rem;
 		padding: clamp(1.3rem, 2vw, 2rem);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.work-header::before {
+		content: '';
+		position: absolute;
+		top: -3rem;
+		right: 8%;
+		width: 12rem;
+		height: 12rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+		filter: blur(26px);
+		opacity: 0.6;
+		pointer-events: none;
 	}
 
 	.work-label {
@@ -360,6 +377,7 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 		padding: 0.9rem;
 		max-height: calc(100vh - 7rem);
 		overflow: auto;
+		box-shadow: var(--shadow-sm);
 	}
 
 	.work-toc__label {
@@ -408,6 +426,7 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 		display: grid;
 		gap: 1rem;
 		min-width: 0;
+		padding: 0.1rem;
 	}
 
 	.work-prose :global(img.zoomable-diagram) {
@@ -501,8 +520,23 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 	}
 
 	.work-nav a {
+		display: block;
+		padding: 0.85rem 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
 		font-weight: 600;
 		text-decoration: none;
+		transition:
+			transform var(--motion-fast) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard),
+			box-shadow var(--motion-base) var(--ease-standard);
+	}
+
+	.work-nav a:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
+		box-shadow: var(--shadow-sm);
 	}
 
 	.work-nav a:last-child {
@@ -529,7 +563,7 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
-		box-shadow: var(--shadow-md);
+		box-shadow: var(--shadow-lg);
 	}
 
 	.diagram-lightbox__toolbar {
@@ -643,6 +677,16 @@ const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.dept
 		.diagram-lightbox__toolbar {
 			flex-direction: column;
 			align-items: flex-start;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.work-nav a {
+			transition: none;
+		}
+
+		.work-nav a:hover {
+			transform: none;
 		}
 	}
 </style>

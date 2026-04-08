@@ -12,13 +12,15 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 <MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh for architecture and automation projects.">
 	<Container size="narrow">
 		<section class="contact-page">
-			<SectionHeading
-				eyebrow="Contact"
-				title="Discuss Your Platform Architecture"
-				description="Share your current system, constraints, and timeline. I can help map an implementation path."
-			/>
+			<div data-reveal="soft">
+				<SectionHeading
+					eyebrow="Contact"
+					title="Discuss Your Platform Architecture"
+					description="Share your current system, constraints, and timeline. I can help map an implementation path."
+				/>
+			</div>
 
-			<div class="contact-card">
+			<div class="contact-card" data-reveal="soft">
 				<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
 					<label>
 						<span>Name</span>
@@ -53,7 +55,7 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 					</div>
 				</form>
 
-				<div class="contact-meta" aria-label="Contact links">
+				<div class="contact-meta" aria-label="Contact links" data-reveal="soft">
 					<img
 						class="contact-avatar"
 						src="/images/tajinder-singh-portrait.jpg"
@@ -207,12 +209,29 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 	}
 
 	.contact-card {
+		position: relative;
+		overflow: hidden;
 		padding: 1.2rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
 		display: grid;
 		gap: 1rem;
+		box-shadow: var(--shadow-md);
+	}
+
+	.contact-card::before {
+		content: '';
+		position: absolute;
+		top: -3rem;
+		right: 10%;
+		width: 12rem;
+		height: 12rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+		filter: blur(24px);
+		opacity: 0.6;
+		pointer-events: none;
 	}
 
 	.contact-form {
@@ -240,6 +259,17 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		background: var(--color-bg-elevated);
 		color: var(--color-text);
 		font: inherit;
+		transition:
+			border-color var(--motion-fast) var(--ease-standard),
+			box-shadow var(--motion-fast) var(--ease-standard),
+			transform var(--motion-fast) var(--ease-standard);
+	}
+
+	.contact-form input:focus,
+	.contact-form textarea:focus {
+		border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent);
+		outline: none;
 	}
 
 	.contact-form textarea {
@@ -317,6 +347,7 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
         border-radius: 999px;
         border: 1px solid var(--color-border);
         flex: 0 0 auto;
+        box-shadow: var(--shadow-sm);
     }
 
     .contact-links {
@@ -335,12 +366,16 @@ const turnstileSiteKey = TURNSTILE_SITE_KEY;
 		text-decoration: none;
 		padding: 0.15rem;
 		border-radius: 0.25rem;
-		transition: color 120ms ease, opacity 120ms ease;
+		transition:
+			color var(--motion-fast) var(--ease-standard),
+			opacity var(--motion-fast) var(--ease-standard),
+			transform var(--motion-fast) var(--ease-standard);
 	}
 
 	.contact-icon-link:hover {
 		color: var(--color-accent-strong);
 		opacity: 0.9;
+		transform: translateY(-1px);
 	}
 
 	.contact-icon-link:focus-visible {

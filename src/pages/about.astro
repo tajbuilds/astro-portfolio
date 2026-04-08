@@ -7,13 +7,15 @@ import SectionHeading from '../components/SectionHeading.astro';
 <MainLayout title="About | Tajinder Singh" description="About Tajinder Singh, Solutions Architect focused on automation and edge/data systems.">
 	<Container size="wide">
 		<section class="section">
-			<SectionHeading
-				eyebrow="About"
-				title="Architecture That Reduces Operational Drag"
-				description="I work at the intersection of edge infrastructure, automation, and data systems."
-			/>
+			<div data-reveal="soft">
+				<SectionHeading
+					eyebrow="About"
+					title="Architecture That Reduces Operational Drag"
+					description="I work at the intersection of edge infrastructure, automation, and data systems."
+				/>
+			</div>
 			<div class="about-intro">
-				<figure class="about-portrait">
+				<figure class="about-portrait" data-reveal="left">
 					<img
 						src="/images/tajinder-singh-portrait.jpg"
 						alt="Portrait of Tajinder Singh"
@@ -23,31 +25,31 @@ import SectionHeading from '../components/SectionHeading.astro';
 					/>
 				</figure>
 				<div class="about-copy">
-					<p>
+					<p data-reveal="soft">
 						I'm Tajinder Singh (Taj), a solutions architect focused on designing systems that are reliable in
 						production - not just clean in diagrams. My work centers on automation-heavy platforms that require strong
 						edge verification, structured event flows, and practical observability.
 					</p>
-					<p>
+					<p data-reveal="soft">
 						Across platform and client work, I design routing layers, verification pipelines, and event-driven
 						architectures that teams can operate without constant firefighting.
 					</p>
-					<p>
+					<p data-reveal="soft">
 						My approach is simple: clarify constraints early, design for failure modes upfront, and prioritize
 						architectures that create operational leverage rather than complexity.
 					</p>
-					<p>
+					<p data-reveal="soft">
 						I am particularly interested in systems that combine edge enforcement, automation, and search - areas
 						where small architectural decisions have large operational impact. Outside of active projects, I explore
 						ways to make verification paths safer, workflows more observable, and platform design more predictable.
 					</p>
-					<h3 class="about-subheading">Research & Continuous Development</h3>
-					<p>
+					<h3 class="about-subheading" data-reveal="soft">Research & Continuous Development</h3>
+					<p data-reveal="soft">
 						Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship. My
 						focus includes statistical modeling, model validation, feature engineering, and production considerations
 						for machine learning systems.
 					</p>
-					<p>
+					<p data-reveal="soft">
 						This training strengthens the analytical foundation behind my work in search architecture, automation
 						systems, and data-driven platform design.
 					</p>
@@ -56,7 +58,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 		</section>
 
 		<section class="section split">
-			<article class="card">
+			<article class="card" data-reveal="soft">
 				<h2>What I Focus On</h2>
 				<ul>
 					<li><strong>Edge Verification & Request Governance</strong> Hardened entry layers that validate, sanitize, and control traffic before it reaches core systems.</li>
@@ -65,7 +67,7 @@ import SectionHeading from '../components/SectionHeading.astro';
 					<li><strong>API & Service Orchestration</strong> Clear contracts, safe routing, and failure-aware integration patterns across distributed services.</li>
 				</ul>
 			</article>
-			<article class="card">
+			<article class="card" data-reveal="soft">
 				<h2>Highlights</h2>
 				<ol class="timeline">
 					<li>
@@ -108,6 +110,17 @@ import SectionHeading from '../components/SectionHeading.astro';
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+		box-shadow: var(--shadow-sm);
+		transition:
+			transform var(--motion-base) var(--ease-emphasis),
+			box-shadow var(--motion-base) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard);
+	}
+
+	.about-portrait:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+		border-color: color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
 	}
 
 	.about-portrait img {
@@ -140,6 +153,17 @@ import SectionHeading from '../components/SectionHeading.astro';
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+		box-shadow: var(--shadow-sm);
+		transition:
+			transform var(--motion-base) var(--ease-emphasis),
+			box-shadow var(--motion-base) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard);
+	}
+
+	.card:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-md);
+		border-color: color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
 	}
 
 	.card h2 {
@@ -184,6 +208,18 @@ import SectionHeading from '../components/SectionHeading.astro';
 	@media (max-width: 900px) {
 		.split {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.about-portrait,
+		.card {
+			transition: none;
+		}
+
+		.about-portrait:hover,
+		.card:hover {
+			transform: none;
 		}
 	}
 </style>

@@ -22,14 +22,16 @@ const tags = await getPublishedWorkTags();
 >
 	<Container size="wide">
 		<section class="work-intro">
-			<SectionHeading
-				eyebrow="Portfolio"
-				title="Case Studies"
-				description="Selected architecture and platform work across verification pipelines, search systems, and high-leverage automation."
-			/>
+			<div data-reveal="soft">
+				<SectionHeading
+					eyebrow="Portfolio"
+					title="Case Studies"
+					description="Selected architecture and platform work across verification pipelines, search systems, and high-leverage automation."
+				/>
+			</div>
 		</section>
 
-		<section class="work-filter" aria-label="Filter by tag">
+		<section class="work-filter" aria-label="Filter by tag" data-reveal="soft">
 			<p>Filter by focus area:</p>
 			<div class="work-filter__tags">
 				<PillTag label="All" href="/work/" />
@@ -41,7 +43,7 @@ const tags = await getPublishedWorkTags();
 			<ul class="work-grid">
 				{
 					workItems.map((item) => (
-						<li>
+						<li data-reveal="soft">
 							<ProjectCard
 								title={item.data.title}
 								description={item.data.description}
@@ -66,6 +68,11 @@ const tags = await getPublishedWorkTags();
 		display: grid;
 		gap: 0.7rem;
 		margin-bottom: var(--space-6);
+		padding: 0.95rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.work-filter p {
