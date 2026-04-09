@@ -5,7 +5,9 @@ import SectionHeading from '../components/SectionHeading.astro';
 import ButtonLink from '../components/ButtonLink.astro';
 import PillTag from '../components/PillTag.astro';
 import FlagshipCaseStudyCard from '../components/FlagshipCaseStudyCard.astro';
+import ProofStrip from '../components/ProofStrip.astro';
 import { contentSlug, getFeaturedWorkEntries } from '../lib/data/portfolio-data';
+import { homepageProofItems } from '../lib/proof-data';
 
 const featured = await getFeaturedWorkEntries(3);
 
@@ -93,6 +95,13 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 				</div>
 			</div>
 		</section>
+
+		<ProofStrip
+			eyebrow="Selected Outcomes"
+			title="What this work tends to improve"
+			items={homepageProofItems}
+			compact={true}
+		/>
 
 		<section class="featured-work section">
 			<div data-reveal="soft">
@@ -206,10 +215,10 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-shell {
 		position: relative;
-		min-height: min(44rem, calc(100svh - 7.8rem));
+		min-height: min(34rem, calc(100svh - 10.8rem));
 		display: grid;
 		align-items: center;
-		padding: clamp(1rem, 1.8vw, 1.45rem);
+		padding: clamp(0.7rem, 1.05vw, 0.95rem);
 		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
 		border-radius: calc(var(--radius-lg) + 0.25rem);
 		background:
@@ -250,21 +259,21 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		position: relative;
 		z-index: 1;
 		display: grid;
-		grid-template-columns: minmax(0, 1.02fr) minmax(19rem, 0.9fr);
-		gap: clamp(0.85rem, 2vw, 1.5rem);
+		grid-template-columns: minmax(0, 1fr) minmax(16.5rem, 0.82fr);
+		gap: clamp(0.55rem, 1vw, 0.85rem);
 		align-items: center;
 	}
 
 	.hero-copy {
 		display: grid;
 		align-content: start;
-		gap: 0.8rem;
-		max-width: 38rem;
+		gap: 0.55rem;
+		max-width: 33rem;
 	}
 
 	.hero-kicker {
 		margin: 0;
-		font-size: 0.74rem;
+		font-size: 0.7rem;
 		font-weight: 700;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
@@ -273,9 +282,9 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-copy h1 {
 		margin: 0;
-		font-size: clamp(2.35rem, 1.8rem + 2.45vw, 4.2rem);
+		font-size: clamp(1.7rem, 1.35rem + 1.3vw, 2.7rem);
 		line-height: 0.98;
-		max-width: 11ch;
+		max-width: 12.2ch;
 	}
 
 	.hero-positioning,
@@ -284,13 +293,13 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	.hero-positioning {
-		font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.1rem);
-		max-width: 34rem;
+		font-size: clamp(0.86rem, 0.84rem + 0.1vw, 0.94rem);
+		max-width: 27.5rem;
 	}
 
 	.hero-support {
-		max-width: 33rem;
-		font-size: 0.9rem;
+		max-width: 26.5rem;
+		font-size: 0.78rem;
 		color: var(--color-text);
 		opacity: 0.88;
 	}
@@ -298,27 +307,27 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	.hero-actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.6rem;
+		gap: 0.5rem;
 		padding-top: 0.1rem;
 	}
 
 	.hero-proof {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
+		gap: 0.35rem;
 		padding-top: 0.1rem;
 	}
 
 	.hero-visual {
 		display: grid;
-		gap: 0.7rem;
+		gap: 0.42rem;
 	}
 
 	.hero-visual__portrait {
 		position: relative;
 		display: grid;
 		gap: 0.65rem;
-		padding: 0.65rem;
+		padding: 0.45rem;
 		border-radius: calc(var(--radius-lg) - 0.1rem);
 		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
 		background:
@@ -329,7 +338,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-visual__portrait-frame {
 		position: relative;
-		padding: 0.3rem;
+		padding: 0.22rem;
 		border-radius: calc(var(--radius-lg) - 0.35rem);
 		background: linear-gradient(160deg, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 70%);
 	}
@@ -357,20 +366,20 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	.hero-visual__caption strong {
-		font-size: 0.88rem;
-		line-height: 1.4;
+		font-size: 0.76rem;
+		line-height: 1.35;
 	}
 
 	.hero-visual__rail {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.6rem;
+		gap: 0.38rem;
 	}
 
 	.hero-note {
 		display: grid;
 		gap: 0.28rem;
-		padding: 0.7rem;
+		padding: 0.54rem 0.58rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
@@ -379,8 +388,8 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-note__value {
 		margin: 0;
-		font-size: 0.78rem;
-		line-height: 1.45;
+		font-size: 0.68rem;
+		line-height: 1.4;
 	}
 
 	.hero__stagger {
@@ -513,7 +522,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		}
 
 		.hero-copy h1 {
-			max-width: 12ch;
+			max-width: 11.5ch;
 		}
 
 		.hero-visual__rail {
@@ -540,12 +549,12 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	@media (max-width: 760px) {
 		.hero-shell {
 			min-height: auto;
-			padding: 0.9rem;
+			padding: 0.68rem;
 		}
 
 		.hero-copy h1 {
 			max-width: none;
-			font-size: clamp(2.2rem, 1.7rem + 2.8vw, 3.45rem);
+			font-size: clamp(1.62rem, 1.35rem + 1.45vw, 2.28rem);
 		}
 
 		.flagship-grid {
@@ -553,7 +562,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		}
 
 		.hero-visual__portrait {
-			padding: 0.65rem;
+			padding: 0.5rem;
 		}
 	}
 

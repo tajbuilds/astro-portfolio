@@ -28,11 +28,13 @@ const readingTime = Math.max(1, Math.ceil(words / 220));
 ---
 
 <WorkCaseStudy
+	slug={slug}
 	title={post.data.title}
 	description={post.data.description}
 	date={post.data.date}
 	tags={post.data.tags}
 	github={post.data.github}
+	coverImage={post.data.coverImage}
 	externalCaseStudyUrl={post.data.externalCaseStudyUrl}
 	headings={headings}
 	readingTime={readingTime}

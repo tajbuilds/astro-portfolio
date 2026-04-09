@@ -4,12 +4,14 @@ import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
+import ProofStrip from '../../components/ProofStrip.astro';
 import {
 	contentSlug,
 	getPublishedWorkEntries,
 	getPublishedWorkTags,
 	slugifyTag,
 } from '../../lib/data/portfolio-data';
+import { workOverviewProofItems } from '../../lib/proof-data';
 
 const workItems = await getPublishedWorkEntries();
 const tags = await getPublishedWorkTags();
@@ -38,6 +40,13 @@ const tags = await getPublishedWorkTags();
 				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${slugifyTag(tag)}/`} />)}
 			</div>
 		</section>
+
+		<ProofStrip
+			eyebrow="What This Work Improves"
+			title="A consistent pattern across the portfolio"
+			items={workOverviewProofItems}
+			compact={true}
+		/>
 
 		<section>
 			<ul class="work-grid">

@@ -308,6 +308,10 @@ html {
 	color-scheme: var(--theme-color-scheme, light dark);
 }
 
+@view-transition {
+	navigation: auto;
+}
+
 body {
 	margin: 0;
 	min-height: 100vh;
@@ -323,6 +327,20 @@ body {
 		radial-gradient(circle at 90% 14%, var(--bg-gradient-top-2), transparent 35%),
 		linear-gradient(180deg, var(--bg-gradient-base), var(--color-bg));
 	transition: background-color var(--motion-base) var(--ease-standard), color var(--motion-base) var(--ease-standard);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 220ms;
+	animation-timing-function: var(--ease-standard);
+}
+
+::view-transition-old(root) {
+	filter: blur(2px);
+}
+
+::view-transition-new(root) {
+	filter: blur(0);
 }
 
 main {
