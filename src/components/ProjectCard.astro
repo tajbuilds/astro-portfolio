@@ -39,6 +39,7 @@ const displayTags = tags.slice(0, 3);
 		height: 100%;
 		text-decoration: none;
 		color: inherit;
+		border-radius: var(--radius-md);
 	}
 
 	.project-card {
@@ -126,6 +127,10 @@ const displayTags = tags.slice(0, 3);
 	.project-card-link:focus-visible .project-card__cta {
 		color: var(--color-accent-strong);
 		transform: translateX(4px);
+	}
+
+	.project-card-link:focus-visible {
+		outline: none;
 	}
 
 	.project-card--compact {

@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
-import { contentSlug, getPublishedWorkEntries } from '../../lib/data/portfolio-data';
+import { contentSlug, getPublishedWorkEntries, getWorkSeo } from '../../lib/data/portfolio-data';
 
 const slug = Astro.params.slug?.toLowerCase() ?? '';
 const sortedWork = await getPublishedWorkEntries();
@@ -25,6 +25,7 @@ const next =
 const { Content, headings } = await render(post);
 const words = post.body.split(/\s+/).filter(Boolean).length;
 const readingTime = Math.max(1, Math.ceil(words / 220));
+const seo = getWorkSeo(post);
 ---
 
 <WorkCaseStudy
@@ -32,14 +33,19 @@ const readingTime = Math.max(1, Math.ceil(words / 220));
 	title={post.data.title}
 	description={post.data.description}
 	date={post.data.date}
+	updatedDate={post.data.updatedDate}
 	tags={post.data.tags}
 	github={post.data.github}
 	coverImage={post.data.coverImage}
+	imageAlt={seo.imageAlt}
 	externalCaseStudyUrl={post.data.externalCaseStudyUrl}
 	headings={headings}
 	readingTime={readingTime}
 	previous={previous}
 	next={next}
+	seoTitle={seo.title}
+	seoDescription={seo.description}
+	keywords={seo.keywords}
 >
 	<Content />
 </WorkCaseStudy>

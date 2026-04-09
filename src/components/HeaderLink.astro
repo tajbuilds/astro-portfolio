@@ -22,17 +22,26 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 		font-size: 0.92rem;
 		font-weight: 600;
 		color: var(--color-text-muted);
-		transition: color 120ms ease, background-color 120ms ease;
+		transition:
+			color var(--motion-fast) var(--ease-standard),
+			background-color var(--motion-fast) var(--ease-standard),
+			box-shadow var(--motion-fast) var(--ease-standard);
 	}
 
 	a:hover {
 		color: var(--color-text);
-		background: rgba(8, 145, 178, 0.1);
+		background: color-mix(in srgb, var(--color-accent) 11%, transparent);
 	}
 
 	a.active {
 		color: var(--color-text);
-		background: rgba(15, 118, 110, 0.16);
+		background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
+	}
+
+	a:focus-visible {
+		color: var(--color-text);
+		background: color-mix(in srgb, var(--color-accent) 14%, transparent);
 	}
 
 	@media (max-width: 700px) {

@@ -1,12 +1,11 @@
 ---
 interface Props {
-	matomoUrl: string;
-	matomoSiteId: string;
+	measurementId: string;
 }
 
-const { matomoUrl, matomoSiteId } = Astro.props;
-const normalizedUrl = matomoUrl.trim().replace(/\/+$/, '');
-const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
+const { measurementId } = Astro.props;
+const normalizedMeasurementId = measurementId.trim();
+const enabled = Boolean(normalizedMeasurementId);
 ---
 
 {
@@ -21,7 +20,7 @@ const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
 			>
 				<p class="analytics-consent__title">Analytics preference</p>
 				<p class="analytics-consent__copy">
-					This site uses privacy-friendly analytics to understand usage patterns. You can accept or
+					This site uses analytics after explicit consent to understand usage patterns. You can accept or
 					reject tracking.
 				</p>
 				<div class="analytics-consent__actions">
@@ -30,9 +29,9 @@ const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
 				</div>
 			</section>
 
-			<script is:inline define:vars={{ normalizedUrl, matomoSiteId }}>
+			<script is:inline define:vars={{ normalizedMeasurementId }}>
 				(() => {
-					const storageKey = 'analytics-consent-v1';
+					const storageKey = 'analytics-consent-v2';
 					const accepted = 'accepted';
 					const rejected = 'rejected';
 					const banner = document.getElementById('analytics-consent');
@@ -55,35 +54,36 @@ const enabled = Boolean(normalizedUrl && matomoSiteId.trim());
 						if (acceptBtn instanceof HTMLButtonElement) acceptBtn.focus();
 					};
 
-					const loadMatomo = () => {
+					const loadGtag = () => {
 						if (loaded) return;
 						loaded = true;
 
-						const trackerUrl = `${normalizedUrl}/matomo.php`;
-						const scriptUrl = `${normalizedUrl}/matomo.js`;
-						window._paq = window._paq || [];
-						window._paq.push(['trackPageView']);
-						window._paq.push(['enableLinkTracking']);
-						window._paq.push(['setTrackerUrl', trackerUrl]);
-						window._paq.push(['setSiteId', matomoSiteId]);
+						window.dataLayer = window.dataLayer || [];
+						window.gtag = function gtag() {
+							window.dataLayer.push(arguments);
+						};
+						window.gtag('js', new Date());
+						window.gtag('config', normalizedMeasurementId, {
+							anonymize_ip: true,
+						});
 
 						const script = document.createElement('script');
 						script.async = true;
-						script.src = scriptUrl;
+						script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(normalizedMeasurementId)}`;
 						document.head.appendChild(script);
 					};
 
 					const setDecision = (value) => {
 						localStorage.setItem(storageKey, value);
 						if (value === accepted) {
-							loadMatomo();
+							loadGtag();
 						}
 						hideBanner();
 					};
 
 					const decision = localStorage.getItem(storageKey);
 					if (decision === accepted) {
-						loadMatomo();
+						loadGtag();
 						hideBanner();
 					} else if (decision === rejected) {
 						hideBanner();

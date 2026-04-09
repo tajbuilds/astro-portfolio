@@ -2,28 +2,50 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
-import { SITE_TITLE } from '../consts';
+import {
+	DEFAULT_OG_IMAGE,
+	DEFAULT_OG_IMAGE_ALT,
+	SITE_AUTHOR,
+	SITE_LOCALE,
+	SITE_TITLE,
+	SITE_URL,
+} from '../consts';
 
 interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	imageAlt?: string;
 	type?: 'website' | 'article';
 	noindex?: boolean;
+	keywords?: string[];
+	publishedTime?: Date | string;
+	modifiedTime?: Date | string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteOrigin = Astro.site ? new URL(Astro.site) : new URL(SITE_URL);
+const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
 
 const {
 	title,
 	description,
-	image = '/images/tajinder-singh-portrait.jpg',
+	image = DEFAULT_OG_IMAGE,
+	imageAlt = DEFAULT_OG_IMAGE_ALT,
 	type = 'website',
 	noindex = false,
+	keywords = [],
+	publishedTime,
+	modifiedTime,
 } = Astro.props;
 
-const siteURL = new URL('/', Astro.site).toString();
-const schema = {
+const siteURL = new URL('/', siteOrigin).toString();
+const normalizedImageUrl = new URL(image, siteOrigin).toString();
+const normalizedPublishedTime =
+	publishedTime instanceof Date ? publishedTime.toISOString() : publishedTime;
+const normalizedModifiedTime =
+	modifiedTime instanceof Date ? modifiedTime.toISOString() : modifiedTime;
+
+const schema: Record<string, unknown> = {
 	'@context': 'https://schema.org',
 	'@type': type === 'article' ? 'Article' : 'WebPage',
 	headline: title,
@@ -35,7 +57,18 @@ const schema = {
 		name: SITE_TITLE,
 		url: siteURL,
 	},
+	inLanguage: 'en-GB',
+	author: {
+		'@type': 'Person',
+		name: SITE_AUTHOR,
+	},
 };
+
+if (type === 'article') {
+	schema.image = normalizedImageUrl;
+	if (normalizedPublishedTime) schema.datePublished = normalizedPublishedTime;
+	if (normalizedModifiedTime) schema.dateModified = normalizedModifiedTime;
+}
 ---
 
 <!-- Global Metadata -->
@@ -43,6 +76,9 @@ const schema = {
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
+<meta name="author" content={SITE_AUTHOR} />
+<meta name="theme-color" content="#0f172a" />
+<meta property="og:locale" content={SITE_LOCALE} />
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
@@ -51,20 +87,27 @@ const schema = {
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
+{keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={normalizedImageUrl} />
+<meta property="og:image:alt" content={imageAlt} />
+{type === 'article' && normalizedPublishedTime && <meta property="article:published_time" content={normalizedPublishedTime} />}
+{type === 'article' && normalizedModifiedTime && <meta property="article:modified_time" content={normalizedModifiedTime} />}
+{type === 'article' && keywords.map((keyword) => <meta property="article:tag" content={keyword} />)}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:image" content={normalizedImageUrl} />
+<meta property="twitter:image:alt" content={imageAlt} />
 
 <!-- Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>

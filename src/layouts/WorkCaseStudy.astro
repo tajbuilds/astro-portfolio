@@ -21,23 +21,56 @@ interface Props {
 	title: string;
 	description: string;
 	date: Date;
+	updatedDate?: Date;
 	tags: string[];
 	coverImage?: string;
+	imageAlt?: string;
 	github?: string;
 	externalCaseStudyUrl?: string;
 	headings?: WorkHeading[];
 	readingTime?: number;
 	previous?: AdjacentLink;
 	next?: AdjacentLink;
+	seoTitle?: string;
+	seoDescription?: string;
+	keywords?: string[];
 }
 
-const { slug, title, description, date, tags, coverImage, github, externalCaseStudyUrl, headings = [], readingTime, previous, next } = Astro.props;
+const {
+	slug,
+	title,
+	description,
+	date,
+	updatedDate,
+	tags,
+	coverImage,
+	imageAlt,
+	github,
+	externalCaseStudyUrl,
+	headings = [],
+	readingTime,
+	previous,
+	next,
+	seoTitle,
+	seoDescription,
+	keywords = [],
+} = Astro.props;
 const isExternalCaseStudyLink = Boolean(externalCaseStudyUrl && /^https?:\/\//i.test(externalCaseStudyUrl));
 const tocItems = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 const proofItems = getWorkProofItems(slug);
 ---
 
-<MainLayout title={`${title} | Work`} description={description} width="full">
+<MainLayout
+	title={seoTitle || `${title} | Work`}
+	description={seoDescription || description}
+	image={coverImage}
+	imageAlt={imageAlt}
+	type="article"
+	publishedTime={date}
+	modifiedTime={updatedDate || date}
+	keywords={keywords}
+	width="full"
+>
 	<article class="work-article">
 		<a class="back-link" href="/work" data-reveal="soft">&larr; Back to Work</a>
 		<header class="work-header" data-reveal="soft">

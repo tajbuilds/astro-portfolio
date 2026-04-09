@@ -1,6 +1,8 @@
 import { type CollectionEntry, getCollection } from 'astro:content';
+import { DEFAULT_OG_IMAGE_ALT, DEFAULT_WORK_OG_IMAGE, SITE_TITLE } from '../../consts';
 
 export type WorkEntry = CollectionEntry<'work'>;
+export type WorkEntryData = WorkEntry['data'];
 
 export const contentSlug = (id: string) => id.replace(/\.(md|mdx)$/i, '');
 export const slugifyTag = (tag: string) => tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -98,13 +100,13 @@ export const privacyData = {
 				'Cloudflare Turnstile: anti-spam and bot checks for forms',
 				'Resend (or configured email provider): contact form email delivery',
 				'GitHub: source code and deployment workflows',
-				'Matomo (self-hosted at stats.tajs.io): website analytics after consent',
+				'Google Analytics: website analytics loaded only after explicit consent',
 			],
 		},
 		{
 			title: 'Cookies and Tracking',
 			paragraphs: [
-				'Non-essential analytics tracking is disabled by default. Matomo is loaded only if you provide an unambiguous opt-in by clicking Accept on the analytics banner.',
+				'Non-essential analytics tracking is disabled by default. Google Analytics is loaded only if you provide an unambiguous opt-in by clicking Accept on the analytics banner.',
 				'If you click Reject, analytics tracking is not loaded.',
 				'You can revisit or change this choice using Analytics settings in the site footer.',
 				'Technically necessary storage or cookies may still be used for core security and service operation (for example anti-abuse protection).',
@@ -116,7 +118,7 @@ export const privacyData = {
 			paragraphs: [
 				'Contact form messages are kept only as long as reasonably necessary to handle enquiries and related follow-up.',
 				'Operational and security logs are retained for limited periods appropriate for security, incident response, and platform reliability.',
-				'Analytics data retention is controlled in Matomo settings and reviewed periodically.',
+				'Analytics data retention is controlled in the configured analytics platform settings and reviewed periodically.',
 			],
 		},
 		{
@@ -182,3 +184,25 @@ export const getPublishedWorkTags = async () =>
 
 export const getWorkEntryBySlug = async (slug: string) =>
 	(await getPublishedWorkEntries()).find((entry) => contentSlug(entry.id).toLowerCase() === slug.toLowerCase());
+
+export const getWorkSeo = (entry: WorkEntry) => {
+	const slug = contentSlug(entry.id);
+	const title = entry.data.seoTitle || `${entry.data.title} | Work | ${SITE_TITLE}`;
+	const description = entry.data.seoDescription || entry.data.description;
+	const image = entry.data.ogImage || entry.data.coverImage || DEFAULT_WORK_OG_IMAGE;
+	const imageAlt = entry.data.ogImageAlt || `${entry.data.title} case study cover or architecture visual`;
+	const keywords = Array.from(new Set(['Solutions Architect', 'Case Study', ...entry.data.tags])).slice(0, 12);
+
+	return {
+		slug,
+		title,
+		description,
+		image,
+		imageAlt,
+		keywords,
+		publishedTime: entry.data.date,
+		modifiedTime: entry.data.updatedDate || entry.data.date,
+	};
+};
+
+export const defaultSocialImageAlt = DEFAULT_OG_IMAGE_ALT;

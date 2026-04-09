@@ -9,19 +9,34 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	imageAlt?: string;
 	type?: 'website' | 'article';
 	noindex?: boolean;
+	keywords?: string[];
+	publishedTime?: Date | string;
+	modifiedTime?: Date | string;
 	width?: 'narrow' | 'wide' | 'full';
 	mainClass?: string;
 }
 
-const { title, description, image, type = 'website', noindex = false, width = 'narrow', mainClass } = Astro.props;
+const {
+	title,
+	description,
+	image,
+	imageAlt,
+	type = 'website',
+	noindex = false,
+	keywords,
+	publishedTime,
+	modifiedTime,
+	width = 'narrow',
+	mainClass,
+} = Astro.props;
 const pathname = Astro.url.pathname;
-const showQuickContact = !pathname.startsWith('/contact');
-const matomoUrl =
-	(import.meta.env.PUBLIC_MATOMO_URL ?? 'https://stats.tajs.io').trim();
-const matomoSiteId =
-	(import.meta.env.PUBLIC_MATOMO_SITE_ID ?? '1').trim();
+const showQuickContact = !pathname.startsWith('/contact') && !pathname.startsWith('/docs');
+const enableMermaid = pathname.startsWith('/docs');
+const gaMeasurementId =
+	(import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-27X2LV520R').trim();
 ---
 
 <!doctype html>
@@ -41,7 +56,17 @@ const matomoSiteId =
 				document.documentElement.dataset.themePreference = preferredTheme;
 			})();
 		</script>
-		<BaseHead title={title} description={description} image={image} type={type} noindex={noindex} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={image}
+			imageAlt={imageAlt}
+			type={type}
+			noindex={noindex}
+			keywords={keywords}
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+		/>
 	</head>
 	<body>
 		<a class="skip-link" href="#content">Skip to content</a>
@@ -50,9 +75,9 @@ const matomoSiteId =
 			<slot />
 		</main>
 		<Footer />
-		<script type="module" src="/scripts/starlight-mermaid.js"></script>
+		{enableMermaid && <script type="module" src="/scripts/starlight-mermaid.js"></script>}
 		{showQuickContact && <QuickContact />}
-		<AnalyticsConsent matomoUrl={matomoUrl} matomoSiteId={matomoSiteId} />
+		<AnalyticsConsent measurementId={gaMeasurementId} />
 		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
 
 		<script is:inline>

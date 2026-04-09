@@ -23,6 +23,7 @@ const { href, variant = 'primary', class: className } = Astro.props;
 		font-size: 0.92rem;
 		font-weight: 700;
 		text-decoration: none;
+		line-height: 1.1;
 		border-radius: var(--radius-sm);
 		border: 1px solid transparent;
 		box-shadow: var(--shadow-sm);
@@ -46,6 +47,11 @@ const { href, variant = 'primary', class: className } = Astro.props;
 	.button-link:hover {
 		transform: translateY(-2px);
 		box-shadow: var(--shadow-md);
+	}
+
+	.button-link:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent), var(--shadow-md);
 	}
 
 	.button-link:hover::before {
