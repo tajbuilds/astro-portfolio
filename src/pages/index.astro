@@ -206,10 +206,10 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-shell {
 		position: relative;
-		min-height: min(52rem, calc(100svh - 6.5rem));
+		min-height: min(44rem, calc(100svh - 7.8rem));
 		display: grid;
 		align-items: center;
-		padding: clamp(1.2rem, 2vw, 1.8rem);
+		padding: clamp(1rem, 1.8vw, 1.45rem);
 		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
 		border-radius: calc(var(--radius-lg) + 0.25rem);
 		background:
@@ -250,32 +250,32 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		position: relative;
 		z-index: 1;
 		display: grid;
-		grid-template-columns: minmax(0, 1.08fr) minmax(21rem, 0.92fr);
-		gap: clamp(1rem, 2.4vw, 2rem);
+		grid-template-columns: minmax(0, 1.02fr) minmax(19rem, 0.9fr);
+		gap: clamp(0.85rem, 2vw, 1.5rem);
 		align-items: center;
 	}
 
 	.hero-copy {
 		display: grid;
 		align-content: start;
-		gap: 1rem;
-		max-width: 42rem;
+		gap: 0.8rem;
+		max-width: 38rem;
 	}
 
 	.hero-kicker {
 		margin: 0;
-		font-size: 0.8rem;
+		font-size: 0.74rem;
 		font-weight: 700;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--color-accent);
 	}
 
 	.hero-copy h1 {
 		margin: 0;
-		font-size: clamp(3rem, 2.1rem + 3.4vw, 5.1rem);
-		line-height: 0.95;
-		max-width: 12ch;
+		font-size: clamp(2.35rem, 1.8rem + 2.45vw, 4.2rem);
+		line-height: 0.98;
+		max-width: 11ch;
 	}
 
 	.hero-positioning,
@@ -284,13 +284,13 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	.hero-positioning {
-		font-size: clamp(1.05rem, 0.98rem + 0.36vw, 1.22rem);
-		max-width: 40rem;
+		font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.1rem);
+		max-width: 34rem;
 	}
 
 	.hero-support {
-		max-width: 38rem;
-		font-size: 0.98rem;
+		max-width: 33rem;
+		font-size: 0.9rem;
 		color: var(--color-text);
 		opacity: 0.88;
 	}
@@ -298,27 +298,27 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	.hero-actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.7rem;
-		padding-top: 0.2rem;
+		gap: 0.6rem;
+		padding-top: 0.1rem;
 	}
 
 	.hero-proof {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.45rem;
-		padding-top: 0.2rem;
+		gap: 0.4rem;
+		padding-top: 0.1rem;
 	}
 
 	.hero-visual {
 		display: grid;
-		gap: 0.85rem;
+		gap: 0.7rem;
 	}
 
 	.hero-visual__portrait {
 		position: relative;
 		display: grid;
-		gap: 0.8rem;
-		padding: 0.8rem;
+		gap: 0.65rem;
+		padding: 0.65rem;
 		border-radius: calc(var(--radius-lg) - 0.1rem);
 		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
 		background:
@@ -357,20 +357,20 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	.hero-visual__caption strong {
-		font-size: 0.98rem;
-		line-height: 1.45;
+		font-size: 0.88rem;
+		line-height: 1.4;
 	}
 
 	.hero-visual__rail {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.75rem;
+		gap: 0.6rem;
 	}
 
 	.hero-note {
 		display: grid;
 		gap: 0.28rem;
-		padding: 0.8rem;
+		padding: 0.7rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
@@ -379,8 +379,8 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 	.hero-note__value {
 		margin: 0;
-		font-size: 0.84rem;
-		line-height: 1.55;
+		font-size: 0.78rem;
+		line-height: 1.45;
 	}
 
 	.hero__stagger {
@@ -513,7 +513,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		}
 
 		.hero-copy h1 {
-			max-width: 11.5ch;
+			max-width: 12ch;
 		}
 
 		.hero-visual__rail {
@@ -540,12 +540,12 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	@media (max-width: 760px) {
 		.hero-shell {
 			min-height: auto;
-			padding: 1rem;
+			padding: 0.9rem;
 		}
 
 		.hero-copy h1 {
 			max-width: none;
-			font-size: clamp(2.5rem, 1.85rem + 3.1vw, 4rem);
+			font-size: clamp(2.2rem, 1.7rem + 2.8vw, 3.45rem);
 		}
 
 		.flagship-grid {

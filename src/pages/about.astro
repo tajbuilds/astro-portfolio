@@ -1,224 +1,461 @@
-﻿---
+---
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+
+const designAreas = [
+	{
+		title: 'Platform modernisation',
+		copy: 'Restructuring brittle delivery paths into systems that are easier to operate, evolve, and govern over time.',
+	},
+	{
+		title: 'Edge systems and intake control',
+		copy: 'Designing request entry layers, verification gates, and routing controls that reduce abuse before it reaches core services.',
+	},
+	{
+		title: 'Automation and workflow design',
+		copy: 'Replacing ad-hoc manual operations with observable, event-driven workflows that hold up under production pressure.',
+	},
+	{
+		title: 'Search and retrieval architecture',
+		copy: 'Building structured search pipelines, facet logic, and query contracts that scale beyond browser-side filtering or CMS constraints.',
+	},
+	{
+		title: 'Integrations and operational tooling',
+		copy: 'Connecting services through clear contracts, safer handoff points, and practical tooling for teams who need reliability more than novelty.',
+	},
+	{
+		title: 'Failure-aware delivery',
+		copy: 'Designing with replay risk, fallback behavior, invalidation, and observability in mind before the first incident exposes those gaps.',
+	},
+];
+
+const principles = [
+	'Verification-first over trust-by-default',
+	'Pragmatic systems thinking over vague platform claims',
+	'Delivery speed balanced against maintainability',
+	'Platform patterns over isolated feature work',
+];
+
+const strengths = [
+	{
+		title: 'Edge verification',
+		copy: 'Public entry points, token validation, request governance, and route-level control.',
+	},
+	{
+		title: 'Workflow architecture',
+		copy: 'Automation design that reduces operational drag without creating hidden system fragility.',
+	},
+	{
+		title: 'Search and data flow',
+		copy: 'Ingestion pipelines, schema discipline, and retrieval architecture for large changing datasets.',
+	},
+	{
+		title: 'Platform clarity',
+		copy: 'Turning unclear delivery paths into systems with explicit contracts, decisions, and supportable behavior.',
+	},
+];
 ---
 
-<MainLayout title="About | Tajinder Singh" description="About Tajinder Singh, Solutions Architect focused on automation and edge/data systems.">
+<MainLayout title="About | Tajinder Singh" description="Authority-led profile page for Tajinder Singh, Solutions Architect focused on edge, automation, and data systems.">
 	<Container size="wide">
-		<section class="section">
-			<div data-reveal="soft">
-				<SectionHeading
-					eyebrow="About"
-					title="Architecture That Reduces Operational Drag"
-					description="I work at the intersection of edge infrastructure, automation, and data systems."
-				/>
+		<section class="about-hero">
+			<div class="about-hero__copy">
+				<p class="about-hero__kicker" data-reveal="soft">About · Solutions Architect</p>
+				<h1 data-reveal="soft">Architecture that reduces operational drag and gives teams more control over how systems behave in production.</h1>
+				<p class="about-hero__positioning" data-reveal="soft">
+					I work across edge infrastructure, automation, search, and service integration, with a focus on
+					designing systems that are clear to operate, resilient under pressure, and grounded in real delivery
+					constraints.
+				</p>
+				<p class="about-hero__support" data-reveal="soft">
+					My work tends to sit where verification, routing, orchestration, and information architecture meet.
+					The goal is rarely to add more moving parts. It is to create a system that behaves predictably, scales
+					with less firefighting, and stays maintainable after launch.
+				</p>
+				<div class="about-hero__actions" data-reveal="soft">
+					<ButtonLink href="/work">View Work</ButtonLink>
+					<ButtonLink href="/contact" variant="secondary">Start a Conversation</ButtonLink>
+				</div>
 			</div>
-			<div class="about-intro">
-				<figure class="about-portrait" data-reveal="left">
+
+			<div class="about-hero__visual" data-reveal="right">
+				<figure class="about-portrait">
 					<img
 						src="/images/tajinder-singh-portrait.jpg"
 						alt="Portrait of Tajinder Singh"
 						loading="lazy"
-						width="480"
-						height="600"
+						width="640"
+						height="800"
 					/>
 				</figure>
-				<div class="about-copy">
-					<p data-reveal="soft">
-						I'm Tajinder Singh (Taj), a solutions architect focused on designing systems that are reliable in
-						production - not just clean in diagrams. My work centers on automation-heavy platforms that require strong
-						edge verification, structured event flows, and practical observability.
-					</p>
-					<p data-reveal="soft">
-						Across platform and client work, I design routing layers, verification pipelines, and event-driven
-						architectures that teams can operate without constant firefighting.
-					</p>
-					<p data-reveal="soft">
-						My approach is simple: clarify constraints early, design for failure modes upfront, and prioritize
-						architectures that create operational leverage rather than complexity.
-					</p>
-					<p data-reveal="soft">
-						I am particularly interested in systems that combine edge enforcement, automation, and search - areas
-						where small architectural decisions have large operational impact. Outside of active projects, I explore
-						ways to make verification paths safer, workflows more observable, and platform design more predictable.
-					</p>
-					<h3 class="about-subheading" data-reveal="soft">Research & Continuous Development</h3>
-					<p data-reveal="soft">
-						Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship. My
-						focus includes statistical modeling, model validation, feature engineering, and production considerations
-						for machine learning systems.
-					</p>
-					<p data-reveal="soft">
-						This training strengthens the analytical foundation behind my work in search architecture, automation
-						systems, and data-driven platform design.
-					</p>
+				<div class="about-hero__notes">
+					<article class="about-note">
+						<p class="about-note__label">Working lens</p>
+						<p class="about-note__value">Constraint-aware, failure-aware, and biased toward operational clarity.</p>
+					</article>
+					<article class="about-note">
+						<p class="about-note__label">Primary domains</p>
+						<p class="about-note__value">Edge control, workflow architecture, search systems, and service integration.</p>
+					</article>
 				</div>
 			</div>
 		</section>
 
-		<section class="section split">
-			<article class="card" data-reveal="soft">
-				<h2>What I Focus On</h2>
-				<ul>
-					<li><strong>Edge Verification & Request Governance</strong> Hardened entry layers that validate, sanitize, and control traffic before it reaches core systems.</li>
-					<li><strong>Automation & Event Architecture</strong> Resilient, observable pipelines that replace brittle manual operations.</li>
-					<li><strong>Search & Data Platforms</strong> Structured ingestion, schema governance, and faceted discovery systems that scale beyond browser or CMS constraints.</li>
-					<li><strong>API & Service Orchestration</strong> Clear contracts, safe routing, and failure-aware integration patterns across distributed services.</li>
+		<section class="page-section">
+			<div data-reveal="soft">
+				<SectionHeading
+					eyebrow="What I Design"
+					title="Systems that need clearer contracts, stronger control, and less operational friction"
+					description="The work is usually not a single feature. It is the architecture around how requests arrive, how decisions are made, and how systems hand off responsibility safely."
+				/>
+			</div>
+			<div class="authority-grid authority-grid--three">
+				{designAreas.map((item) => (
+					<article class="authority-card" data-reveal="soft">
+						<h3>{item.title}</h3>
+						<p>{item.copy}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="page-section dual-section">
+			<article class="authority-panel authority-panel--emphasis" data-reveal="soft">
+				<SectionHeading
+					eyebrow="How I Think"
+					title="Architecture should make systems more legible, not just more sophisticated."
+				/>
+				<ul class="principles-list">
+					{principles.map((item) => <li>{item}</li>)}
 				</ul>
 			</article>
-			<article class="card" data-reveal="soft">
-				<h2>Highlights</h2>
-				<ol class="timeline">
-					<li>
-						<strong>2026 - Verification-First Intake Architecture</strong>
-						<p>Shipped a hardened submission gateway linking public forms to downstream workflows with strict authenticity and token validation.</p>
-					</li>
-					<li>
-						<strong>2025 - Faceted Search Platform</strong>
-						<p>Designed and deployed a scalable server-side search layer supporting 50k+ indexed products.</p>
-					</li>
-					<li>
-						<strong>2025 - Smart Edge Caching & Asset Protection</strong>
-						<p>Reduced origin load and improved cache predictability through structured edge controls.</p>
-					</li>
-					<li>
-						<strong>Ongoing - Event Architecture Advisory</strong>
-						<p>Supporting teams transitioning to structured, event-driven automation models.</p>
-					</li>
-				</ol>
+
+			<article class="authority-panel" data-reveal="soft">
+				<SectionHeading
+					eyebrow="Current Focus"
+					title="Continuing development that supports deeper platform judgement"
+				/>
+				<p>
+					Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship.
+					My current focus includes statistical modelling, model validation, feature engineering, and the
+					production considerations that matter when analytical systems meet operational reality.
+				</p>
+				<p>
+					That work sharpens the analytical side of my architecture practice without turning it into vague AI
+					positioning. The interest remains the same: useful systems, clearer contracts, and more predictable
+					behavior at scale.
+				</p>
 			</article>
+		</section>
+
+		<section class="page-section">
+			<div data-reveal="soft">
+				<SectionHeading
+					eyebrow="Selected Strengths"
+					title="Core domains I repeatedly work across"
+					description="These are the areas that show up most often in the case studies and platform work on this site."
+				/>
+			</div>
+			<div class="authority-grid authority-grid--four">
+				{strengths.map((item) => (
+					<article class="authority-card authority-card--compact" data-reveal="soft">
+						<h3>{item.title}</h3>
+						<p>{item.copy}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="page-section about-cta" data-reveal="soft">
+			<p class="about-cta__eyebrow">Work Together</p>
+			<h2>If you need a clearer architecture direction for an edge, automation, or search-heavy platform, start with the work or get in touch.</h2>
+			<div class="about-cta__actions">
+				<ButtonLink href="/work">Explore Case Studies</ButtonLink>
+				<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
+			</div>
 		</section>
 	</Container>
 </MainLayout>
 
 <style>
-	.section {
-		margin-bottom: clamp(2.5rem, 6vw, 5rem);
+	.page-section {
+		margin-bottom: clamp(2.9rem, 6vw, 5.5rem);
 	}
 
-	.about-intro {
+	.about-hero {
+		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+		grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
+		gap: clamp(1rem, 2.4vw, 2rem);
+		align-items: center;
+		min-height: min(46rem, calc(100svh - 8rem));
+		padding: clamp(1.2rem, 2vw, 1.8rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+		border-radius: calc(var(--radius-lg) + 0.2rem);
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 89%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 34%),
+			radial-gradient(circle at bottom left, color-mix(in srgb, var(--color-focus) 10%, transparent), transparent 26%);
+		box-shadow: var(--shadow-md);
+		overflow: hidden;
+	}
+
+	.about-hero::before {
+		content: '';
+		position: absolute;
+		top: -5rem;
+		right: -3rem;
+		width: 16rem;
+		height: 16rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+		filter: blur(36px);
+		opacity: 0.68;
+		pointer-events: none;
+	}
+
+	.about-hero__copy,
+	.about-hero__visual {
+		position: relative;
+		z-index: 1;
+	}
+
+	.about-hero__copy {
+		display: grid;
 		gap: 1rem;
-		align-items: start;
+		max-width: 42rem;
+	}
+
+	.about-hero__kicker,
+	.about-cta__eyebrow,
+	.about-note__label {
+		margin: 0;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.11em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.about-hero h1 {
+		margin: 0;
+		font-size: clamp(2.8rem, 2.1rem + 2.8vw, 4.7rem);
+		line-height: 0.98;
+		max-width: 12ch;
+	}
+
+	.about-hero__positioning,
+	.about-hero__support {
+		margin: 0;
+	}
+
+	.about-hero__positioning {
+		font-size: clamp(1.04rem, 0.98rem + 0.32vw, 1.2rem);
+		max-width: 38rem;
+	}
+
+	.about-hero__support {
+		max-width: 37rem;
+		font-size: 0.98rem;
+		color: var(--color-text);
+		opacity: 0.88;
+	}
+
+	.about-hero__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
+		padding-top: 0.2rem;
+	}
+
+	.about-hero__visual {
+		display: grid;
+		gap: 0.85rem;
 	}
 
 	.about-portrait {
 		margin: 0;
-		padding: 0.55rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--color-border);
-		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
+		padding: 0.75rem;
+		border-radius: calc(var(--radius-lg) - 0.1rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 52%);
 		box-shadow: var(--shadow-sm);
-		transition:
-			transform var(--motion-base) var(--ease-emphasis),
-			box-shadow var(--motion-base) var(--ease-standard),
-			border-color var(--motion-fast) var(--ease-standard);
-	}
-
-	.about-portrait:hover {
-		transform: translateY(-4px);
-		box-shadow: var(--shadow-lg);
-		border-color: color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
 	}
 
 	.about-portrait img {
 		width: 100%;
 		aspect-ratio: 4 / 5;
 		object-fit: cover;
-		border-radius: calc(var(--radius-md) - 0.2rem);
+		border-radius: calc(var(--radius-lg) - 0.45rem);
 	}
 
-	.about-copy {
-		display: grid;
-		gap: 0.8rem;
-	}
-
-	.about-subheading {
-		margin: 0.35rem 0 0;
-		font-size: 1.08rem;
-		line-height: 1.3;
-		color: var(--color-text);
-	}
-
-	.split {
+	.about-hero__notes {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
+		gap: 0.75rem;
 	}
 
-	.card {
-		padding: 1.2rem;
+	.about-note,
+	.authority-card,
+	.authority-panel,
+	.about-cta {
+		padding: 1rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
 		box-shadow: var(--shadow-sm);
+	}
+
+	.about-note {
+		display: grid;
+		gap: 0.28rem;
+	}
+
+	.about-note__value {
+		margin: 0;
+		font-size: 0.85rem;
+		line-height: 1.55;
+	}
+
+	.authority-grid {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.authority-grid--three {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.authority-grid--four {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	.authority-card,
+	.authority-panel {
 		transition:
 			transform var(--motion-base) var(--ease-emphasis),
 			box-shadow var(--motion-base) var(--ease-standard),
 			border-color var(--motion-fast) var(--ease-standard);
 	}
 
-	.card:hover {
+	.authority-card:hover,
+	.authority-panel:hover {
 		transform: translateY(-3px);
 		box-shadow: var(--shadow-md);
-		border-color: color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
+		border-color: color-mix(in srgb, var(--color-accent) 26%, var(--color-border));
 	}
 
-	.card h2 {
-		font-size: 1.3rem;
-		margin-bottom: 0.8rem;
+	.authority-card h3 {
+		margin: 0 0 0.45rem;
+		font-size: 1.08rem;
 	}
 
-	.card ul {
+	.authority-card p,
+	.authority-panel p {
 		margin: 0;
-		padding-left: 1.15rem;
+	}
+
+	.authority-card--compact {
+		min-height: 100%;
+	}
+
+	.dual-section {
+		display: grid;
+		grid-template-columns: 1.05fr 0.95fr;
+		gap: 1rem;
+	}
+
+	.authority-panel {
+		display: grid;
+		align-content: start;
+		gap: 1rem;
+		padding: 1.2rem;
+	}
+
+	.authority-panel :global(.section-heading) {
+		margin-bottom: 0;
+	}
+
+	.authority-panel--emphasis {
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 38%);
+	}
+
+	.principles-list {
+		margin: 0;
+		padding-left: 1.1rem;
 		display: grid;
 		gap: 0.65rem;
 	}
 
-	.timeline {
-		list-style: none;
-		padding: 0;
-		margin: 0;
+	.about-cta {
 		display: grid;
-		gap: 0.95rem;
+		gap: 1rem;
+		padding: clamp(1.2rem, 2vw, 1.8rem);
+		border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 34%);
+		box-shadow: var(--shadow-md);
 	}
 
-	.timeline li {
-		padding-left: 0.85rem;
-		border-left: 2px solid var(--color-border);
+	.about-cta h2 {
+		margin: 0;
+		max-width: 18ch;
+		font-size: clamp(1.8rem, 1.35rem + 1.25vw, 2.7rem);
 	}
 
-	.timeline p {
-		margin: 0.25rem 0 0;
+	.about-cta__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.7rem;
 	}
 
-	@media (max-width: 980px) {
-		.about-intro {
+	@media (max-width: 1100px) {
+		.about-hero,
+		.dual-section {
 			grid-template-columns: 1fr;
 		}
 
-		.about-portrait {
-			max-width: 24rem;
+		.about-hero {
+			min-height: auto;
+		}
+
+		.authority-grid--four {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 
 	@media (max-width: 900px) {
-		.split {
+		.authority-grid--three,
+		.authority-grid--four,
+		.about-hero__notes {
 			grid-template-columns: 1fr;
+		}
+
+		.about-hero h1 {
+			max-width: none;
+			font-size: clamp(2.4rem, 1.8rem + 3vw, 3.8rem);
+		}
+
+		.about-cta h2 {
+			max-width: none;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.about-portrait,
-		.card {
+		.authority-card,
+		.authority-panel {
 			transition: none;
 		}
 
-		.about-portrait:hover,
-		.card:hover {
+		.authority-card:hover,
+		.authority-panel:hover {
 			transform: none;
 		}
 	}
