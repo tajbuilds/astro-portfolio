@@ -56,6 +56,32 @@ const gaMeasurementId =
 				document.documentElement.dataset.themePreference = preferredTheme;
 			})();
 		</script>
+		{
+			gaMeasurementId && (
+				<>
+					<script
+						async
+						src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`}
+					></script>
+					<script is:inline define:vars={{ gaMeasurementId }}>
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){window.dataLayer.push(arguments);}
+						window.gtag = window.gtag || gtag;
+						window.gtag('js', new Date());
+						window.gtag('consent', 'default', {
+							ad_storage: 'denied',
+							ad_user_data: 'denied',
+							ad_personalization: 'denied',
+							analytics_storage: 'denied',
+						});
+						window.gtag('config', gaMeasurementId, {
+							anonymize_ip: true,
+							send_page_view: false,
+						});
+					</script>
+				</>
+			)
+		}
 		<BaseHead
 			title={title}
 			description={description}

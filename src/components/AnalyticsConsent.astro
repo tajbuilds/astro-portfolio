@@ -37,8 +37,6 @@ const enabled = Boolean(normalizedMeasurementId);
 					const banner = document.getElementById('analytics-consent');
 					if (!(banner instanceof HTMLElement)) return;
 
-					let loaded = false;
-
 					const hideBanner = () => {
 						banner.setAttribute('hidden', 'hidden');
 					};
@@ -54,34 +52,7 @@ const enabled = Boolean(normalizedMeasurementId);
 						if (acceptBtn instanceof HTMLButtonElement) acceptBtn.focus();
 					};
 
-					const loadGtag = () => {
-						if (loaded) return;
-						loaded = true;
-
-						window.dataLayer = window.dataLayer || [];
-						window.gtag = function gtag() {
-							window.dataLayer.push(arguments);
-						};
-						window.gtag('js', new Date());
-						window.gtag('consent', 'default', {
-							ad_storage: 'denied',
-							ad_user_data: 'denied',
-							ad_personalization: 'denied',
-							analytics_storage: 'denied',
-						});
-						window.gtag('config', normalizedMeasurementId, {
-							anonymize_ip: true,
-							send_page_view: false,
-						});
-
-						const script = document.createElement('script');
-						script.async = true;
-						script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(normalizedMeasurementId)}`;
-						document.head.appendChild(script);
-					};
-
 					const updateConsent = (granted) => {
-						loadGtag();
 						if (typeof window.gtag !== 'function') return;
 
 						window.gtag('consent', 'update', {
@@ -107,7 +78,6 @@ const enabled = Boolean(normalizedMeasurementId);
 					};
 
 					const decision = localStorage.getItem(storageKey);
-					loadGtag();
 					if (decision === accepted) {
 						updateConsent(true);
 						hideBanner();
