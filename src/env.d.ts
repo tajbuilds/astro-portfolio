@@ -13,8 +13,7 @@ interface Env {
   RESEND_API_KEY: string;
   MEDIA_BUCKET: R2Bucket;
   MEDIA_UPLOAD_TOKEN?: string;
-  MATOMO_URL?: string;
-  MATOMO_SITE_ID?: string;
+  PUBLIC_GA_MEASUREMENT_ID?: string;
   GISCUS_REPO?: string;
   GISCUS_REPO_ID?: string;
   GISCUS_CATEGORY?: string;

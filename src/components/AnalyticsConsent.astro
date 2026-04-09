@@ -63,8 +63,15 @@ const enabled = Boolean(normalizedMeasurementId);
 							window.dataLayer.push(arguments);
 						};
 						window.gtag('js', new Date());
+						window.gtag('consent', 'default', {
+							ad_storage: 'denied',
+							ad_user_data: 'denied',
+							ad_personalization: 'denied',
+							analytics_storage: 'denied',
+						});
 						window.gtag('config', normalizedMeasurementId, {
 							anonymize_ip: true,
+							send_page_view: false,
 						});
 
 						const script = document.createElement('script');
@@ -73,19 +80,39 @@ const enabled = Boolean(normalizedMeasurementId);
 						document.head.appendChild(script);
 					};
 
+					const updateConsent = (granted) => {
+						loadGtag();
+						if (typeof window.gtag !== 'function') return;
+
+						window.gtag('consent', 'update', {
+							ad_storage: 'denied',
+							ad_user_data: 'denied',
+							ad_personalization: 'denied',
+							analytics_storage: granted ? 'granted' : 'denied',
+						});
+
+						if (granted) {
+							window.gtag('event', 'page_view', {
+								page_title: document.title,
+								page_location: window.location.href,
+								page_path: window.location.pathname + window.location.search,
+							});
+						}
+					};
+
 					const setDecision = (value) => {
 						localStorage.setItem(storageKey, value);
-						if (value === accepted) {
-							loadGtag();
-						}
+						updateConsent(value === accepted);
 						hideBanner();
 					};
 
 					const decision = localStorage.getItem(storageKey);
+					loadGtag();
 					if (decision === accepted) {
-						loadGtag();
+						updateConsent(true);
 						hideBanner();
 					} else if (decision === rejected) {
+						updateConsent(false);
 						hideBanner();
 					} else {
 						showBanner();
