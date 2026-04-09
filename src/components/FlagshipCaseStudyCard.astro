@@ -1,0 +1,203 @@
+---
+import PillTag from './PillTag.astro';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	title: string;
+	summary: string;
+	tags: string[];
+	href: string;
+	date?: Date;
+	accent?: string;
+	index?: number;
+}
+
+const { title, summary, tags, href, date, accent = 'primary', index = 1 } = Astro.props;
+const displayTags = tags.slice(0, 3);
+---
+
+<a class="flagship-card-link" href={href} aria-label={`Open flagship case study: ${title}`}>
+	<article class:list={['flagship-card', `flagship-card--${accent}`]}>
+		<div class="flagship-card__topline">
+			<span class="flagship-card__index">0{index}</span>
+			{date && (
+				<p class="flagship-card__date">
+					<FormattedDate date={date} />
+				</p>
+			)}
+		</div>
+
+		<div class="flagship-card__body">
+			<h3>{title}</h3>
+			<p class="flagship-card__summary">{summary}</p>
+			<p class="flagship-card__impact">Outcome: {summary}</p>
+		</div>
+
+		<div class="flagship-card__footer">
+			<div class="flagship-card__tags">
+				{displayTags.map((tag) => <PillTag label={tag} />)}
+			</div>
+			<span class="flagship-card__cta">Read case study <span aria-hidden="true">-></span></span>
+		</div>
+	</article>
+</a>
+
+<style>
+	.flagship-card-link {
+		display: block;
+		height: 100%;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.flagship-card {
+		position: relative;
+		isolation: isolate;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+		gap: 1.05rem;
+		height: 100%;
+		min-height: 19rem;
+		padding: 1.35rem;
+		border-radius: calc(var(--radius-lg) - 0.15rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 88%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 42%);
+		box-shadow: var(--shadow-sm);
+		overflow: hidden;
+		transition:
+			transform var(--motion-base) var(--ease-emphasis),
+			box-shadow var(--motion-base) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard),
+			background-color var(--motion-base) var(--ease-standard);
+	}
+
+	.flagship-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(125deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 40%),
+			linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.08) 50%, transparent 80%);
+		opacity: 0;
+		transform: translateX(-16%);
+		transition:
+			opacity var(--motion-base) var(--ease-standard),
+			transform 760ms var(--ease-emphasis);
+		pointer-events: none;
+	}
+
+	.flagship-card-link:hover .flagship-card,
+	.flagship-card-link:focus-visible .flagship-card {
+		transform: translateY(-6px);
+		box-shadow: var(--shadow-lg);
+		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+	}
+
+	.flagship-card-link:hover .flagship-card::before,
+	.flagship-card-link:focus-visible .flagship-card::before {
+		opacity: 1;
+		transform: translateX(14%);
+	}
+
+	.flagship-card--secondary {
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-focus) 13%, transparent), transparent 40%);
+	}
+
+	.flagship-card--tertiary {
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent-strong) 12%, transparent), transparent 42%);
+	}
+
+	.flagship-card__topline {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+
+	.flagship-card__index {
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.flagship-card__date {
+		margin: 0;
+		font-size: 0.78rem;
+		color: var(--color-text-muted);
+	}
+
+	.flagship-card__body {
+		display: grid;
+		align-content: start;
+		gap: 0.8rem;
+	}
+
+	.flagship-card h3 {
+		margin: 0;
+		font-size: clamp(1.35rem, 1.15rem + 0.75vw, 1.9rem);
+	}
+
+	.flagship-card__summary,
+	.flagship-card__impact {
+		margin: 0;
+	}
+
+	.flagship-card__summary {
+		font-size: 0.98rem;
+	}
+
+	.flagship-card__impact {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.03em;
+		color: var(--color-text);
+	}
+
+	.flagship-card__footer {
+		display: grid;
+		gap: 0.85rem;
+		align-content: end;
+	}
+
+	.flagship-card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+
+	.flagship-card__cta {
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: var(--color-accent);
+		transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+	}
+
+	.flagship-card-link:hover .flagship-card__cta,
+	.flagship-card-link:focus-visible .flagship-card__cta {
+		color: var(--color-accent-strong);
+		transform: translateX(4px);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.flagship-card,
+		.flagship-card::before,
+		.flagship-card__cta {
+			transition: none;
+		}
+
+		.flagship-card-link:hover .flagship-card,
+		.flagship-card-link:focus-visible .flagship-card,
+		.flagship-card-link:hover .flagship-card__cta,
+		.flagship-card-link:focus-visible .flagship-card__cta {
+			transform: none;
+		}
+	}
+</style>

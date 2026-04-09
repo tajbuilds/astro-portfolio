@@ -1,13 +1,35 @@
-﻿---
+---
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ButtonLink from '../components/ButtonLink.astro';
 import PillTag from '../components/PillTag.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import FlagshipCaseStudyCard from '../components/FlagshipCaseStudyCard.astro';
 import { contentSlug, getFeaturedWorkEntries } from '../lib/data/portfolio-data';
 
-const featured = await getFeaturedWorkEntries(4);
+const featured = await getFeaturedWorkEntries(3);
+
+const proofChips = [
+	'Cloudflare Workers',
+	'Verification-first routing',
+	'Faceted search platforms',
+	'Event-driven automation',
+];
+
+const trustPoints = [
+	{
+		label: 'Core focus',
+		value: 'Edge verification, routing discipline, and platform control',
+	},
+	{
+		label: 'Delivery lens',
+		value: 'Operationally reliable systems, not diagram-only architecture',
+	},
+	{
+		label: 'Current work',
+		value: 'Search, automation, data movement, and production safeguards',
+	},
+];
 
 const techGroups = {
 	'Edge / Cloud': ['Cloudflare Workers', 'Routing & Rules', 'Access Control', 'Observability'],
@@ -15,62 +37,83 @@ const techGroups = {
 	'Data / Search': ['Search index design', 'Ingestion pipelines', 'Schema governance', 'Faceted query strategy'],
 	Frontend: ['Astro', 'TypeScript', 'React islands', 'Performance-first UI'],
 };
+
+const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 ---
 
 <MainLayout title="Taj | Solutions Architect" description="Solutions Architect focused on edge, automation, and data platform architecture.">
 	<Container size="wide">
-		<section class="hero section">
-			<div class="hero__layout">
-				<div class="hero__content">
-					<p class="hero__eyebrow hero__stagger hero__stagger--1">Solutions Architect · Edge, Automation &amp; Data Platforms</p>
-					<h1 class="hero__stagger hero__stagger--2">Tajinder Singh</h1>
-					<p class="hero__mission hero__stagger hero__stagger--3">
-						I design verification-first, automation-driven platform architectures that reduce operational
-						friction, harden edge entry points, and move data reliably from edge events into
-						production systems.
+		<section class="hero-shell">
+			<div class="hero-grid">
+				<div class="hero-copy">
+					<p class="hero-kicker hero__stagger hero__stagger--1">Tajinder Singh · Solutions Architect</p>
+					<h1 class="hero__stagger hero__stagger--2">Architecture for edge, automation, and data systems that need to hold up in production.</h1>
+					<p class="hero-positioning hero__stagger hero__stagger--3">
+						I design verification-first platform architecture that reduces operational drag, hardens public entry
+						points, and gives teams tighter control over how systems behave under real load.
 					</p>
-					<div class="hero__actions hero__stagger hero__stagger--4">
+					<p class="hero-support hero__stagger hero__stagger--4">
+						Focused on Cloudflare entry layers, secure workflow routing, faceted search systems, and the practical
+						contracts that keep distributed platforms maintainable.
+					</p>
+					<div class="hero-actions hero__stagger hero__stagger--5">
 						<ButtonLink href="/work">View Work</ButtonLink>
-						<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
+						<ButtonLink href="/contact" variant="secondary">Get in Touch</ButtonLink>
 					</div>
-					<p class="hero__focus-title hero__stagger hero__stagger--5">Core Focus Areas</p>
-					<div class="hero__pills hero__stagger hero__stagger--6">
-						<PillTag label="Cloudflare Workers" />
-						<PillTag label="Secure Verification Paths" />
-						<PillTag label="Event-Driven Automation" />
-						<PillTag label="Faceted Search Architecture" />
-						<PillTag label="Data Pipelines" />
+					<div class="hero-proof hero__stagger hero__stagger--6">
+						{proofChips.map((item) => <PillTag label={item} />)}
 					</div>
 				</div>
-				<figure class="hero__avatar hero__stagger hero__stagger--4" aria-hidden="true">
-					<img
-						src="/images/tajinder-singh-portrait.jpg"
-						alt=""
-						loading="lazy"
-						width="220"
-						height="220"
-					/>
-				</figure>
+
+				<div class="hero-visual hero__stagger hero__stagger--4" aria-label="Profile and architecture focus">
+					<div class="hero-visual__portrait">
+						<div class="hero-visual__portrait-frame">
+							<img
+								src="/images/tajinder-singh-portrait.jpg"
+								alt="Portrait of Tajinder Singh"
+								loading="eager"
+								width="720"
+								height="900"
+							/>
+						</div>
+						<div class="hero-visual__caption">
+							<span class="hero-visual__caption-label">Working style</span>
+							<strong>Constraint-aware, failure-aware, production-aware.</strong>
+						</div>
+					</div>
+
+					<div class="hero-visual__rail">
+						{trustPoints.map((item) => (
+							<article class="hero-note">
+								<p class="hero-note__label">{item.label}</p>
+								<p class="hero-note__value">{item.value}</p>
+							</article>
+						))}
+					</div>
+				</div>
 			</div>
 		</section>
 
-		<section class="section">
+		<section class="featured-work section">
 			<div data-reveal="soft">
-			<SectionHeading
-				eyebrow="Work"
-				title="Featured Case Studies"
-				description="Selected implementations with measurable operational impact."
-			/>
+				<SectionHeading
+					eyebrow="Selected Work"
+					title="Flagship Case Studies"
+					description="Three representative systems showing how I approach edge enforcement, discovery architecture, and operational platform modernization."
+				/>
 			</div>
 			{featured.length ? (
-				<ul class="grid grid--cards">
-					{featured.map((item) => (
-						<li data-reveal="soft">
-							<ProjectCard
+				<ul class="flagship-grid">
+					{featured.map((item, index) => (
+						<li class:list={['flagship-grid__item', { 'flagship-grid__item--lead': index === 0 }]} data-reveal="soft">
+							<FlagshipCaseStudyCard
 								title={item.data.title}
-								description={item.data.description}
+								summary={item.data.description}
 								tags={item.data.tags}
+								date={item.data.date}
 								href={`/work/${contentSlug(item.id)}/`}
+								index={index + 1}
+								accent={flagshipAccents[index] ?? 'primary'}
 							/>
 						</li>
 					))}
@@ -158,117 +201,186 @@ const techGroups = {
 
 <style>
 	.section {
-		margin-bottom: clamp(2.5rem, 6vw, 5rem);
+		margin-bottom: clamp(2.8rem, 6vw, 5.4rem);
 	}
 
-	.hero {
+	.hero-shell {
 		position: relative;
+		min-height: min(52rem, calc(100svh - 6.5rem));
+		display: grid;
+		align-items: center;
+		padding: clamp(1.2rem, 2vw, 1.8rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
+		border-radius: calc(var(--radius-lg) + 0.25rem);
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 88%, transparent)),
+			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 34%),
+			radial-gradient(circle at bottom left, color-mix(in srgb, var(--color-focus) 12%, transparent), transparent 28%);
+		box-shadow: var(--shadow-md);
 		overflow: hidden;
-		padding: clamp(1.1rem, 3vw, 2rem);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
-		box-shadow: var(--shadow-sm);
 	}
 
-	.hero::before,
-	.hero::after {
+	.hero-shell::before,
+	.hero-shell::after {
 		content: '';
 		position: absolute;
 		border-radius: 999px;
-		filter: blur(24px);
+		filter: blur(34px);
 		pointer-events: none;
-		opacity: 0.55;
+		opacity: 0.72;
 	}
 
-	.hero::before {
-		top: -2.2rem;
-		right: 10%;
-		width: 14rem;
-		height: 14rem;
+	.hero-shell::before {
+		top: -5rem;
+		right: -2rem;
+		width: 18rem;
+		height: 18rem;
 		background: color-mix(in srgb, var(--color-accent) 18%, transparent);
 	}
 
-	.hero::after {
-		bottom: -4rem;
-		left: -2rem;
-		width: 12rem;
-		height: 12rem;
+	.hero-shell::after {
+		left: -4rem;
+		bottom: -6rem;
+		width: 16rem;
+		height: 16rem;
 		background: color-mix(in srgb, var(--color-focus) 12%, transparent);
 	}
 
-	.hero__layout {
+	.hero-grid {
 		position: relative;
 		z-index: 1;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		gap: 1rem;
-		align-items: start;
+		grid-template-columns: minmax(0, 1.08fr) minmax(21rem, 0.92fr);
+		gap: clamp(1rem, 2.4vw, 2rem);
+		align-items: center;
 	}
 
-	.hero__eyebrow {
-		margin: 0 0 0.85rem;
-		font-size: 0.78rem;
+	.hero-copy {
+		display: grid;
+		align-content: start;
+		gap: 1rem;
+		max-width: 42rem;
+	}
+
+	.hero-kicker {
+		margin: 0;
+		font-size: 0.8rem;
 		font-weight: 700;
-		letter-spacing: 0.09em;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
 		color: var(--color-accent);
 	}
 
-	.hero h1 {
+	.hero-copy h1 {
 		margin: 0;
-		font-size: clamp(2.5rem, 1.9rem + 3vw, 4.4rem);
+		font-size: clamp(3rem, 2.1rem + 3.4vw, 5.1rem);
+		line-height: 0.95;
+		max-width: 12ch;
 	}
 
-	.hero__mission {
-		max-width: 52rem;
-		font-size: 1.05rem;
-		margin: 1rem 0 1.2rem;
+	.hero-positioning,
+	.hero-support {
+		margin: 0;
 	}
 
-	.hero__actions {
+	.hero-positioning {
+		font-size: clamp(1.05rem, 0.98rem + 0.36vw, 1.22rem);
+		max-width: 40rem;
+	}
+
+	.hero-support {
+		max-width: 38rem;
+		font-size: 0.98rem;
+		color: var(--color-text);
+		opacity: 0.88;
+	}
+
+	.hero-actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.6rem;
-		margin-bottom: 0.9rem;
+		gap: 0.7rem;
+		padding-top: 0.2rem;
 	}
 
-	.hero__focus-title {
-		margin: 0 0 0.55rem;
-		font-size: 0.8rem;
-		font-weight: 700;
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
-	}
-
-	.hero__pills {
+	.hero-proof {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
+		gap: 0.45rem;
+		padding-top: 0.2rem;
 	}
 
-	.hero__avatar {
-		margin: 0;
-		width: clamp(5.2rem, 10vw, 7rem);
-		height: clamp(5.2rem, 10vw, 7rem);
-		padding: 0.22rem;
-		border-radius: 999px;
-		border: 1px solid var(--color-border);
-		background: color-mix(in srgb, var(--color-bg-elevated) 95%, transparent);
-		box-shadow: 0 0 0 0.35rem color-mix(in srgb, var(--color-accent) 10%, transparent), var(--shadow-md);
+	.hero-visual {
+		display: grid;
+		gap: 0.85rem;
 	}
 
-	.hero__avatar img {
+	.hero-visual__portrait {
+		position: relative;
+		display: grid;
+		gap: 0.8rem;
+		padding: 0.8rem;
+		border-radius: calc(var(--radius-lg) - 0.1rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+		background:
+			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+			linear-gradient(130deg, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 52%);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.hero-visual__portrait-frame {
+		position: relative;
+		padding: 0.3rem;
+		border-radius: calc(var(--radius-lg) - 0.35rem);
+		background: linear-gradient(160deg, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 70%);
+	}
+
+	.hero-visual__portrait-frame img {
 		width: 100%;
-		height: 100%;
+		aspect-ratio: 4 / 5;
 		object-fit: cover;
-		border-radius: 999px;
+		border-radius: calc(var(--radius-lg) - 0.55rem);
 	}
 
-	.section-intro {
-		margin: -0.5rem 0 1rem;
-		max-width: 58rem;
+	.hero-visual__caption {
+		display: grid;
+		gap: 0.18rem;
+	}
+
+	.hero-visual__caption-label,
+	.hero-note__label {
+		margin: 0;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.hero-visual__caption strong {
+		font-size: 0.98rem;
+		line-height: 1.45;
+	}
+
+	.hero-visual__rail {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	.hero-note {
+		display: grid;
+		gap: 0.28rem;
+		padding: 0.8rem;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.hero-note__value {
+		margin: 0;
+		font-size: 0.84rem;
+		line-height: 1.55;
 	}
 
 	.hero__stagger {
@@ -301,16 +413,36 @@ const techGroups = {
 		animation-delay: 410ms;
 	}
 
-	.grid {
-		display: grid;
-		gap: 1rem;
+	.section-intro {
+		margin: -0.5rem 0 1rem;
+		max-width: 58rem;
 	}
 
-	.grid--cards {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	.featured-work {
+		margin-top: clamp(2.2rem, 4vw, 3.5rem);
+	}
+
+	.flagship-grid {
 		list-style: none;
 		padding: 0;
 		margin: 0;
+		display: grid;
+		grid-template-columns: 1.15fr 0.85fr 0.85fr;
+		gap: 1rem;
+		align-items: stretch;
+	}
+
+	.flagship-grid__item {
+		height: 100%;
+	}
+
+	.flagship-grid__item--lead {
+		grid-row: span 2;
+	}
+
+	.grid {
+		display: grid;
+		gap: 1rem;
 	}
 
 	.grid--three {
@@ -371,19 +503,57 @@ const techGroups = {
 		}
 	}
 
+	@media (max-width: 1100px) {
+		.hero-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.hero-copy {
+			max-width: none;
+		}
+
+		.hero-copy h1 {
+			max-width: 11.5ch;
+		}
+
+		.hero-visual__rail {
+			grid-template-columns: 1fr;
+		}
+
+		.flagship-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.flagship-grid__item--lead {
+			grid-column: 1 / -1;
+			grid-row: auto;
+		}
+	}
+
 	@media (max-width: 980px) {
-		.grid--cards,
 		.grid--three,
 		.grid--stack {
 			grid-template-columns: 1fr;
 		}
+	}
 
-		.hero__layout {
+	@media (max-width: 760px) {
+		.hero-shell {
+			min-height: auto;
+			padding: 1rem;
+		}
+
+		.hero-copy h1 {
+			max-width: none;
+			font-size: clamp(2.5rem, 1.85rem + 3.1vw, 4rem);
+		}
+
+		.flagship-grid {
 			grid-template-columns: 1fr;
 		}
 
-		.hero__avatar {
-			display: none;
+		.hero-visual__portrait {
+			padding: 0.65rem;
 		}
 	}
 
