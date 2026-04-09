@@ -16,7 +16,9 @@ const displayTags = tags.slice(0, 3);
 ---
 
 <a class="project-card-link" href={href} aria-label={`Open case study: ${title}`}>
-	<article class:list={['project-card', { 'project-card--compact': compact }]}>
+	<article
+		class:list={['project-card', 'surface-card', 'surface-card--standard', { 'project-card--compact': compact }]}
+	>
 		<div class="project-card__meta">
 			{date && (
 				<p class="project-card__date">
@@ -46,13 +48,10 @@ const displayTags = tags.slice(0, 3);
 		position: relative;
 		isolation: isolate;
 		display: grid;
-		gap: 0.85rem;
+		gap: var(--space-3);
 		height: 100%;
 		padding: 1.25rem;
 		border-radius: var(--radius-md);
-		border: 1px solid var(--color-border);
-		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
-		box-shadow: var(--shadow-sm);
 		overflow: hidden;
 		transition:
 			border-color var(--motion-fast) var(--ease-standard),
@@ -105,19 +104,19 @@ const displayTags = tags.slice(0, 3);
 	}
 
 	.project-card__date {
-		font-size: 0.78rem;
+		font-size: var(--font-size-xs);
 		color: var(--color-text-muted);
 	}
 
 	.project-card__tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.4rem;
+		gap: var(--space-2);
 		margin-top: 0.15rem;
 	}
 
 	.project-card__cta {
-		font-size: 0.9rem;
+		font-size: var(--font-size-ui);
 		font-weight: 700;
 		color: var(--color-accent);
 		transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);

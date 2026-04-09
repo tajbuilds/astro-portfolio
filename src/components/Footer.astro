@@ -4,7 +4,7 @@ const today = new Date();
 
 <footer>
 	<div class="footer-inner">
-		<div class="footer-meta">
+		<div class="footer-identity">
 			<img
 				class="footer-avatar"
 				src="/images/tajinder-singh-portrait.jpg"
@@ -72,11 +72,15 @@ const today = new Date();
 					<span class="sr-only">Google Play</span>
 				</a>
 			</div>
+		</div>
+		<div class="footer-meta">
 			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
-			<a class="privacy-link" href="/privacy">Privacy</a>
-			<button id="analytics-settings-trigger" type="button" class="privacy-link analytics-settings-button">
-				Analytics settings
-			</button>
+			<div class="footer-legal">
+				<a class="privacy-link" href="/privacy">Privacy</a>
+				<button id="analytics-settings-trigger" type="button" class="privacy-link analytics-settings-button">
+					Analytics settings
+				</button>
+			</div>
 		</div>
 	</div>
 </footer>
@@ -93,46 +97,66 @@ const today = new Date();
 
 <style>
 	footer {
-		padding: clamp(1rem, 2vw, 1.4rem) 1.25rem;
+		padding: clamp(1rem, 2vw, 1.5rem) var(--space-inline);
 		border-top: 1px solid var(--color-border);
 		margin-top: clamp(2rem, 4vw, 3rem);
 	}
 
 	.footer-inner {
-		max-width: var(--container-full);
+		max-width: var(--container-size-full);
 		margin: 0 auto;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: var(--space-4) var(--space-5);
+		align-items: center;
+	}
+
+	.footer-identity {
 		display: flex;
 		align-items: center;
+		gap: var(--space-3);
+		flex-wrap: wrap;
 	}
 
 	.footer-meta {
 		display: flex;
 		align-items: center;
-		gap: 0.55rem;
+		justify-content: space-between;
+		gap: var(--space-3);
 		flex-wrap: wrap;
 	}
 
 	.footer-avatar {
-		width: 2rem;
-		height: 2rem;
+		width: 2.1rem;
+		height: 2.1rem;
 		object-fit: cover;
 		border-radius: 999px;
 		border: 1px solid var(--color-border);
+		box-shadow: var(--shadow-sm);
 	}
 
 	footer p {
 		margin: 0;
-		font-size: 0.88rem;
+		font-size: var(--font-size-sm);
 		color: rgb(var(--gray));
+	}
+
+	.footer-legal {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-3);
+		flex-wrap: wrap;
 	}
 
 	.privacy-link {
 		font-family: inherit;
-		font-size: 0.88rem;
+		font-size: var(--font-size-sm);
 		color: var(--color-text-muted);
 		text-decoration: none;
 		border-bottom: 1px solid transparent;
-		transition: color 120ms ease, border-color 120ms ease;
+		transition:
+			color var(--motion-fast) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard);
 	}
 
 	.analytics-settings-button {
@@ -151,7 +175,7 @@ const today = new Date();
 	.footer-links {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: var(--space-2);
 		flex-wrap: nowrap;
 	}
 
@@ -161,14 +185,23 @@ const today = new Date();
 		justify-content: center;
 		color: var(--color-accent);
 		text-decoration: none;
-		padding: 0.15rem;
-		border-radius: 0.25rem;
-		transition: color 120ms ease, opacity 120ms ease;
+		padding: 0.18rem;
+		border-radius: 0.35rem;
+		border: 1px solid transparent;
+		transition:
+			color var(--motion-fast) var(--ease-standard),
+			opacity var(--motion-fast) var(--ease-standard),
+			border-color var(--motion-fast) var(--ease-standard),
+			background-color var(--motion-fast) var(--ease-standard),
+			transform var(--motion-fast) var(--ease-standard);
 	}
 
 	.footer-icon-link:hover {
 		color: var(--color-accent-strong);
 		opacity: 0.9;
+		transform: translateY(-1px);
+		border-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+		background: color-mix(in srgb, var(--color-accent) 8%, transparent);
 	}
 
 	.footer-icon-link:focus-visible {
@@ -177,7 +210,30 @@ const today = new Date();
 	}
 
 	.footer-icon-link svg {
-		width: 1.1rem;
-		height: 1.1rem;
+		width: 1rem;
+		height: 1rem;
+	}
+
+	@media (max-width: 760px) {
+		.footer-inner {
+			grid-template-columns: 1fr;
+			gap: var(--space-3);
+			align-items: start;
+		}
+
+		.footer-meta {
+			align-items: start;
+			justify-content: flex-start;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.footer-icon-link {
+			transition: none;
+		}
+
+		.footer-icon-link:hover {
+			transform: none;
+		}
 	}
 </style>

@@ -18,12 +18,12 @@ const { href, variant = 'primary', class: className } = Astro.props;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.4rem;
-		padding: 0.68rem 1.05rem;
-		font-size: 0.92rem;
+		gap: var(--space-2);
+		padding: 0.68rem var(--space-4);
+		font-size: var(--font-size-ui);
 		font-weight: 700;
 		text-decoration: none;
-		line-height: 1.1;
+		line-height: 1.15;
 		border-radius: var(--radius-sm);
 		border: 1px solid transparent;
 		box-shadow: var(--shadow-sm);
@@ -47,6 +47,10 @@ const { href, variant = 'primary', class: className } = Astro.props;
 	.button-link:hover {
 		transform: translateY(-2px);
 		box-shadow: var(--shadow-md);
+	}
+
+	.button-link:active {
+		transform: translateY(-1px);
 	}
 
 	.button-link:focus-visible {
@@ -85,7 +89,8 @@ const { href, variant = 'primary', class: className } = Astro.props;
 			transition: none;
 		}
 
-		.button-link:hover {
+		.button-link:hover,
+		.button-link:active {
 			transform: none;
 		}
 	}

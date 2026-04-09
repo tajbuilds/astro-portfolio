@@ -58,13 +58,13 @@ const directLinks = [
 			</div>
 
 			<aside class="contact-hero__aside" data-reveal="right">
-				<div class="contact-summary">
+				<div class="contact-summary surface-card surface-card--soft">
 					<p class="contact-summary__label">Good fit for</p>
 					<ul>
 						{conversationAreas.map((item) => <li>{item}</li>)}
 					</ul>
 				</div>
-				<div class="contact-summary contact-summary--quiet">
+				<div class="contact-summary contact-summary--quiet surface-card surface-card--soft">
 					<p class="contact-summary__label">What helps</p>
 					<p>
 						If you already know the current constraint, affected system, and what “better” needs to look like,
@@ -120,7 +120,7 @@ const directLinks = [
 			</div>
 
 			<aside class="contact-layout__rail">
-				<section class="contact-rail-card" data-reveal="soft">
+				<section class="contact-rail-card surface-card surface-card--feature" data-reveal="soft">
 					<p class="contact-rail-card__eyebrow">Direct Contact</p>
 					<h2>Reach out through the channel that fits best.</h2>
 					<div class="contact-meta" aria-label="Contact links">
@@ -176,7 +176,7 @@ const directLinks = [
 					</div>
 				</section>
 
-				<section class="contact-rail-card contact-rail-card--note" data-reveal="soft">
+				<section class="contact-rail-card contact-rail-card--note surface-card surface-card--soft" data-reveal="soft">
 					<p class="contact-rail-card__eyebrow">Best conversations</p>
 					<p>
 						The most useful enquiries usually describe the current architecture, the friction point, and what
@@ -276,23 +276,23 @@ const directLinks = [
 	.contact-hero {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(16.5rem, 0.82fr);
-		gap: 0.75rem;
+		gap: clamp(var(--space-3), 1.4vw, var(--space-5));
 		align-items: start;
 		padding: clamp(0.75rem, 1.1vw, 1rem);
-		margin-bottom: clamp(2rem, 4vw, 3.2rem);
+		margin-bottom: clamp(var(--space-5), 4vw, var(--space-7));
 	}
 
 	.contact-hero__copy {
 		display: grid;
-		gap: 0.6rem;
-		max-width: 33rem;
+		gap: var(--space-3);
+		max-width: 35rem;
 	}
 
 	.contact-hero__kicker,
 	.contact-summary__label,
 	.contact-rail-card__eyebrow {
 		margin: 0;
-		font-size: 0.72rem;
+		font-size: var(--font-size-xs);
 		font-weight: 700;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
@@ -302,49 +302,46 @@ const directLinks = [
 	.contact-hero h1 {
 		margin: 0;
 		font-size: clamp(1.72rem, 1.38rem + 1.45vw, 2.8rem);
-		line-height: 0.98;
-		max-width: 15ch;
+		line-height: 1.02;
+		max-width: 14.5ch;
 	}
 
 	.contact-hero__support {
 		margin: 0;
-		max-width: 29rem;
-		font-size: 0.82rem;
+		max-width: 30rem;
+		font-size: var(--font-size-sm);
 	}
 
 	.contact-hero__actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.55rem;
+		gap: var(--space-2);
 	}
 
 	.contact-hero__aside {
 		display: grid;
-		gap: 0.45rem;
+		gap: var(--space-2);
 	}
 
 	.contact-summary {
 		padding: 0.72rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--color-border);
-		background: color-mix(in srgb, var(--color-bg-elevated) 88%, transparent);
 	}
 
 	.contact-summary ul {
-		margin: 0.58rem 0 0;
+		margin: var(--space-2) 0 0;
 		padding-left: 1.1rem;
 		display: grid;
-		gap: 0.4rem;
+		gap: var(--space-2);
 	}
 
 	.contact-summary--quiet p:last-child {
-		margin: 0.45rem 0 0;
+		margin: var(--space-2) 0 0;
 	}
 
 	.contact-layout {
 		display: grid;
 		grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
-		gap: 1rem;
+		gap: var(--space-4);
 		align-items: start;
 	}
 
@@ -355,7 +352,7 @@ const directLinks = [
 
 	.contact-layout__rail {
 		display: grid;
-		gap: 1rem;
+		gap: var(--space-4);
 	}
 
 	.contact-form-shell {
@@ -364,21 +361,21 @@ const directLinks = [
 	}
 
 	.contact-form-shell :global(.section-heading) {
-		margin-bottom: 1.1rem;
+		margin-bottom: var(--space-5);
 	}
 
 	.contact-form {
 		display: grid;
-		gap: 0.9rem;
+		gap: var(--space-4);
 	}
 
 	.contact-form label {
 		display: grid;
-		gap: 0.35rem;
+		gap: var(--space-1);
 	}
 
 	.contact-form span {
-		font-size: 0.9rem;
+		font-size: var(--font-size-ui);
 		font-weight: 700;
 		color: var(--color-text);
 	}
@@ -413,8 +410,8 @@ const directLinks = [
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
-		gap: 1rem;
-		margin-top: 0.35rem;
+		gap: var(--space-4);
+		margin-top: var(--space-1);
 	}
 
 	.turnstile-wrap {
@@ -424,7 +421,7 @@ const directLinks = [
 
 	.actions {
 		display: grid;
-		gap: 0.45rem;
+		gap: var(--space-2);
 	}
 
 	.contact-form button {
@@ -451,7 +448,7 @@ const directLinks = [
 
 	.status {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: var(--font-size-ui);
 		color: var(--color-text-muted);
 	}
 
@@ -461,13 +458,13 @@ const directLinks = [
 
 	.config-warning {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: var(--font-size-ui);
 		color: #ef4444;
 	}
 
 	.contact-rail-card {
 		display: grid;
-		gap: 0.85rem;
+		gap: var(--space-3);
 		padding: 1rem;
 	}
 
@@ -479,7 +476,7 @@ const directLinks = [
 	.contact-meta {
 		display: flex;
 		align-items: center;
-		gap: 0.6rem;
+		gap: var(--space-3);
 		flex-wrap: wrap;
 	}
 
@@ -496,7 +493,7 @@ const directLinks = [
 	.contact-links {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: var(--space-2);
 		flex-wrap: wrap;
 	}
 

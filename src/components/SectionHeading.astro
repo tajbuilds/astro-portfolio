@@ -18,7 +18,7 @@ const { eyebrow, title, description, align = 'left' } = Astro.props;
 <style>
 	.section-heading {
 		display: grid;
-		gap: 0.75rem;
+		gap: var(--space-3);
 		max-width: 52rem;
 		margin-bottom: var(--space-6);
 	}
@@ -30,7 +30,7 @@ const { eyebrow, title, description, align = 'left' } = Astro.props;
 
 	.section-heading__eyebrow {
 		margin: 0;
-		font-size: 0.78rem;
+		font-size: var(--font-size-xs);
 		font-weight: 700;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
@@ -39,12 +39,12 @@ const { eyebrow, title, description, align = 'left' } = Astro.props;
 
 	.section-heading h2 {
 		margin: 0;
-		font-size: clamp(1.7rem, 1.35rem + 1.2vw, 2.4rem);
+		font-size: var(--font-size-heading-md);
 	}
 
 	.section-heading__description {
 		margin: 0;
-		font-size: 1.02rem;
+		font-size: var(--font-size-body-lg);
 		line-height: 1.7;
 		max-width: 44rem;
 	}

@@ -33,7 +33,7 @@ const tags = await getPublishedWorkTags();
 			</div>
 		</section>
 
-		<section class="work-filter" aria-label="Filter by tag" data-reveal="soft">
+		<section class="work-filter surface-card surface-card--soft" aria-label="Filter by tag" data-reveal="soft">
 			<p>Filter by focus area:</p>
 			<div class="work-filter__tags">
 				<PillTag label="All" href="/work/" />
@@ -42,8 +42,8 @@ const tags = await getPublishedWorkTags();
 		</section>
 
 		<ProofStrip
-			eyebrow="What This Work Improves"
-			title="A consistent pattern across the portfolio"
+			eyebrow="Selected Outcomes"
+			title="Common improvements across the case studies"
 			items={workOverviewProofItems}
 			compact={true}
 		/>
@@ -70,23 +70,19 @@ const tags = await getPublishedWorkTags();
 
 <style>
 	.work-intro {
-		margin-bottom: var(--space-5);
+		margin-bottom: var(--space-6);
 	}
 
 	.work-filter {
 		display: grid;
-		gap: 0.7rem;
+		gap: var(--space-3);
 		margin-bottom: var(--space-6);
 		padding: 0.95rem;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
-		box-shadow: var(--shadow-sm);
 	}
 
 	.work-filter p {
 		margin: 0;
-		font-size: 0.84rem;
+		font-size: var(--font-size-sm);
 		font-weight: 600;
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
@@ -95,7 +91,7 @@ const tags = await getPublishedWorkTags();
 	.work-filter__tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.45rem;
+		gap: var(--space-2);
 	}
 
 	.work-grid {
@@ -104,7 +100,7 @@ const tags = await getPublishedWorkTags();
 		margin: 0;
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
+		gap: var(--space-4);
 	}
 
 	.work-grid li {
