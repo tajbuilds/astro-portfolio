@@ -1,6 +1,6 @@
 ---
 title: "Faceted Deals Search Engine: Scalable Server-Side Discovery"
-description: "Impact: Sub-second filtering, deterministic faceting, and secure query routing across 50k+ products."
+description: "Designed a faceted search architecture that keeps filtering fast, results predictable, and query access securely controlled at scale."
 date: "2025-11-18T00:00:00.000Z"
 tags:
   - Search Engineering

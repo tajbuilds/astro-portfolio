@@ -1,6 +1,6 @@
 ---
 title: "Smart Edge Cache Proxy: Deterministic Caching, Tiering & Safer Purge"
-description: "Impact: Lower origin pressure, predictable caching behavior, and safer purge operations with deterministic invalidation."
+description: "Reworked edge caching strategy to reduce origin dependence, improve cache consistency, and enable safer, deterministic invalidation."
 date: "2025-09-06T00:00:00.000Z"
 tags:
   - Cloudflare Workers
@@ -10,6 +10,89 @@ featured: true
 draft: false
 externalCaseStudyUrl: "/docs/case-studies/smart-edge-cache-proxy/"
 ---
+
+## Executive Summary
+
+Redesigned the edge caching layer to eliminate cache fragmentation, reduce unnecessary origin traffic, and improve consistency of cached responses across environments.
+
+The solution introduced deterministic cache key normalisation, a KV-driven policy layer for runtime control, and a version-based invalidation strategy to avoid unreliable purge behaviour across distributed edge locations.
+
+This resulted in improved cache hit rates, reduced origin dependency, and safer, more predictable cache invalidation without requiring frequent redeployments.
+
+## Problem Context
+
+The existing caching approach relied on default edge behaviour, which resulted in significant cache fragmentation due to query parameter variance and inconsistent request patterns.
+
+Multiple logically identical requests were being cached separately, reducing cache efficiency and increasing origin load. In addition, cache invalidation relied on purge mechanisms that were not consistently reliable across distributed edge locations.
+
+This led to:
+
+* Lower cache hit rates than expected
+* Increased origin requests under load
+* Difficulty ensuring consistent cache invalidation
+* Limited control over caching behaviour at runtime
+
+## Constraints
+
+(Add placeholder text - do not generate content)
+
+## Architecture Overview
+
+(Add placeholder text - do not generate content)
+
+## Key Architecture Decisions
+
+### Deterministic Cache Key Normalisation
+
+Cache keys were normalised to remove non-essential query variance, ensuring that logically identical requests map to the same cache entry.
+
+This improved cache hit rates and reduced duplication across the cache layer.
+
+---
+
+### KV-driven Policy Layer
+
+A KV-based configuration layer was introduced to control TTLs, bypass rules, and caching behaviour without requiring code changes or redeployments.
+
+This allowed runtime flexibility and safer operational control over caching decisions.
+
+---
+
+### Version-based Cache Invalidation
+
+Instead of relying on direct purge operations, a versioning strategy was implemented within cache keys.
+
+By incrementing a version identifier, cached content could be effectively invalidated without depending on inconsistent purge propagation across edge locations.
+
+---
+
+### Tiered Storage with R2 Fallback
+
+An optional R2-backed storage layer was introduced to provide persistent caching for larger responses or fallback scenarios.
+
+This reduced repeated origin fetches for cacheable but infrequently accessed resources.
+
+## Trade-offs
+
+Deterministic key normalisation introduced additional processing overhead per request, but this was justified by the significant improvement in cache efficiency and reduced origin load.
+
+Using KV for policy control introduced eventual consistency, meaning configuration updates are not instantly reflected globally. This was accepted in exchange for runtime flexibility and operational simplicity.
+
+Version-based invalidation increased key management complexity, but provided a more reliable and deterministic alternative to direct purge mechanisms.
+
+Introducing R2 as a secondary storage layer added architectural complexity, but enabled better handling of large or less frequently accessed content.
+
+## Risks & Mitigations
+
+(Add placeholder text - do not generate content)
+
+## Outcome & Impact
+
+(Add placeholder text - do not generate content)
+
+## My Role
+
+(Add placeholder text - do not generate content)
 
 ## TL;DR
 Designed and deployed an edge cache proxy that enforced deterministic request normalization to prevent cache fragmentation and improve effective hit ratio. Cache behavior was controlled through KV policy so TTL bands, bypass rules, and endpoint behavior could be changed without redeploying code. The system used tiered caching with edge cache (`caches.default`) and an optional R2 tier for large payloads, with stale-on-error handling during upstream failures. Because physical delete behavior can be unreliable across POPs, invalidation was implemented with a purge-version suffix for deterministic, global logical refresh.

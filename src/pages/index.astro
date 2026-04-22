@@ -49,14 +49,12 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 			<div class="hero-grid">
 				<div class="hero-copy">
 					<p class="hero-kicker hero__stagger hero__stagger--1">Tajinder Singh · Solutions Architect</p>
-					<h1 class="hero__stagger hero__stagger--2">Architecture for edge, automation, and data systems that need to hold up in production.</h1>
+					<h1 class="hero__stagger hero__stagger--2">Designing scalable systems, not just building features.</h1>
 					<p class="hero-positioning hero__stagger hero__stagger--3">
-						I design verification-first platform architecture that reduces operational drag, hardens public entry
-						points, and gives teams tighter control over how systems behave under real load.
+						Solutions Architect focused on edge platforms, automation pipelines, and data-driven systems — delivering reliable, production-ready architectures with measurable impact.
 					</p>
 					<p class="hero-support hero__stagger hero__stagger--4">
-						Focused on Cloudflare entry layers, secure workflow routing, faceted search systems, and the practical
-						contracts that keep distributed platforms maintainable.
+						Cloudflare · Automation · Search · Platform Engineering
 					</p>
 					<div class="hero-actions hero__stagger hero__stagger--5">
 						<ButtonLink href="/work">View Work</ButtonLink>
@@ -80,7 +78,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 						</div>
 						<div class="hero-visual__caption">
 							<span class="hero-visual__caption-label">Working style</span>
-							<strong>Constraint-aware, failure-aware, production-aware.</strong>
+							<strong>Designed with constraints, failure modes, and production realities in mind.</strong>
 						</div>
 					</div>
 
@@ -97,18 +95,21 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		</section>
 
 		<ProofStrip
-			eyebrow="Selected Outcomes"
-			title="What this work tends to improve"
+			eyebrow="Impact Areas"
+			title="Where these systems create measurable improvement"
 			items={homepageProofItems}
 			compact={true}
 		/>
 
+		<div class="positioning-strip">
+			<p>Architecture decisions across edge, automation, and data systems — focused on performance, reliability, and operational clarity.</p>
+		</div>
+
 		<section class="featured-work section">
 			<div data-reveal="soft">
 				<SectionHeading
-					eyebrow="Selected Work"
-					title="Flagship Case Studies"
-					description="Three representative systems showing how I approach edge enforcement, discovery architecture, and operational platform modernization."
+					title="Selected Architecture Case Studies"
+					description="Representative systems demonstrating edge enforcement, discovery architecture, and platform modernization decisions."
 				/>
 			</div>
 			{featured.length ? (
@@ -130,6 +131,17 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 			) : (
 				<p class="section-intro">New case studies coming soon. In the meantime, browse all work.</p>
 			)}
+		</section>
+
+		<section class="section">
+			<SectionHeading title="How I approach system design" />
+			<ul class="approach-list">
+				<li>Start with constraints, not tools</li>
+				<li>Optimise for reliability and operability over complexity</li>
+				<li>Prefer deterministic behaviour over implicit logic</li>
+				<li>Design for failure, not just success paths</li>
+				<li>Balance flexibility with maintainability</li>
+			</ul>
 		</section>
 
 		<section class="section">
@@ -163,7 +175,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 
 		<section class="section">
 			<div data-reveal="soft">
-				<SectionHeading eyebrow="Selected Technology" title="Platform-Fit Tooling" />
+				<SectionHeading eyebrow="Architecture Toolkit" title="Platform-Fit Tooling" />
 			</div>
 			<p class="section-intro" data-reveal="soft">
 				I work across platform boundaries, selecting tools based on architectural fit rather than trend
@@ -423,6 +435,36 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	.section-intro {
 		margin: calc(var(--space-3) * -1) 0 var(--space-4);
 		max-width: 54rem;
+	}
+
+	.positioning-strip {
+		padding: var(--space-4) 0;
+		border-top: 1px solid var(--color-border);
+		margin-top: var(--space-4);
+	}
+
+	.positioning-strip p {
+		margin: 0;
+		font-size: var(--font-size-ui);
+		color: var(--color-text);
+		max-width: 52rem;
+	}
+
+	.approach-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: var(--space-3);
+	}
+
+	.approach-list li {
+		padding: var(--space-3) var(--space-4);
+		border-radius: var(--radius-md);
+		background: var(--color-bg-elevated);
+		border: 1px solid var(--color-border);
+		font-size: var(--font-size-ui);
 	}
 
 	.featured-work {

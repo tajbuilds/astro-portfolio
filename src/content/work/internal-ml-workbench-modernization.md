@@ -1,6 +1,6 @@
 ---
 title: "Internal ML Workbench Modernization"
-description: "Impact: Converted a stale AutoML app into a modular, containerized, self-hosted workbench with reproducible training and CI-backed delivery."
+description: "Modernised an internal ML platform into a modular, reproducible system with clearer workflows and reliable deployment pipelines."
 date: "2026-02-18T00:00:00.000Z"
 tags:
   - Machine Learning
