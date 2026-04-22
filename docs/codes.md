@@ -49,6 +49,7 @@ Last updated: 2026-04-22
 - Final visual polish on 2026-04-22 added subtle section dividers, stronger case-study card grouping, and secondary tag styling on the homepage.
 - Analytics consent was fixed on 2026-04-22 by reading `PUBLIC_GA_MEASUREMENT_ID` from Cloudflare runtime env in `MainLayout.astro` instead of relying on an empty build-time value.
 - Final portfolio polish tightened homepage curation, case-study prose spacing, diagram presentation, and mobile section rhythm without changing the overall layout.
+- Astro v6 runtime error was fixed by replacing `Astro.locals.runtime.env` with `cloudflare:workers` env access in `MainLayout.astro`.
 
 ## Next Step
 
