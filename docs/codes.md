@@ -38,6 +38,10 @@ Last updated: 2026-04-22
 - `distributed-emergency-notification-system.md` now includes an Architecture Diagram section after Architecture Overview.
 - `distributed-emergency-notification-system.md` now points to the copied original diagram at `/images/architecture/architecture.jpg`.
 - `public/images/architecture/architecture.jpg` was restored to the original file to preserve zoom quality.
+- `faceted-deals-search-engine.md` now has a top-of-file Solutions Architect scaffold with placeholder sections.
+- `faceted-deals-search-engine.md` received exact content in Executive Summary, Problem Context, Constraints, Architecture Overview, Key Architecture Decisions, and Trade-offs.
+- `faceted-deals-search-engine.md` received exact content in Risks & Mitigations, Outcome & Impact, and My Role.
+- `faceted-deals-search-engine.md` now ends at `My Role` with legacy sections removed.
 
 ## Next Step
 

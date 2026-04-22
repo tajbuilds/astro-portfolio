@@ -10,79 +10,140 @@ featured: true
 draft: false
 ---
 
-## TL;DR
-Designed and deployed a server-side faceted search architecture to replace fragile client-side filtering for a large travel deals catalog. The solution introduced structured indexing, deterministic filter logic, a secure proxy layer, and a unified query contract between UI and search services. This reduced browser workload, stabilized filtering behavior, and improved scalability for catalogs at `50k+` records. Search moved from UI-side patching to infrastructure-level control.
+## Executive Summary
 
-## Problem
-Discovery was constrained by browser-side filtering over a growing deals dataset. Query parameter combinations produced inconsistent behavior, sorting became harder to trust, and multi-filter interactions created noticeable UI and CPU overhead. Facet distribution logic also became difficult to maintain as product volume expanded. At `50k+` records, incremental frontend optimization would not address the structural bottleneck.
+Designed a server-side faceted search architecture to replace inefficient client-side filtering and improve performance, scalability, and control over query behaviour.
+
+The system introduced a dedicated search backend using Meilisearch, combined with a proxy layer to enforce structured filtering, secure query handling, and consistent response formatting.
+
+This enabled fast, predictable filtering across large datasets while maintaining control over how queries are executed and how results are exposed to the frontend.
+
+---
+
+## Problem Context
+
+The existing search and filtering experience relied heavily on client-side logic, leading to performance issues, inconsistent results, and limited scalability as the dataset grew.
+
+Filtering large datasets in the browser increased load times, introduced complex state management, and made it difficult to enforce consistent filtering logic across the application.
+
+There was also limited control over how queries were constructed and executed, increasing the risk of inefficient queries and exposing unnecessary data to the frontend.
+
+The challenge was to design a system that could handle filtering server-side, deliver fast responses, and maintain strict control over query behaviour and data exposure.
+
+---
 
 ## Constraints
-- Support large product volumes with fast multi-facet filtering.
-- Keep sensitive search credentials out of the browser.
-- Preserve predictable filtering and sorting behavior across complex combinations.
-- Keep query behavior consistent while allowing backend evolution.
 
-## Architecture
-Search was restructured into four layers: UI, query contract, secure proxy, and Meilisearch index execution.
+The system needed to support fast filtering across a large dataset without introducing noticeable latency.
 
-<figure class="diagram">
-  <img
-    src="/diagrams/meilisearch-search-flow-v2.svg"
-    alt="Search flow: Browser UI sends a unified request to a secure proxy, which validates payloads, builds deterministic filters, queries the search index, and returns shaped results."
-    loading="lazy"
-  />
-  <figcaption>
-    Unified search architecture with secure proxy validation, deterministic filter construction, and structured response shaping.
-  </figcaption>
-</figure>
+Filtering logic had to remain consistent and predictable regardless of how the frontend was implemented.
 
-1. **Structured search index**
-- Product data was normalized into filter-ready attributes with stable IDs.
-- Index shape was designed for deterministic faceting and explicit sort behavior.
-- Index design allows future ranking, synonym, and analytics enhancements.
+The solution needed to prevent direct access to the search engine, ensuring all queries passed through a controlled backend layer.
 
-2. **Deterministic filter logic**
-- Filter composition follows strict semantics: `OR` within a facet group, `AND` across groups.
-- Filter expressions are built server-side to eliminate ambiguous UI-side logic.
-- Facet distribution is recalculated per query to reflect current filter state.
+The architecture needed to support multiple filter types, including categorical, numerical, and multi-select filters.
 
-3. **Unified query contract**
-- The UI sends one consistent payload: query, page, page size, selected facets, requested facet distribution, sort rule, and retrieval attributes.
-- Contract stability reduced frontend branching and integration drift.
-- Backend query behavior can evolve without breaking UI components.
+The system needed to be flexible enough to evolve without requiring major changes to the frontend implementation.
 
-4. **Secure proxy execution path**
-- All search traffic flows through a proxy endpoint before reaching Meilisearch.
-- Proxy keeps credentials server-side, validates filter/sort input, and restricts returned fields.
-- Responses are intentionally compact (`hits`, `estimatedTotalHits`, `facetDistribution`).
+---
 
-## Key Decisions
-- **ID-based filtering over label-based filtering**
-  Reduced ambiguity and improved long-term data consistency.
+## Architecture Overview
 
-- **Server-side filter construction**
-  Centralized query rules and removed logic duplication across UI code paths.
+The architecture introduced a dedicated search backend powered by Meilisearch, with a proxy layer acting as the only entry point for all search requests.
 
-- **Single search endpoint + unified payload**
-  Simplified integration and reduced coupling between UI and search internals.
+The frontend sends structured search requests to the proxy endpoint, which validates and transforms the request into a format compatible with the search engine.
 
-- **Response shaping to essential attributes**
-  Reduced payload bloat and improved rendering performance.
+The proxy enforces filtering rules, constructs the query, and forwards it to the search backend, ensuring that all search logic is handled server-side.
 
-- **Facet shortlist governance**
-  Prevented UI overload while preserving high-value discovery dimensions.
+Search results are returned in a controlled format, including filtered results, total counts, and facet distributions required for UI rendering.
 
-## Results
-- Achieved sub-second filtering behavior at approximately `50k+` indexed travel products in normal query paths.
-- Reduced client CPU load and DOM churn by moving filtering and facet distribution to server-side execution.
-- Improved effective filter consistency by enforcing deterministic `OR-within / AND-across` logic.
-- Stabilized sorting and pagination behavior through explicit server-side query construction.
-- Created a scalable search foundation for relevance tuning, analytics, and hybrid discovery workflows.
+This approach ensures that filtering remains fast, consistent, and secure, while removing the burden of complex filtering logic from the frontend.
 
-## Future Enhancements
-- Run controlled ranking experiments by query cohort.
-- Expand synonym and typo-tolerance tuning with quality gates.
-- Add query analytics dashboards and caching for common filter combinations.
+---
+
+## Key Architecture Decisions
+
+### Server-side Filtering over Client-side Logic
+Filtering was moved from the frontend to the backend to improve performance, reduce complexity, and ensure consistent behaviour across all queries.
+
+---
+
+### Proxy Layer for Query Control
+A backend proxy was introduced to control how queries are constructed and executed, preventing direct access to the search engine.
+
+---
+
+### Structured Query Format
+A unified request structure was defined to standardise how filters, pagination, and search terms are handled.
+
+---
+
+### Faceted Search Model
+Faceting was used to provide dynamic filter options and counts, enabling a richer and more responsive user experience.
+
+---
+
+### Controlled Data Exposure
+Only required fields and results are returned to the frontend, reducing payload size and improving security.
+
+---
+
+## Trade-offs
+
+Introducing a proxy layer added an extra step to the request flow, but provided better control and security over query handling.
+
+Moving filtering to the backend increased server responsibility, but significantly improved performance and reduced frontend complexity.
+
+Using a dedicated search engine introduced additional infrastructure, but enabled faster and more scalable query execution.
+
+Standardising the query format reduced flexibility for ad-hoc queries, but ensured consistency and predictability across the system.
+
+---
+
+## Risks & Mitigations
+
+Allowing direct access to the search engine could expose query logic and sensitive data structures.
+
+This was mitigated by enforcing all requests through a backend proxy layer, ensuring controlled query construction and execution.
+
+Incorrect or inefficient filter construction could lead to degraded performance or inconsistent results.
+
+This was mitigated by standardising the query format and validating all incoming requests before execution.
+
+As the dataset grows, search performance could degrade if indexing and configuration are not maintained.
+
+This was mitigated by using a dedicated search engine designed for fast indexing and retrieval, along with controlled schema management.
+
+Over-fetching unnecessary data could increase payload size and slow down responses.
+
+This was mitigated by limiting returned fields and ensuring only required attributes are included in the response.
+
+---
+
+## Outcome & Impact
+
+Improved filtering performance by shifting heavy computation from the browser to a dedicated search backend.
+
+Reduced frontend complexity by removing the need for complex state management and client-side filtering logic.
+
+Enabled fast and predictable search behaviour across large datasets through structured query handling.
+
+Improved control over data exposure and query execution by introducing a backend proxy layer.
+
+Created a scalable foundation for adding new filters, facets, and search capabilities without redesigning the system.
+
+---
+
+## My Role
+
+Designed the overall search architecture, including backend filtering, proxy layer, and query structure.
+
+Implemented the backend proxy responsible for validating, transforming, and forwarding search requests.
+
+Defined the filtering model and faceted search structure to support dynamic UI behaviour.
+
+Integrated the search backend with the frontend to ensure consistent and predictable results.
+
+Tested and refined the system to ensure performance, accuracy, and scalability.
 
 
 
