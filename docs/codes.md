@@ -42,6 +42,11 @@ Last updated: 2026-04-22
 - `faceted-deals-search-engine.md` received exact content in Executive Summary, Problem Context, Constraints, Architecture Overview, Key Architecture Decisions, and Trade-offs.
 - `faceted-deals-search-engine.md` received exact content in Risks & Mitigations, Outcome & Impact, and My Role.
 - `faceted-deals-search-engine.md` now ends at `My Role` with legacy sections removed.
+- Global layout spacing was tightened on 2026-04-22 by reducing container widths, main padding, hero spacing, section heading spacing, and sidebar widths.
+- Visual hierarchy and readability were tightened on 2026-04-22 by improving heading spacing, body line length, case study card emphasis, and case-study list spacing.
+- Featured case-study card summaries were capped at 36ch for better scannability on wider screens.
+- The homepage proof strip now has top spacing so it separates cleanly from the hero container.
+- Final visual polish on 2026-04-22 added subtle section dividers, stronger case-study card grouping, and secondary tag styling on the homepage.
 
 ## Next Step
 

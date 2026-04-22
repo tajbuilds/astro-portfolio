@@ -31,11 +31,11 @@
 	--space-7: 3rem;
 	--space-8: 4rem;
 
-	--space-inline: 1.25rem;
+	--space-inline: 1rem;
 
-	--container-size-narrow: 72rem;
-	--container-size-wide: 86rem;
-	--container-size-full: 100rem;
+	--container-size-narrow: 64rem;
+	--container-size-wide: 68.75rem;
+	--container-size-full: 72rem;
 	--container-narrow: var(--container-size-narrow);
 	--container-wide: var(--container-size-wide);
 	--container-full: var(--container-size-full);
@@ -363,7 +363,7 @@ main {
 
 .site-main {
 	margin: 0 auto;
-	padding: clamp(2rem, 4vw, 4rem) var(--space-inline);
+	padding: clamp(1.5rem, 3vw, 3rem) var(--space-inline);
 	width: 100%;
 	flex: 1 0 auto;
 	animation: page-enter 540ms var(--ease-emphasis) both;
@@ -395,14 +395,17 @@ h6 {
 
 h1 {
 	font-size: var(--font-size-heading-lg);
+	margin-bottom: 0.42em;
 }
 
 h2 {
 	font-size: var(--font-size-heading-md);
+	margin-bottom: 0.48em;
 }
 
 h3 {
 	font-size: var(--font-size-heading-sm);
+	margin-bottom: 0.42em;
 }
 
 p {

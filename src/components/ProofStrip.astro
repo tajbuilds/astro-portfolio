@@ -36,6 +36,7 @@ const { eyebrow, title, items, compact = false } = Astro.props;
 	.proof-strip {
 		display: grid;
 		gap: var(--space-4);
+		margin-top: clamp(var(--space-4), 3vw, var(--space-6));
 		padding: clamp(1rem, 1.8vw, 1.35rem);
 		border-radius: var(--radius-lg);
 	}

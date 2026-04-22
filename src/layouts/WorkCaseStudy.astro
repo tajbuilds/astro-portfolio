@@ -338,10 +338,10 @@ const proofItems = getWorkProofItems(slug);
 
 <style>
 	.work-article {
-		max-width: min(62rem, 100%);
+		max-width: min(58rem, 100%);
 		margin-inline: auto;
 		display: grid;
-		gap: var(--space-6);
+		gap: var(--space-5);
 	}
 
 	.back-link {
@@ -354,8 +354,8 @@ const proofItems = getWorkProofItems(slug);
 		position: relative;
 		overflow: hidden;
 		display: grid;
-		gap: var(--space-4);
-		padding: clamp(1.3rem, 2vw, 2rem);
+		gap: var(--space-3);
+		padding: clamp(1.15rem, 1.7vw, 1.7rem);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 		background: color-mix(in srgb, var(--color-bg-elevated) 92%, transparent);
@@ -388,11 +388,13 @@ const proofItems = getWorkProofItems(slug);
 	.work-header h1 {
 		margin: 0;
 		font-size: clamp(2rem, 1.4rem + 2.1vw, 3.1rem);
+		line-height: 1.05;
 	}
 
 	.work-description {
 		margin: 0;
 		font-size: var(--font-size-body-lg);
+		max-width: 70ch;
 	}
 
 	.work-meta {
@@ -416,23 +418,23 @@ const proofItems = getWorkProofItems(slug);
 
 	.work-body {
 		display: grid;
-		grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
-		gap: clamp(var(--space-4), 2.2vw, var(--space-6));
+		grid-template-columns: minmax(13rem, 15.5rem) minmax(0, 1fr);
+		gap: clamp(var(--space-3), 1.8vw, var(--space-5));
 		align-items: start;
 	}
 
 	.work-content {
 		display: grid;
-		gap: var(--space-5);
+		gap: var(--space-4);
 		min-width: 0;
 	}
 
 	.work-feature-media {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
-		gap: var(--space-4);
+		gap: var(--space-3);
 		align-items: stretch;
-		padding: 1rem;
+		padding: 0.85rem;
 		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
 		border-radius: var(--radius-lg);
 		background:
@@ -479,11 +481,11 @@ const proofItems = getWorkProofItems(slug);
 
 	.work-toc {
 		position: sticky;
-		top: 5.2rem;
+		top: 4.8rem;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
-		padding: 0.9rem;
+		padding: 0.75rem;
 		max-height: calc(100vh - 7rem);
 		overflow: auto;
 		box-shadow: var(--shadow-sm);
@@ -503,7 +505,7 @@ const proofItems = getWorkProofItems(slug);
 		padding: 0;
 		list-style: none;
 		display: grid;
-		gap: var(--space-1);
+		gap: 0.2rem;
 	}
 
 	.work-toc li.is-sub {
@@ -512,7 +514,7 @@ const proofItems = getWorkProofItems(slug);
 
 	.work-toc a {
 		display: block;
-		padding: 0.33rem 0.5rem;
+		padding: 0.28rem 0.45rem;
 		border-radius: 0.45rem;
 		text-decoration: none;
 		font-size: var(--font-size-sm);
@@ -533,7 +535,7 @@ const proofItems = getWorkProofItems(slug);
 
 	.work-prose {
 		display: grid;
-		gap: var(--space-4);
+		gap: var(--space-3);
 		min-width: 0;
 		padding: 0.1rem;
 	}
@@ -565,8 +567,8 @@ const proofItems = getWorkProofItems(slug);
 	}
 
 	.work-prose h2 {
-		margin-top: var(--space-5);
-		padding-top: var(--space-4);
+		margin-top: var(--space-4);
+		padding-top: var(--space-3);
 		border-top: 1px solid var(--color-border);
 		font-size: clamp(1.35rem, 1.1rem + 0.65vw, 1.8rem);
 	}
@@ -578,7 +580,7 @@ const proofItems = getWorkProofItems(slug);
 	}
 
 	.work-prose h3 {
-		margin-top: var(--space-4);
+		margin-top: var(--space-3);
 		margin-bottom: var(--space-2);
 		font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.26rem);
 	}
@@ -587,26 +589,40 @@ const proofItems = getWorkProofItems(slug);
 	.work-prose > :global(ul),
 	.work-prose > :global(ol),
 	.work-prose > :global(blockquote) {
-		max-width: 46rem;
+		max-width: 72ch;
 	}
 
-	.work-prose ul {
-		margin: 0;
+	.work-prose :global(ul) {
+		margin: 0.25rem 0 1rem;
 		padding-left: 1.2rem;
+		list-style: disc;
+	}
+
+	.work-prose :global(ol) {
+		margin: 0.25rem 0 1rem;
+		padding-left: 1.25rem;
+	}
+
+	.work-prose :global(li + li) {
+		margin-top: 0.45rem;
+	}
+
+	.work-prose :global(li > p) {
+		margin-bottom: 0.45rem;
 	}
 
 	.work-nav {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: var(--space-4);
-		padding-top: var(--space-5);
+		gap: var(--space-3);
+		padding-top: var(--space-4);
 		border-top: 1px solid var(--color-border);
 	}
 
 	.work-full-case-study {
 		display: grid;
-		gap: var(--space-3);
-		padding: clamp(1rem, 1.6vw, 1.3rem);
+		gap: var(--space-2);
+		padding: clamp(0.9rem, 1.3vw, 1.15rem);
 		border: 1px solid color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
 		border-radius: var(--radius-md);
 		background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-elevated));
