@@ -33,6 +33,11 @@ Last updated: 2026-04-22
 - `webflow-turnstile-edge-worker-pipeline.md` now has a top-of-file Solutions Architect scaffold with placeholder sections.
 - `webflow-turnstile-edge-worker-pipeline.md` received exact content in Executive Summary, Problem Context, Constraints, Architecture Overview, Key Architecture Decisions, and Trade-offs.
 - `webflow-turnstile-edge-worker-pipeline.md` received exact content in Risks & Mitigations, Outcome & Impact, and My Role.
+- `distributed-emergency-notification-system.md` was created with the supplied academic project case study content.
+- `distributed-emergency-notification-system.md` now has complete Risks & Mitigations, Outcome & Impact, and My Role sections.
+- `distributed-emergency-notification-system.md` now includes an Architecture Diagram section after Architecture Overview.
+- `distributed-emergency-notification-system.md` now points to the copied original diagram at `/images/architecture/architecture.jpg`.
+- `public/images/architecture/architecture.jpg` was restored to the original file to preserve zoom quality.
 
 ## Next Step
 
