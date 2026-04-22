@@ -35,7 +35,8 @@ const {
 const pathname = Astro.url.pathname;
 const showQuickContact = !pathname.startsWith('/contact') && !pathname.startsWith('/docs');
 const enableMermaid = pathname.startsWith('/docs');
-const gaMeasurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
+const runtimeGaMeasurementId = Astro.locals?.runtime?.env?.PUBLIC_GA_MEASUREMENT_ID ?? '';
+const gaMeasurementId = (runtimeGaMeasurementId || import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '').trim();
 ---
 
 <!doctype html>

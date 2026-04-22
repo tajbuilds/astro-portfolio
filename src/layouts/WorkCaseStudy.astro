@@ -425,7 +425,7 @@ const proofItems = getWorkProofItems(slug);
 
 	.work-content {
 		display: grid;
-		gap: var(--space-4);
+		gap: var(--space-5);
 		min-width: 0;
 	}
 
@@ -549,28 +549,47 @@ const proofItems = getWorkProofItems(slug);
 	}
 
 	.work-prose :global(figure.diagram) {
-		margin: var(--space-4) 0 var(--space-5);
+		display: grid;
+		justify-items: center;
+		gap: var(--space-2);
+		margin: var(--space-5) auto var(--space-6);
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 	}
 
 	.work-prose :global(figure.diagram img.zoomable-diagram) {
-		width: max(100%, 980px);
+		width: min(100%, 980px);
 		max-width: none;
+		margin: 0 auto;
 	}
 
 	.work-prose :global(figure.diagram figcaption) {
-		margin-top: var(--space-2);
-		font-size: var(--font-size-ui);
+		max-width: 72ch;
+		margin: 0;
+		font-size: var(--font-size-sm);
 		color: var(--color-text-muted);
 		font-style: italic;
+		text-align: center;
 	}
 
 	.work-prose h2 {
-		margin-top: var(--space-4);
-		padding-top: var(--space-3);
+		margin-top: var(--space-5);
+		padding-top: var(--space-4);
 		border-top: 1px solid var(--color-border);
 		font-size: clamp(1.35rem, 1.1rem + 0.65vw, 1.8rem);
+	}
+
+	.work-prose > :global(h2:first-of-type) {
+		margin-top: 0;
+		padding: 0.55rem 0 0.45rem 0.85rem;
+		border-top: 0;
+		border-left: 3px solid color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
+		background: color-mix(in srgb, var(--color-accent) 5%, var(--color-bg-elevated));
+		border-radius: var(--radius-sm);
+	}
+
+	.work-prose > :global(h2:first-of-type + p) {
+		margin-top: 0.35rem;
 	}
 
 	.work-prose p,
@@ -580,9 +599,13 @@ const proofItems = getWorkProofItems(slug);
 	}
 
 	.work-prose h3 {
-		margin-top: var(--space-3);
-		margin-bottom: var(--space-2);
+		margin-top: var(--space-4);
+		margin-bottom: var(--space-1);
 		font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.26rem);
+	}
+
+	.work-prose :global(h3 + p) {
+		margin-top: 0.25rem;
 	}
 
 	.work-prose > :global(p),
@@ -593,22 +616,26 @@ const proofItems = getWorkProofItems(slug);
 	}
 
 	.work-prose :global(ul) {
-		margin: 0.25rem 0 1rem;
+		margin: 0.35rem 0 1.1rem;
 		padding-left: 1.2rem;
 		list-style: disc;
 	}
 
 	.work-prose :global(ol) {
-		margin: 0.25rem 0 1rem;
+		margin: 0.35rem 0 1.1rem;
 		padding-left: 1.25rem;
 	}
 
 	.work-prose :global(li + li) {
-		margin-top: 0.45rem;
+		margin-top: 0.6rem;
 	}
 
 	.work-prose :global(li > p) {
-		margin-bottom: 0.45rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.work-prose :global(hr) {
+		margin: var(--space-5) 0;
 	}
 
 	.work-nav {
@@ -822,6 +849,14 @@ const proofItems = getWorkProofItems(slug);
 		.work-prose > :global(ol),
 		.work-prose > :global(blockquote) {
 			max-width: none;
+		}
+
+		.work-prose :global(figure.diagram) {
+			margin: var(--space-4) auto var(--space-5);
+		}
+
+		.work-prose > :global(h2:first-of-type) {
+			padding-left: 0.7rem;
 		}
 
 		.diagram-lightbox {

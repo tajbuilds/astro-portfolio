@@ -6,10 +6,20 @@ import ButtonLink from '../components/ButtonLink.astro';
 import PillTag from '../components/PillTag.astro';
 import FlagshipCaseStudyCard from '../components/FlagshipCaseStudyCard.astro';
 import ProofStrip from '../components/ProofStrip.astro';
-import { contentSlug, getFeaturedWorkEntries } from '../lib/data/portfolio-data';
+import { contentSlug, getPublishedWorkEntries } from '../lib/data/portfolio-data';
 import { homepageProofItems } from '../lib/proof-data';
 
-const featured = await getFeaturedWorkEntries(3);
+const featuredWorkSlugs = [
+	'smart-edge-cache-proxy',
+	'webflow-turnstile-edge-worker-pipeline',
+	'faceted-deals-search-engine',
+	'distributed-emergency-notification-system',
+	'internal-ml-workbench-modernization',
+];
+
+const featured = (await getPublishedWorkEntries())
+	.filter((entry) => featuredWorkSlugs.includes(contentSlug(entry.id)))
+	.sort((a, b) => featuredWorkSlugs.indexOf(contentSlug(a.id)) - featuredWorkSlugs.indexOf(contentSlug(b.id)));
 
 const proofChips = [
 	'Cloudflare Workers',
@@ -102,7 +112,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		/>
 
 		<div class="positioning-strip">
-			<p>Architecture decisions across edge, automation, and data systems — focused on performance, reliability, and operational clarity.</p>
+			<p>Edge, automation, and data systems tuned for performance, reliability, and operational clarity.</p>
 		</div>
 
 		<section class="featured-work section">
@@ -589,6 +599,18 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	@media (max-width: 760px) {
+		.section {
+			margin-bottom: 2rem;
+		}
+
+		.section + .section {
+			padding-top: var(--space-3);
+		}
+
+		.featured-work {
+			margin-top: var(--space-5);
+		}
+
 		.hero-shell {
 			min-height: auto;
 			padding: var(--space-3);

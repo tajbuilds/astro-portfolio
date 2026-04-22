@@ -6,19 +6,19 @@ export interface ProofItem {
 export const homepageProofItems: ProofItem[] = [
 	{
 		label: 'Verification flow',
-		copy: 'Reduced abusive form traffic by moving trust checks and forwarding control to the edge.',
+		copy: 'Reduced abuse by moving trust checks and forwarding control to the edge.',
 	},
 	{
 		label: 'Discovery systems',
-		copy: 'Replaced browser-heavy filtering with server-side faceted search and clearer query contracts.',
+		copy: 'Moved discovery filtering to a server-side contract with clearer query control.',
 	},
 	{
 		label: 'Caching behavior',
-		copy: 'Improved cache predictability and reduced origin pressure through deterministic edge controls.',
+		copy: 'Improved cache predictability through deterministic edge controls.',
 	},
 	{
 		label: 'Platform delivery',
-		copy: 'Modernized stale internal tooling into modular, reproducible systems with cleaner delivery paths.',
+		copy: 'Modernized internal tooling into modular, reproducible delivery paths.',
 	},
 ];
 
