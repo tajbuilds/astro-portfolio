@@ -45,9 +45,10 @@ const gaMeasurementId = (env.PUBLIC_GA_MEASUREMENT_ID ?? import.meta.env.PUBLIC_
 		<script is:inline>
 			(() => {
 				const storageKey = 'theme';
+				const defaultTheme = 'forest';
 				const allowedThemes = new Set(['system', 'light', 'dark', 'mist', 'forest', 'dusk', 'sand']);
 				const storedTheme = localStorage.getItem(storageKey);
-				const preferredTheme = allowedThemes.has(storedTheme || '') ? storedTheme : 'system';
+				const preferredTheme = allowedThemes.has(storedTheme || '') ? storedTheme : defaultTheme;
 				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
 					? 'dark'
 					: 'light';

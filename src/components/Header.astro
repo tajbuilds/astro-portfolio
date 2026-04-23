@@ -57,6 +57,7 @@ import { SITE_BRAND } from '../consts';
 <script is:inline>
 	(() => {
 		const storageKey = 'theme';
+		const defaultTheme = 'forest';
 		const allowedThemes = new Set(['system', 'light', 'dark', 'mist', 'forest', 'dusk', 'sand']);
 		const root = document.documentElement;
 		const picker = document.getElementById('theme-picker');
@@ -72,7 +73,7 @@ import { SITE_BRAND } from '../consts';
 
 		const getStoredPreference = () => {
 			const storedTheme = localStorage.getItem(storageKey);
-			return allowedThemes.has(storedTheme || '') ? storedTheme : 'system';
+			return allowedThemes.has(storedTheme || '') ? storedTheme : defaultTheme;
 		};
 
 		const resolveTheme = (preference) => {
@@ -506,5 +507,4 @@ import { SITE_BRAND } from '../consts';
 		}
 	}
 </style>
-
 
