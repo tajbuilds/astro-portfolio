@@ -609,6 +609,16 @@ max-width: none;
 }
 
 .docs-shell {
+--docs-rail-label-size: var(--font-size-xs);
+--docs-rail-link-size: 0.85rem;
+--docs-rail-sub-size: 0.8rem;
+--docs-rail-link-line: 1.45;
+--docs-rail-link-padding-block: 0.36rem;
+--docs-rail-link-padding-inline: 0.52rem;
+--docs-rail-active-bg: color-mix(in srgb, var(--color-accent) 10%, transparent);
+--docs-rail-hover-bg: color-mix(in srgb, var(--color-border) 48%, transparent);
+--docs-rail-active-color: var(--color-accent);
+--docs-rail-muted-color: var(--color-text-muted);
 display: grid;
 grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr) minmax(12rem, 15rem);
 gap: clamp(1rem, 2vw, 1.5rem);
@@ -642,16 +652,17 @@ font-size: 0.8rem;
 color: var(--color-text-muted);
 text-decoration: none;
 margin-bottom: 1.4rem;
-transition: color 0.12s;
+transition: color var(--motion-fast) var(--ease-standard);
 }
 .docs-back-link:hover { color: var(--color-accent); }
 .docs-sidebar__section { margin-bottom: 0.85rem; }
 .docs-sidebar__eyebrow {
 margin: 0 0 0.15rem;
-font-size: 0.68rem;
+font-size: var(--docs-rail-label-size);
 text-transform: uppercase;
 letter-spacing: 0;
-color: var(--color-text-muted);
+color: var(--docs-rail-muted-color);
+font-weight: 700;
 }
 .docs-sidebar__title {
 display: block;
@@ -724,23 +735,26 @@ border-left: 1px solid var(--color-border);
 :global(.docs-nav-tree li) { display: grid; }
 :global(.docs-nav-tree a) {
 display: block;
-padding: 0.38rem 0.55rem;
+padding: var(--docs-rail-link-padding-block) var(--docs-rail-link-padding-inline);
 border-radius: var(--radius-sm);
-font-size: 0.875rem;
-line-height: 1.45;
+font-size: var(--docs-rail-link-size);
+line-height: var(--docs-rail-link-line);
 text-decoration: none;
-color: var(--color-text-muted);
+color: var(--docs-rail-muted-color);
 transition: color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+:global(.docs-nav-tree .nav-sub a) {
+font-size: var(--docs-rail-sub-size);
 }
 :global(.docs-nav-tree a:hover) {
 color: var(--color-text);
-background: color-mix(in srgb, var(--color-border) 55%, transparent);
+background: var(--docs-rail-hover-bg);
 transform: translateX(2px);
 }
 :global(.docs-nav-tree a[aria-current='page']) {
-color: var(--color-accent);
-background: color-mix(in srgb, var(--color-accent) 11%, transparent);
-font-weight: 600;
+color: var(--docs-rail-active-color);
+background: var(--docs-rail-active-bg);
+font-weight: 700;
 }
 :global(.docs-nav-tree li.is-ancestor > a) { color: var(--color-text); }
 
@@ -1104,10 +1118,11 @@ align-self: start;
 .docs-toc.is-empty { display: none; }
 .docs-toc__label {
 margin: 0 0 0.55rem;
-font-size: 0.68rem;
+font-size: var(--docs-rail-label-size);
 text-transform: uppercase;
 letter-spacing: 0;
-color: var(--color-text-muted);
+color: var(--docs-rail-muted-color);
+font-weight: 700;
 }
 .docs-toc__list {
 list-style: none;
@@ -1117,21 +1132,30 @@ gap: 0.1rem;
 }
 .docs-toc__list a {
 display: block;
-padding: 0.3rem 0.45rem;
+padding: var(--docs-rail-link-padding-block) var(--docs-rail-link-padding-inline);
 border-radius: var(--radius-sm);
-font-size: 0.81rem;
-line-height: 1.45;
+font-size: var(--docs-rail-link-size);
+line-height: var(--docs-rail-link-line);
 text-decoration: none;
-color: var(--color-text-muted);
-transition: color 0.12s, background 0.12s;
+color: var(--docs-rail-muted-color);
+transition: color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
 }
-.docs-toc__list a:hover { color: var(--color-text); }
+.docs-toc__list a:hover {
+color: var(--color-text);
+background: var(--docs-rail-hover-bg);
+transform: translateX(2px);
+}
 .docs-toc__list a[aria-current='true'] {
-color: var(--color-accent);
-background: color-mix(in srgb, var(--color-accent) 9%, transparent);
-font-weight: 500;
+color: var(--docs-rail-active-color);
+background: var(--docs-rail-active-bg);
+font-weight: 700;
 }
-.docs-toc__list li.is-sub { padding-left: 0.7rem; }
+.docs-toc__list li.is-sub {
+padding-left: 0.7rem;
+}
+.docs-toc__list li.is-sub a {
+font-size: var(--docs-rail-sub-size);
+}
 
 .docs-diagram-lightbox {
 border: none;
