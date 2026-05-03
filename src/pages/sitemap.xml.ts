@@ -18,6 +18,9 @@ type DocumentRow = {
 	slug_path: string;
 };
 
+const normalizePath = (value: string | null | undefined) =>
+	(value || '').trim().replace(/^\/+|\/+$/g, '');
+
 const toUrl = (origin: string, path: string) => `${origin}${path}`;
 
 const xmlEscape = (value: string) =>
@@ -65,11 +68,11 @@ export const GET: APIRoute = async ({ request }) => {
 				.all<DocumentRow>();
 
 			for (const doc of docsResult.results || []) {
-				const slugPath = doc.slug_path || '';
+				const slugPath = normalizePath(doc.slug_path);
 				if (!slugPath || slugPath === caseStudy.slug) continue;
 				const rel = slugPath.startsWith(`${caseStudy.slug}/`)
 					? slugPath.slice(caseStudy.slug.length + 1)
-					: '';
+					: slugPath;
 				if (!rel) continue;
 				docsPaths.push(`/docs/case-studies/${caseStudy.slug}/${rel}/`);
 			}

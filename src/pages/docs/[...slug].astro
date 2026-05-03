@@ -16,7 +16,11 @@ return new Response("Not found", { status: 404 });
 
 const caseSlug = parts[1];
 const sectionPath = parts.slice(2).join("/");
-const targetSlugPath = sectionPath ? `${caseSlug}/${sectionPath}` : caseSlug;
+
+const normalizePath = (value: string | null | undefined) =>
+	(value || "").trim().replace(/^\/+|\/+$/g, "");
+
+const targetRelPath = normalizePath(sectionPath);
 
 const db = env.DB as D1Database | undefined;
 if (!db) {
@@ -60,13 +64,31 @@ const docsResult = await db
 .all<DocumentRow>();
 
 const docs = docsResult.results || [];
-const currentDoc = docs.find((d) => d.slug_path === targetSlugPath);
+
+const getDocRelPath = (doc: DocumentRow) => {
+	const slugPath = normalizePath(doc.slug_path);
+	if (!slugPath) return "";
+	if (slugPath === caseSlug) return "";
+	if (slugPath.startsWith(`${caseSlug}/`)) return slugPath.slice(caseSlug.length + 1);
+	return slugPath;
+};
+
+const currentDoc = targetRelPath
+	? docs.find((d) => getDocRelPath(d) === targetRelPath)
+			|| docs.find((d) => normalizePath(d.slug_path).endsWith(`/${targetRelPath}`))
+	: docs.find((d) => normalizePath(d.slug_path) === caseSlug)
+			|| docs.find((d) => d.is_root === 1)
+			|| docs.find((d) => d.depth === 0);
+
 if (!currentDoc) return new Response("Not found", { status: 404 });
 
 const toLink = (slugPath: string) => {
-if (slugPath === caseSlug) return `/docs/case-studies/${caseSlug}/`;
-const rel = slugPath.slice(caseSlug.length + 1);
-return `/docs/case-studies/${caseSlug}/${rel}/`;
+const normalized = normalizePath(slugPath);
+if (!normalized || normalized === caseSlug) return `/docs/case-studies/${caseSlug}/`;
+const rel = normalized.startsWith(`${caseSlug}/`)
+	? normalized.slice(caseSlug.length + 1)
+	: normalized;
+return rel ? `/docs/case-studies/${caseSlug}/${rel}/` : `/docs/case-studies/${caseSlug}/`;
 };
 
 const buildTree = (allDocs: DocumentRow[]): NavNode[] => {
@@ -77,7 +99,7 @@ map.set(d.id, { id: d.id, title: d.title, slug_path: d.slug_path, nav_order: d.n
 const roots: NavNode[] = [];
 for (const d of allDocs) {
 const node = map.get(d.id)!;
-if (d.parent_id && map.has(d.parent_id)) {
+if (d.parent_id && d.parent_id !== d.id && map.has(d.parent_id)) {
 map.get(d.parent_id)!.children.push(node);
 } else {
 roots.push(node);
@@ -94,9 +116,9 @@ return roots;
 const navTree = buildTree(docs);
 
 const sectionSegments =
-currentDoc.slug_path === caseSlug
-? []
-: currentDoc.slug_path.slice(caseSlug.length + 1).split("/").filter(Boolean);
+getDocRelPath(currentDoc)
+	? getDocRelPath(currentDoc).split("/").filter(Boolean)
+	: [];
 
 const breadcrumbs: { label: string; href: string }[] = [
 { label: "Docs", href: "/docs/" },
@@ -104,14 +126,16 @@ const breadcrumbs: { label: string; href: string }[] = [
 ];
 for (let i = 0; i < sectionSegments.length; i++) {
 const sp = `${caseSlug}/${sectionSegments.slice(0, i + 1).join("/")}`;
-const doc = docs.find((d) => d.slug_path === sp);
+const rel = sectionSegments.slice(0, i + 1).join("/");
+const doc = docs.find((d) => getDocRelPath(d) === rel)
+	|| docs.find((d) => normalizePath(d.slug_path) === sp);
 if (doc) breadcrumbs.push({ label: doc.title, href: toLink(sp) });
 }
 
 const flatOrdered = [...docs].sort(
 (a, b) => a.nav_order - b.nav_order || a.title.localeCompare(b.title)
 );
-const currentIdx = flatOrdered.findIndex((d) => d.slug_path === targetSlugPath);
+const currentIdx = flatOrdered.findIndex((d) => d.id === currentDoc.id);
 const prevDoc = currentIdx > 0 ? flatOrdered[currentIdx - 1] : null;
 const nextDoc = currentIdx < flatOrdered.length - 1 ? flatOrdered[currentIdx + 1] : null;
 

@@ -28,6 +28,9 @@ const normalizeQuery = (value: string) =>
 		.replace(/\s+/g, ' ')
 		.trim();
 
+const normalizePath = (value: string | null | undefined) =>
+	(value || '').trim().replace(/^\/+|\/+$/g, '');
+
 export const GET: APIRoute = async ({ url }) => {
 	const db = env.DB as D1Database | undefined;
 	if (!db) return json(500, { ok: false, message: "D1 binding 'DB' is missing on this environment." });
@@ -95,9 +98,12 @@ export const GET: APIRoute = async ({ url }) => {
 	const rows = result.results || [];
 
 	const items = rows.map((row) => {
-		const rel = row.slug_path.startsWith(`${row.case_slug}/`)
-			? row.slug_path.slice(row.case_slug.length + 1)
-			: '';
+		const slugPath = normalizePath(row.slug_path);
+		const rel = slugPath.startsWith(`${row.case_slug}/`)
+			? slugPath.slice(row.case_slug.length + 1)
+			: slugPath === row.case_slug
+				? ''
+				: slugPath;
 		const href = rel
 			? `/docs/case-studies/${row.case_slug}/${rel}/`
 			: `/docs/case-studies/${row.case_slug}/`;
