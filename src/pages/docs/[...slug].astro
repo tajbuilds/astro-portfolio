@@ -386,9 +386,34 @@ scale = clamped;
 applyTransform();
 };
 
+const svgToDataUrl = (sourceSvg) => {
+const clone = sourceSvg.cloneNode(true);
+if (!(clone instanceof SVGElement)) return '';
+
+clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+const serialized = new XMLSerializer().serializeToString(clone);
+
+return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`;
+};
+
 const openLightbox = (sourceImg) => {
 img.src = sourceImg.currentSrc || sourceImg.src;
 img.alt = sourceImg.alt || 'Expanded diagram';
+resetTransform();
+if (typeof dialog.showModal === 'function') {
+dialog.showModal();
+} else {
+dialog.setAttribute('open', '');
+dialog.classList.add('is-open');
+}
+};
+
+const openSvgLightbox = (sourceSvg) => {
+const source = svgToDataUrl(sourceSvg);
+if (!source) return;
+
+img.src = source;
+img.alt = sourceSvg.getAttribute('aria-label') || sourceSvg.getAttribute('aria-roledescription') || 'Expanded diagram';
 resetTransform();
 if (typeof dialog.showModal === 'function') {
 dialog.showModal();
@@ -409,6 +434,7 @@ img.src = '';
 resetTransform();
 };
 
+const enhanceZoomTargets = () => {
 prose.querySelectorAll('img').forEach((sourceImg) => {
 sourceImg.classList.add('docs-zoomable-diagram');
 sourceImg.setAttribute('tabindex', '0');
@@ -416,25 +442,50 @@ sourceImg.setAttribute('role', 'button');
 sourceImg.setAttribute('aria-label', 'Open expanded diagram');
 });
 
+prose.querySelectorAll('.diagram-mermaid, .mermaid').forEach((diagram) => {
+diagram.classList.add('docs-zoomable-mermaid');
+diagram.setAttribute('tabindex', '0');
+diagram.setAttribute('role', 'button');
+diagram.setAttribute('aria-label', 'Open expanded diagram');
+});
+};
+
+const openFromTarget = (target) => {
+const sourceImg = target instanceof Element ? target.closest('img') : null;
+if (sourceImg instanceof HTMLImageElement && prose.contains(sourceImg)) {
+openLightbox(sourceImg);
+return true;
+}
+
+const sourceDiagram = target instanceof Element ? target.closest('.diagram-mermaid, .mermaid') : null;
+const sourceSvg = sourceDiagram?.querySelector('svg') || (target instanceof SVGElement ? target.closest('svg') : null);
+if (sourceSvg instanceof SVGElement && sourceDiagram && prose.contains(sourceDiagram)) {
+openSvgLightbox(sourceSvg);
+return true;
+}
+
+return false;
+};
+
+enhanceZoomTargets();
+
 prose.addEventListener('click', (event) => {
-const sourceImg = event.target instanceof Element ? event.target.closest('img') : null;
-if (!(sourceImg instanceof HTMLImageElement) || !prose.contains(sourceImg)) return;
+if (!openFromTarget(event.target)) return;
 
 event.preventDefault();
 event.stopPropagation();
-openLightbox(sourceImg);
 });
 
 prose.addEventListener('keydown', (event) => {
-const sourceImg = event.target instanceof Element ? event.target.closest('img') : null;
-if (!(sourceImg instanceof HTMLImageElement) || !prose.contains(sourceImg)) return;
-
 if (event.key === 'Enter' || event.key === ' ') {
+if (!openFromTarget(event.target)) return;
 event.preventDefault();
 event.stopPropagation();
-openLightbox(sourceImg);
 }
 });
+
+const observer = new MutationObserver(() => enhanceZoomTargets());
+observer.observe(prose, { childList: true, subtree: true });
 
 viewport.addEventListener('wheel', (event) => {
 event.preventDefault();
@@ -924,9 +975,22 @@ border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
 box-shadow: var(--shadow-md);
 transform: translateY(-1px);
 }
-.docs-prose :global(img.docs-zoomable-diagram:focus-visible) {
+.docs-prose :global(img.docs-zoomable-diagram:focus-visible),
+.docs-prose :global(.docs-zoomable-mermaid:focus-visible) {
 outline: 3px solid color-mix(in srgb, var(--color-accent) 34%, transparent);
 outline-offset: 3px;
+}
+.docs-prose :global(.docs-zoomable-mermaid) {
+cursor: zoom-in;
+transition:
+border-color var(--motion-fast) var(--ease-standard),
+box-shadow var(--motion-fast) var(--ease-standard),
+transform var(--motion-fast) var(--ease-standard);
+}
+.docs-prose :global(.docs-zoomable-mermaid:hover) {
+border-color: color-mix(in srgb, var(--color-accent) 40%, var(--diagram-node-border));
+box-shadow: var(--shadow-md);
+transform: translateY(-1px);
 }
 .docs-prose :global(figure.diagram),
 .docs-prose :global(figure:has(img.docs-zoomable-diagram)) {
