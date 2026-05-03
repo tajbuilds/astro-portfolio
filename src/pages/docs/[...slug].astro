@@ -932,37 +932,70 @@ margin: 0.35rem 0 1.1rem;
 font-size: 0.88em;
 padding: 0.12rem 0.32rem;
 border-radius: var(--radius-sm);
-background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
-border: 1px solid var(--color-border);
-color: var(--color-text);
+background: var(--docs-inline-code-bg);
+border: 1px solid var(--docs-inline-code-border);
+color: var(--docs-inline-code-text);
+font-weight: 650;
 }
 .docs-prose :global(pre) {
 margin-top: 1rem;
 padding: 1rem 1.1rem;
 border-radius: var(--radius-md);
-border: 1px solid var(--color-border);
-background: var(--color-surface);
+border: 1px solid var(--docs-code-border);
+background:
+linear-gradient(180deg, color-mix(in srgb, var(--docs-code-bg) 94%, var(--color-bg-elevated)), var(--docs-code-bg));
+box-shadow: 0 12px 28px var(--docs-code-shadow), inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
 overflow-x: auto;
 }
-.docs-prose :global(pre code) { padding: 0; border: none; background: none; font-size: 0.875em; }
+.docs-prose :global(pre code) {
+padding: 0;
+border: none;
+background: none;
+font-size: 0.875em;
+font-weight: 500;
+color: var(--docs-code-text);
+}
 .docs-prose :global(blockquote) {
 margin: 1.25rem 0;
-padding: 0.75rem 0 0.75rem 1rem;
-border-left: 3px solid var(--color-accent);
-font-style: italic;
-background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+padding: 0.85rem 1rem;
+border-left: 3px solid var(--docs-quote-border);
+border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+background: var(--docs-quote-bg);
+color: var(--docs-quote-text);
 }
-.docs-prose :global(table) { width: 100%; border-collapse: collapse; font-size: 0.925rem; }
+.docs-prose :global(blockquote p) { color: var(--docs-quote-text); }
+.docs-prose :global(table) {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0;
+font-size: 0.925rem;
+overflow: hidden;
+border: 1px solid var(--color-border);
+border-radius: var(--radius-sm);
+}
 .docs-prose :global(th),
-.docs-prose :global(td) { padding: 0.5rem 0.7rem; border: 1px solid var(--color-border); text-align: left; vertical-align: top; }
-.docs-prose :global(th) { background: var(--color-surface); font-weight: 600; color: var(--color-text); }
+.docs-prose :global(td) {
+padding: 0.55rem 0.72rem;
+border-bottom: 1px solid var(--color-border);
+text-align: left;
+vertical-align: top;
+}
+.docs-prose :global(th + th),
+.docs-prose :global(td + td) { border-left: 1px solid var(--color-border); }
+.docs-prose :global(tr:last-child td) { border-bottom: 0; }
+.docs-prose :global(th) {
+background: var(--docs-table-head-bg);
+font-weight: 700;
+color: var(--color-text);
+}
+.docs-prose :global(tbody tr:nth-child(even) td) { background: var(--docs-table-row-alt-bg); }
 .docs-prose :global(img) { border-radius: var(--radius-sm); max-width: 100%; }
 .docs-prose :global(img.docs-zoomable-diagram) {
 display: block;
 cursor: zoom-in;
-border: 1px solid var(--color-border);
+border: 1px solid var(--docs-media-border);
 border-radius: var(--radius-md);
-background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+background: var(--docs-media-bg);
 padding: 0.35rem;
 box-shadow: var(--shadow-sm);
 transition:

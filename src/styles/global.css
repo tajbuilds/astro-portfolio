@@ -56,6 +56,20 @@
 	--diagram-text: #142033;
 	--diagram-line: #5f7ea8;
 	--diagram-cluster-bg: #edf3fb;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-elevated));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
+	--docs-inline-code-text: color-mix(in srgb, var(--color-accent-strong) 72%, var(--color-text));
+	--docs-code-bg: #101827;
+	--docs-code-border: #29364c;
+	--docs-code-text: #e7eefb;
+	--docs-code-shadow: rgba(17, 24, 39, 0.12);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 8%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 52%, var(--color-border));
+	--docs-quote-text: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted));
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 56%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 70%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 72%, var(--color-border));
 	--motion-fast: 160ms;
 	--motion-base: 260ms;
 	--motion-slow: 520ms;
@@ -105,6 +119,20 @@
 	--diagram-text: #e9f0fc;
 	--diagram-line: #89bfff;
 	--diagram-cluster-bg: #162642;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 15%, var(--color-surface));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+	--docs-inline-code-text: #cfe5ff;
+	--docs-code-bg: #09111f;
+	--docs-code-border: #2b4262;
+	--docs-code-text: #edf5ff;
+	--docs-code-shadow: rgba(3, 6, 12, 0.54);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 10%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 46%, var(--color-border));
+	--docs-quote-text: #d8e5f9;
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 44%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 80%, var(--color-border));
 }
 
 :root[data-theme="mist"],
@@ -135,6 +163,20 @@
 	--diagram-text: #1b2b3d;
 	--diagram-line: #557ea4;
 	--diagram-cluster-bg: #cedae4;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-elevated));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+	--docs-inline-code-text: #254b6d;
+	--docs-code-bg: #243245;
+	--docs-code-border: #7e94aa;
+	--docs-code-text: #f2f7fb;
+	--docs-code-shadow: rgba(21, 34, 50, 0.13);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 40%, var(--color-border));
+	--docs-quote-text: #314458;
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 58%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 76%, var(--color-border));
 
 	--accent: var(--color-accent);
 	--accent-dark: var(--color-accent-strong);
@@ -174,6 +216,20 @@
 	--diagram-text: #e4f1eb;
 	--diagram-line: #8bc7a2;
 	--diagram-cluster-bg: #173026;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+	--docs-inline-code-text: #c8ead3;
+	--docs-code-bg: #08120e;
+	--docs-code-border: #315445;
+	--docs-code-text: #edf8f2;
+	--docs-code-shadow: rgba(4, 10, 8, 0.54);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 40%, var(--color-border));
+	--docs-quote-text: #d2eadf;
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 44%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 80%, var(--color-border));
 
 	--accent: var(--color-accent);
 	--accent-dark: var(--color-accent-strong);
@@ -213,6 +269,20 @@
 	--diagram-text: #f2ecfb;
 	--diagram-line: #c6a7f2;
 	--diagram-cluster-bg: #2a2140;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 13%, var(--color-surface));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+	--docs-inline-code-text: #dfd0ff;
+	--docs-code-bg: #100c1b;
+	--docs-code-border: #50416f;
+	--docs-code-text: #f6f0ff;
+	--docs-code-shadow: rgba(8, 5, 16, 0.52);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 38%, var(--color-border));
+	--docs-quote-text: #e6dcf8;
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 11%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 44%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 80%, var(--color-border));
 
 	--accent: var(--color-accent);
 	--accent-dark: var(--color-accent-strong);
@@ -252,6 +322,20 @@
 	--diagram-text: #352920;
 	--diagram-line: #b68d5f;
 	--diagram-cluster-bg: #d2c3b1;
+	--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-elevated));
+	--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+	--docs-inline-code-text: #6f4829;
+	--docs-code-bg: #2c211a;
+	--docs-code-border: #80694f;
+	--docs-code-text: #fbf4eb;
+	--docs-code-shadow: rgba(47, 36, 29, 0.13);
+	--docs-quote-bg: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
+	--docs-quote-border: color-mix(in srgb, var(--color-focus) 42%, var(--color-border));
+	--docs-quote-text: #4f3f33;
+	--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+	--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 58%, transparent);
+	--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+	--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 76%, var(--color-border));
 
 	--accent: var(--color-accent);
 	--accent-dark: var(--color-accent-strong);
@@ -294,6 +378,20 @@
 			--diagram-text: #e9f0fc;
 			--diagram-line: #89bfff;
 			--diagram-cluster-bg: #162642;
+			--docs-inline-code-bg: color-mix(in srgb, var(--color-accent) 15%, var(--color-surface));
+			--docs-inline-code-border: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+			--docs-inline-code-text: #cfe5ff;
+			--docs-code-bg: #09111f;
+			--docs-code-border: #2b4262;
+			--docs-code-text: #edf5ff;
+			--docs-code-shadow: rgba(3, 6, 12, 0.54);
+			--docs-quote-bg: color-mix(in srgb, var(--color-focus) 10%, var(--color-bg-elevated));
+			--docs-quote-border: color-mix(in srgb, var(--color-focus) 46%, var(--color-border));
+			--docs-quote-text: #d8e5f9;
+			--docs-table-head-bg: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+			--docs-table-row-alt-bg: color-mix(in srgb, var(--color-surface) 44%, transparent);
+			--docs-media-bg: color-mix(in srgb, var(--diagram-bg) 72%, var(--color-bg-elevated));
+			--docs-media-border: color-mix(in srgb, var(--diagram-node-border) 80%, var(--color-border));
 		}
 	}
 
@@ -655,13 +753,14 @@ hr {
 	.diagram-mermaid {
 		overflow-x: auto;
 		padding: 0.8rem;
-		border: 1px solid var(--diagram-node-border);
+		border: 1px solid var(--docs-media-border);
 		border-radius: 0.75rem;
 		background: linear-gradient(
 			180deg,
-			color-mix(in srgb, var(--diagram-bg) 92%, transparent),
-			color-mix(in srgb, var(--diagram-bg) 82%, transparent)
+			color-mix(in srgb, var(--docs-media-bg) 94%, transparent),
+			color-mix(in srgb, var(--diagram-bg) 86%, transparent)
 		);
+		box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-bg-elevated) 38%, transparent);
 	}
 
 	.mermaid svg,
@@ -703,4 +802,3 @@ hr {
 		color: var(--diagram-text) !important;
 		font-weight: 560 !important;
 	}
-
