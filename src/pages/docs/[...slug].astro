@@ -262,6 +262,23 @@ data-doc-search-input
 </aside>
 
 </div>
+
+<dialog id="docs-diagram-lightbox" class="docs-diagram-lightbox" aria-label="Expanded diagram view">
+<div class="docs-diagram-lightbox__panel" role="document">
+<div class="docs-diagram-lightbox__toolbar">
+<div class="docs-diagram-lightbox__hint">Scroll to zoom, drag to move</div>
+<div class="docs-diagram-lightbox__controls">
+<button type="button" data-zoom-out aria-label="Zoom out">-</button>
+<button type="button" data-zoom-reset aria-label="Reset zoom">Reset</button>
+<button type="button" data-zoom-in aria-label="Zoom in">+</button>
+<button type="button" data-close aria-label="Close viewer">Close</button>
+</div>
+</div>
+<div class="docs-diagram-lightbox__viewport" data-viewport>
+<img data-image alt="Expanded diagram" draggable="false" />
+</div>
+</div>
+</dialog>
 </MainLayout>
 
 <script is:inline>
@@ -319,6 +336,133 @@ else link.removeAttribute('aria-current');
 );
 
 items.forEach(({ heading }) => observer.observe(heading));
+})();
+</script>
+
+<script is:inline>
+(() => {
+const prose = document.querySelector('[data-doc-content]');
+const dialog = document.getElementById('docs-diagram-lightbox');
+if (!(prose instanceof HTMLElement) || !(dialog instanceof HTMLDialogElement)) return;
+
+const img = dialog.querySelector('[data-image]');
+const viewport = dialog.querySelector('[data-viewport]');
+const closeBtn = dialog.querySelector('[data-close]');
+const zoomInBtn = dialog.querySelector('[data-zoom-in]');
+const zoomOutBtn = dialog.querySelector('[data-zoom-out]');
+const zoomResetBtn = dialog.querySelector('[data-zoom-reset]');
+
+if (!(img instanceof HTMLImageElement) || !(viewport instanceof HTMLElement)) return;
+
+let scale = 1;
+let tx = 0;
+let ty = 0;
+let dragging = false;
+let lastX = 0;
+let lastY = 0;
+
+const MIN_SCALE = 1;
+const MAX_SCALE = 6;
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const applyTransform = () => {
+img.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+};
+
+const resetTransform = () => {
+scale = 1;
+tx = 0;
+ty = 0;
+applyTransform();
+};
+
+const setScale = (nextScale) => {
+const clamped = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+if (clamped === MIN_SCALE) {
+tx = 0;
+ty = 0;
+}
+scale = clamped;
+applyTransform();
+};
+
+const openLightbox = (sourceImg) => {
+img.src = sourceImg.currentSrc || sourceImg.src;
+img.alt = sourceImg.alt || 'Expanded diagram';
+resetTransform();
+dialog.showModal();
+};
+
+const closeLightbox = () => {
+if (dialog.open) dialog.close();
+};
+
+prose.querySelectorAll('img').forEach((sourceImg) => {
+sourceImg.classList.add('docs-zoomable-diagram');
+sourceImg.setAttribute('tabindex', '0');
+sourceImg.setAttribute('role', 'button');
+sourceImg.setAttribute('aria-label', 'Open expanded diagram');
+sourceImg.addEventListener('click', () => openLightbox(sourceImg));
+sourceImg.addEventListener('keydown', (event) => {
+if (event.key === 'Enter' || event.key === ' ') {
+event.preventDefault();
+openLightbox(sourceImg);
+}
+});
+});
+
+viewport.addEventListener('wheel', (event) => {
+event.preventDefault();
+const delta = event.deltaY < 0 ? 0.18 : -0.18;
+setScale(scale + delta);
+}, { passive: false });
+
+viewport.addEventListener('pointerdown', (event) => {
+if (scale <= 1) return;
+dragging = true;
+lastX = event.clientX;
+lastY = event.clientY;
+viewport.setPointerCapture(event.pointerId);
+viewport.classList.add('is-dragging');
+});
+
+viewport.addEventListener('pointermove', (event) => {
+if (!dragging) return;
+const dx = event.clientX - lastX;
+const dy = event.clientY - lastY;
+lastX = event.clientX;
+lastY = event.clientY;
+tx += dx;
+ty += dy;
+applyTransform();
+});
+
+const stopDrag = (event) => {
+if (!dragging) return;
+dragging = false;
+viewport.classList.remove('is-dragging');
+if (event && viewport.hasPointerCapture(event.pointerId)) {
+viewport.releasePointerCapture(event.pointerId);
+}
+};
+
+viewport.addEventListener('pointerup', stopDrag);
+viewport.addEventListener('pointercancel', stopDrag);
+viewport.addEventListener('pointerleave', stopDrag);
+
+zoomInBtn?.addEventListener('click', () => setScale(scale + 0.3));
+zoomOutBtn?.addEventListener('click', () => setScale(scale - 0.3));
+zoomResetBtn?.addEventListener('click', resetTransform);
+closeBtn?.addEventListener('click', closeLightbox);
+
+dialog.addEventListener('click', (event) => {
+if (event.target === dialog) closeLightbox();
+});
+
+dialog.addEventListener('close', () => {
+img.src = '';
+resetTransform();
+});
 })();
 </script>
 
@@ -733,6 +877,51 @@ background: color-mix(in srgb, var(--color-accent) 6%, transparent);
 .docs-prose :global(td) { padding: 0.5rem 0.7rem; border: 1px solid var(--color-border); text-align: left; vertical-align: top; }
 .docs-prose :global(th) { background: var(--color-surface); font-weight: 600; color: var(--color-text); }
 .docs-prose :global(img) { border-radius: var(--radius-sm); max-width: 100%; }
+.docs-prose :global(img.docs-zoomable-diagram) {
+display: block;
+cursor: zoom-in;
+border: 1px solid var(--color-border);
+border-radius: var(--radius-md);
+background: color-mix(in srgb, var(--color-bg-elevated) 90%, transparent);
+padding: 0.35rem;
+box-shadow: var(--shadow-sm);
+transition:
+border-color var(--motion-fast) var(--ease-standard),
+box-shadow var(--motion-fast) var(--ease-standard),
+transform var(--motion-fast) var(--ease-standard);
+}
+.docs-prose :global(img.docs-zoomable-diagram:hover) {
+border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+box-shadow: var(--shadow-md);
+transform: translateY(-1px);
+}
+.docs-prose :global(img.docs-zoomable-diagram:focus-visible) {
+outline: 3px solid color-mix(in srgb, var(--color-accent) 34%, transparent);
+outline-offset: 3px;
+}
+.docs-prose :global(figure.diagram),
+.docs-prose :global(figure:has(img.docs-zoomable-diagram)) {
+display: grid;
+justify-items: center;
+gap: 0.65rem;
+margin: 1.5rem auto 1.85rem;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+}
+.docs-prose :global(figure.diagram img.docs-zoomable-diagram),
+.docs-prose :global(figure:has(img.docs-zoomable-diagram) img.docs-zoomable-diagram) {
+width: min(100%, 980px);
+max-width: none;
+margin: 0 auto;
+}
+.docs-prose :global(figcaption) {
+max-width: 72ch;
+margin: 0;
+font-size: var(--font-size-sm);
+color: var(--color-text-muted);
+font-style: italic;
+text-align: center;
+}
 .docs-prose :global(hr) { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
 
 /* Prev / Next */
@@ -818,6 +1007,78 @@ font-weight: 500;
 }
 .docs-toc__list li.is-sub { padding-left: 0.7rem; }
 
+.docs-diagram-lightbox {
+border: none;
+padding: 0;
+background: transparent;
+max-width: min(94vw, 1600px);
+width: min(94vw, 1600px);
+}
+.docs-diagram-lightbox::backdrop {
+background: rgba(5, 10, 20, 0.84);
+backdrop-filter: blur(2px);
+}
+.docs-diagram-lightbox__panel {
+display: grid;
+gap: 0.6rem;
+padding: 0.75rem;
+border: 1px solid var(--color-border);
+border-radius: var(--radius-md);
+background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
+box-shadow: var(--shadow-lg);
+}
+.docs-diagram-lightbox__toolbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 0.5rem;
+}
+.docs-diagram-lightbox__hint {
+font-size: 0.78rem;
+color: var(--color-text-muted);
+}
+.docs-diagram-lightbox__controls {
+display: flex;
+gap: 0.35rem;
+}
+.docs-diagram-lightbox__controls button {
+border: 1px solid var(--color-border);
+background: var(--color-bg-elevated);
+color: var(--color-text);
+font: inherit;
+font-size: 0.8rem;
+font-weight: 700;
+padding: 0.35rem 0.55rem;
+border-radius: 0.45rem;
+cursor: pointer;
+}
+.docs-diagram-lightbox__controls button:hover {
+border-color: var(--color-accent);
+}
+.docs-diagram-lightbox__viewport {
+height: min(78vh, 1000px);
+overflow: hidden;
+display: grid;
+place-items: center;
+background: color-mix(in srgb, var(--color-bg) 94%, black 6%);
+border-radius: 0.5rem;
+touch-action: none;
+cursor: grab;
+}
+.docs-diagram-lightbox__viewport.is-dragging {
+cursor: grabbing;
+}
+.docs-diagram-lightbox__viewport img {
+max-width: 100%;
+max-height: 100%;
+width: auto;
+height: auto;
+user-select: none;
+transform-origin: center center;
+will-change: transform;
+cursor: inherit;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1200px) {
 .docs-shell {
@@ -840,5 +1101,17 @@ top: auto;
 }
 @media (max-width: 520px) {
 .docs-pager { grid-template-columns: 1fr; }
+.docs-prose :global(figure.diagram img.docs-zoomable-diagram),
+.docs-prose :global(figure:has(img.docs-zoomable-diagram) img.docs-zoomable-diagram) {
+width: max(100%, 620px);
+}
+.docs-diagram-lightbox {
+max-width: 96vw;
+width: 96vw;
+}
+.docs-diagram-lightbox__toolbar {
+flex-direction: column;
+align-items: flex-start;
+}
 }
 </style>
