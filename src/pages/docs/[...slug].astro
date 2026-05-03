@@ -47,7 +47,21 @@ excerpt: string | null;
 };
 
 const caseStudy = await db
-.prepare(`SELECT id, title, slug, summary FROM case_studies WHERE slug = ?1 LIMIT 1`)
+.prepare(
+`SELECT id, title, slug, summary
+ FROM case_studies
+ WHERE slug = ?1
+	 AND is_visible = 1
+	 AND source_collection_id = (
+				SELECT oc.id
+				FROM outline_collections oc
+				WHERE oc.slug = 'case-studies'
+					AND oc.is_visible = 1
+				ORDER BY oc.nav_order ASC, oc.updated_at DESC
+				LIMIT 1
+	 )
+ LIMIT 1`
+)
 .bind(caseSlug)
 .first<CaseStudyRow>();
 

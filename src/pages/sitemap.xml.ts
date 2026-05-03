@@ -50,6 +50,14 @@ export const GET: APIRoute = async ({ request }) => {
 				`SELECT id, slug
 				 FROM case_studies
 				 WHERE is_visible = 1
+				   AND source_collection_id = (
+						SELECT oc.id
+						FROM outline_collections oc
+						WHERE oc.slug = 'case-studies'
+						  AND oc.is_visible = 1
+						ORDER BY oc.nav_order ASC, oc.updated_at DESC
+						LIMIT 1
+				   )
 				 ORDER BY nav_order ASC, title ASC`
 			)
 			.all<CaseStudyRow>();

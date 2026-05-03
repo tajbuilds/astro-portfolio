@@ -57,6 +57,14 @@ export const GET: APIRoute = async ({ url }) => {
 					 FROM documents d
 					 JOIN case_studies cs ON cs.id = d.case_study_id
 					 WHERE cs.is_visible = 1
+					   AND cs.source_collection_id = (
+						 SELECT oc.id
+						 FROM outline_collections oc
+						 WHERE oc.slug = 'case-studies'
+						   AND oc.is_visible = 1
+						 ORDER BY oc.nav_order ASC, oc.updated_at DESC
+						 LIMIT 1
+					   )
 					   AND cs.slug = ?1
 					   AND (
 						 LOWER(d.title) LIKE ?2
@@ -80,6 +88,14 @@ export const GET: APIRoute = async ({ url }) => {
 					 FROM documents d
 					 JOIN case_studies cs ON cs.id = d.case_study_id
 					 WHERE cs.is_visible = 1
+					   AND cs.source_collection_id = (
+						 SELECT oc.id
+						 FROM outline_collections oc
+						 WHERE oc.slug = 'case-studies'
+						   AND oc.is_visible = 1
+						 ORDER BY oc.nav_order ASC, oc.updated_at DESC
+						 LIMIT 1
+					   )
 					   AND (
 						 LOWER(d.title) LIKE ?1
 						 OR LOWER(COALESCE(d.excerpt, '')) LIKE ?1

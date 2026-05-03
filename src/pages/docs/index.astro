@@ -20,6 +20,14 @@ const caseStudiesResult = await db
                 cs.title AS title
          FROM case_studies cs
          WHERE cs.is_visible = 1
+         AND cs.source_collection_id = (
+             SELECT oc.id
+             FROM outline_collections oc
+             WHERE oc.slug = 'case-studies'
+               AND oc.is_visible = 1
+             ORDER BY oc.nav_order ASC, oc.updated_at DESC
+             LIMIT 1
+         )
          ORDER BY cs.nav_order ASC, cs.title ASC`
     )
     .all<CaseStudyIndexItem>();
