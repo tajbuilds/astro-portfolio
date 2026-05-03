@@ -44,6 +44,7 @@ depth: number;
 is_root: number;
 body_md: string;
 excerpt: string | null;
+created_at: string;
 };
 
 const caseStudy = await db
@@ -69,10 +70,10 @@ if (!caseStudy) return new Response("Not found", { status: 404 });
 
 const docsResult = await db
 .prepare(
-`SELECT id, title, slug_path, parent_id, nav_order, depth, is_root, body_md, excerpt
+`SELECT id, title, slug_path, parent_id, nav_order, depth, is_root, body_md, excerpt, created_at
  FROM documents
  WHERE case_study_id = ?1
- ORDER BY depth ASC, nav_order ASC, title ASC`
+ ORDER BY depth ASC, COALESCE(parent_id, ''), nav_order ASC, created_at ASC, title ASC`
 )
 .bind(caseStudy.id)
 .all<DocumentRow>();
@@ -119,11 +120,6 @@ map.get(d.parent_id)!.children.push(node);
 roots.push(node);
 }
 }
-const sort = (nodes: NavNode[]) => {
-nodes.sort((a, b) => a.nav_order - b.nav_order || a.title.localeCompare(b.title));
-nodes.forEach((n) => sort(n.children));
-};
-sort(roots);
 return roots;
 };
 
@@ -146,9 +142,16 @@ const doc = docs.find((d) => getDocRelPath(d) === rel)
 if (doc) breadcrumbs.push({ label: doc.title, href: toLink(sp) });
 }
 
-const flatOrdered = [...docs].sort(
-(a, b) => a.nav_order - b.nav_order || a.title.localeCompare(b.title)
-);
+const byId = new Map(docs.map((d) => [d.id, d] as const));
+const flatOrdered: DocumentRow[] = [];
+const walk = (nodes: NavNode[]) => {
+for (const node of nodes) {
+const row = byId.get(node.id);
+if (row) flatOrdered.push(row);
+if (node.children.length) walk(node.children);
+}
+};
+walk(navTree);
 const currentIdx = flatOrdered.findIndex((d) => d.id === currentDoc.id);
 const prevDoc = currentIdx > 0 ? flatOrdered[currentIdx - 1] : null;
 const nextDoc = currentIdx < flatOrdered.length - 1 ? flatOrdered[currentIdx + 1] : null;
