@@ -390,11 +390,23 @@ const openLightbox = (sourceImg) => {
 img.src = sourceImg.currentSrc || sourceImg.src;
 img.alt = sourceImg.alt || 'Expanded diagram';
 resetTransform();
+if (typeof dialog.showModal === 'function') {
 dialog.showModal();
+} else {
+dialog.setAttribute('open', '');
+dialog.classList.add('is-open');
+}
 };
 
 const closeLightbox = () => {
-if (dialog.open) dialog.close();
+if (dialog.open && typeof dialog.close === 'function') {
+dialog.close();
+return;
+}
+dialog.removeAttribute('open');
+dialog.classList.remove('is-open');
+img.src = '';
+resetTransform();
 };
 
 prose.querySelectorAll('img').forEach((sourceImg) => {
@@ -402,13 +414,26 @@ sourceImg.classList.add('docs-zoomable-diagram');
 sourceImg.setAttribute('tabindex', '0');
 sourceImg.setAttribute('role', 'button');
 sourceImg.setAttribute('aria-label', 'Open expanded diagram');
-sourceImg.addEventListener('click', () => openLightbox(sourceImg));
-sourceImg.addEventListener('keydown', (event) => {
+});
+
+prose.addEventListener('click', (event) => {
+const sourceImg = event.target instanceof Element ? event.target.closest('img') : null;
+if (!(sourceImg instanceof HTMLImageElement) || !prose.contains(sourceImg)) return;
+
+event.preventDefault();
+event.stopPropagation();
+openLightbox(sourceImg);
+});
+
+prose.addEventListener('keydown', (event) => {
+const sourceImg = event.target instanceof Element ? event.target.closest('img') : null;
+if (!(sourceImg instanceof HTMLImageElement) || !prose.contains(sourceImg)) return;
+
 if (event.key === 'Enter' || event.key === ' ') {
 event.preventDefault();
+event.stopPropagation();
 openLightbox(sourceImg);
 }
-});
 });
 
 viewport.addEventListener('wheel', (event) => {
@@ -457,6 +482,10 @@ closeBtn?.addEventListener('click', closeLightbox);
 
 dialog.addEventListener('click', (event) => {
 if (event.target === dialog) closeLightbox();
+});
+
+document.addEventListener('keydown', (event) => {
+if (event.key === 'Escape' && dialog.open) closeLightbox();
 });
 
 dialog.addEventListener('close', () => {
@@ -1014,11 +1043,26 @@ background: transparent;
 max-width: min(94vw, 1600px);
 width: min(94vw, 1600px);
 }
+.docs-diagram-lightbox.is-open {
+position: fixed;
+inset: 50% auto auto 50%;
+z-index: 1000;
+transform: translate(-50%, -50%);
+}
+.docs-diagram-lightbox.is-open::before {
+content: "";
+position: fixed;
+inset: -100vh -100vw;
+background: rgba(5, 10, 20, 0.84);
+backdrop-filter: blur(2px);
+}
 .docs-diagram-lightbox::backdrop {
 background: rgba(5, 10, 20, 0.84);
 backdrop-filter: blur(2px);
 }
 .docs-diagram-lightbox__panel {
+position: relative;
+z-index: 1;
 display: grid;
 gap: 0.6rem;
 padding: 0.75rem;
