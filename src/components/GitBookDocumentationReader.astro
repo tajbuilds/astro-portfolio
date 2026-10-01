@@ -21,6 +21,7 @@ interface Props {
 	kicker?: string;
 	noindex?: boolean;
 	sourceLabel?: string;
+	titleSuffix?: string;
 }
 
 const {
@@ -32,9 +33,10 @@ const {
 	rootMarkdown = '',
 	backHref,
 	backLabel,
-	kicker = 'CMS Reader Preview',
-	noindex = true,
-	sourceLabel = 'GitBook CMS',
+	kicker = 'Architecture Case Study',
+	noindex = false,
+	sourceLabel = 'Project documentation',
+	titleSuffix = 'Tajinder Singh',
 } = Astro.props;
 
 const flattenNavigation = (
@@ -102,8 +104,8 @@ const next =
 
 const currentTitle = currentPage?.title ?? project.title;
 const documentTitle = currentPage
-	? `${currentTitle} | ${project.title} | CMS Preview`
-	: `${project.title} | CMS Preview`;
+	? `${currentTitle} | ${project.title} | ${titleSuffix}`
+	: `${project.title} | Work | ${titleSuffix}`;
 const description =
 	currentPage?.description || project.description || 'Architecture case study';
 const summary =

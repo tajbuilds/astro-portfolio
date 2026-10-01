@@ -1,51 +1,117 @@
 ---
+import { env } from 'cloudflare:workers';
 import { render } from 'astro:content';
+
+import GitBookDocumentationReader from '../../components/GitBookDocumentationReader.astro';
 import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
-import { contentSlug, getPublishedWorkEntries, getWorkSeo } from '../../lib/data/portfolio-data';
+import {
+	createGitBookPortfolioFromEnv,
+	type GitBookRuntimeEnv,
+	type PortfolioProject,
+} from '../../lib/gitbook';
+import {
+	contentSlug,
+	getPublishedWorkEntries,
+	getWorkSeo,
+} from '../../lib/data/portfolio-data';
 
-const slug = Astro.params.slug?.toLowerCase() ?? '';
-const sortedWork = await getPublishedWorkEntries();
-const index = sortedWork.findIndex((entry) => contentSlug(entry.id).toLowerCase() === slug);
-const post = index >= 0 ? sortedWork[index] : null;
+export const prerender = false;
 
-if (!post) {
+const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+
+let gitbookProject: PortfolioProject | null = null;
+let gitbookLookupFailed = false;
+
+if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	try {
+		const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+		gitbookProject = await portfolio.getProject(slug);
+	} catch (error) {
+		gitbookLookupFailed = true;
+		console.error(`GitBook project lookup failed for /work/${slug}/.`, error);
+	}
+}
+
+const sortedWork = gitbookProject ? [] : await getPublishedWorkEntries();
+const legacyIndex = sortedWork.findIndex(
+	(entry) => contentSlug(entry.id).toLowerCase() === slug,
+);
+const legacyPost = legacyIndex >= 0 ? sortedWork[legacyIndex] : null;
+
+if (!gitbookProject && !legacyPost) {
+	if (gitbookLookupFailed) {
+		return new Response('Portfolio content is temporarily unavailable.', { status: 503 });
+	}
 	return Astro.redirect('/work/', 302);
 }
 
-const previous =
-	sortedWork[index - 1]
-		? { title: sortedWork[index - 1].data.title, slug: contentSlug(sortedWork[index - 1].id) }
+const legacyPrevious =
+	legacyPost && sortedWork[legacyIndex - 1]
+		? {
+				title: sortedWork[legacyIndex - 1].data.title,
+				slug: contentSlug(sortedWork[legacyIndex - 1].id),
+			}
 		: undefined;
 
-const next =
-	sortedWork[index + 1]
-		? { title: sortedWork[index + 1].data.title, slug: contentSlug(sortedWork[index + 1].id) }
+const legacyNext =
+	legacyPost && sortedWork[legacyIndex + 1]
+		? {
+				title: sortedWork[legacyIndex + 1].data.title,
+				slug: contentSlug(sortedWork[legacyIndex + 1].id),
+			}
 		: undefined;
 
-const { Content, headings } = await render(post);
-const words = post.body.split(/\s+/).filter(Boolean).length;
-const readingTime = Math.max(1, Math.ceil(words / 220));
-const seo = getWorkSeo(post);
+const legacyRendered = legacyPost ? await render(legacyPost) : null;
+const LegacyContent = legacyRendered?.Content;
+const legacyHeadings = legacyRendered?.headings ?? [];
+const legacyWords = legacyPost?.body.split(/\s+/).filter(Boolean).length ?? 0;
+const legacyReadingTime = legacyPost
+	? Math.max(1, Math.ceil(legacyWords / 220))
+	: undefined;
+const legacySeo = legacyPost ? getWorkSeo(legacyPost) : null;
+
+const projectHref = gitbookProject ? `/work/${gitbookProject.slug}/` : '';
+const pageHref = (relativePath: string) =>
+	`${projectHref}${relativePath
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/')}/`;
 ---
 
-<WorkCaseStudy
-	slug={slug}
-	title={post.data.title}
-	description={post.data.description}
-	date={post.data.date}
-	updatedDate={post.data.updatedDate}
-	tags={post.data.tags}
-	github={post.data.github}
-	coverImage={post.data.coverImage}
-	imageAlt={seo.imageAlt}
-	externalCaseStudyUrl={post.data.externalCaseStudyUrl}
-	headings={headings}
-	readingTime={readingTime}
-	previous={previous}
-	next={next}
-	seoTitle={seo.title}
-	seoDescription={seo.description}
-	keywords={seo.keywords}
->
-	<Content />
-</WorkCaseStudy>
+{
+	gitbookProject ? (
+		<GitBookDocumentationReader
+			project={gitbookProject}
+			navigation={gitbookProject.navigation}
+			projectHref={projectHref}
+			pageHref={pageHref}
+			rootMarkdown={gitbookProject.markdown}
+			backHref="/work/"
+			backLabel="All work"
+		/>
+	) : legacyPost && LegacyContent && legacySeo ? (
+		<WorkCaseStudy
+			slug={slug}
+			title={legacyPost.data.title}
+			description={legacyPost.data.description}
+			date={legacyPost.data.date}
+			updatedDate={legacyPost.data.updatedDate}
+			tags={legacyPost.data.tags}
+			github={legacyPost.data.github}
+			coverImage={legacyPost.data.coverImage}
+			imageAlt={legacySeo.imageAlt}
+			externalCaseStudyUrl={legacyPost.data.externalCaseStudyUrl}
+			headings={legacyHeadings}
+			readingTime={legacyReadingTime}
+			previous={legacyPrevious}
+			next={legacyNext}
+			seoTitle={legacySeo.title}
+			seoDescription={legacySeo.description}
+			keywords={legacySeo.keywords}
+		>
+			<LegacyContent />
+		</WorkCaseStudy>
+	) : null
+}

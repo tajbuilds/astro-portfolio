@@ -137,7 +137,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 								title={item.title}
 								summary={item.description}
 								tags={item.tags.map(formatProjectTagLabel)}
-								href={`/work/cms-preview/${item.slug}/`}
+								href={`/work/${item.slug}/`}
 								index={index + 1}
 								accent={flagshipAccents[index] ?? 'primary'}
 							/>
