@@ -68,7 +68,7 @@ cp .dev.vars.example .dev.vars
 npm run preview
 ```
 
-The non-secret GitBook space ID and Projects path are defined in `wrangler.json`. The GitBook token must remain a Cloudflare secret or local `.dev.vars` value and must never be committed.
+The non-secret GitBook space ID is defined in `wrangler.json`; the adapter uses `projects` as its built-in portfolio root. The GitBook token must remain a Cloudflare secret or local `.dev.vars` value and must never be committed.
 
 ## Validation
 
