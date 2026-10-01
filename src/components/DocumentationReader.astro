@@ -91,11 +91,24 @@ const bodyHtml = await marked.parse(markdown || '');
 					<strong class="docs-sidebar__title">{projectTitle}</strong>
 				</div>
 
-				<nav aria-label="Case study navigation">
-					<ul class="docs-nav-tree">
-						<DocNavTree nodes={navTree} currentSlugPath={currentSlugPath} toLink={toLink} />
-					</ul>
-				</nav>
+				<button
+					class="docs-mobile-nav-toggle"
+					type="button"
+					aria-expanded="false"
+					aria-controls="docs-project-navigation"
+					data-doc-nav-toggle
+				>
+					<span>Project sections</span>
+					<span aria-hidden="true">+</span>
+				</button>
+
+				<div id="docs-project-navigation" class="docs-sidebar__nav" data-doc-nav>
+					<nav aria-label="Case study navigation">
+						<ul class="docs-nav-tree">
+							<DocNavTree nodes={navTree} currentSlugPath={currentSlugPath} toLink={toLink} />
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</aside>
 
@@ -124,7 +137,7 @@ const bodyHtml = await marked.parse(markdown || '');
 					<h1 class="docs-page-title">{currentTitle}</h1>
 					<p class="docs-hero__summary">{summary}</p>
 					<div class="docs-hero__meta" aria-label="Document metadata">
-						<span>{sectionCount} sections</span>
+						<span>{sectionCount} architecture views</span>
 						<span>{depthLabel}</span>
 						<span>{sourceLabel}</span>
 					</div>
@@ -189,6 +202,32 @@ const bodyHtml = await marked.parse(markdown || '');
 </MainLayout>
 
 <script type="module" src="/scripts/documentation-mermaid.js"></script>
+
+<script is:inline>
+(() => {
+const sidebar = document.querySelector('.docs-sidebar');
+const toggle = document.querySelector('[data-doc-nav-toggle]');
+const nav = document.querySelector('[data-doc-nav]');
+if (!(sidebar instanceof HTMLElement) || !(toggle instanceof HTMLButtonElement) || !(nav instanceof HTMLElement)) return;
+
+const setOpen = (open) => {
+sidebar.dataset.mobileOpen = open ? 'true' : 'false';
+toggle.setAttribute('aria-expanded', String(open));
+const indicator = toggle.querySelector('[aria-hidden="true"]');
+if (indicator instanceof HTMLElement) indicator.textContent = open ? '−' : '+';
+};
+
+toggle.addEventListener('click', () => {
+setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+});
+
+const current = nav.querySelector('[aria-current="page"]');
+if (current && window.matchMedia('(max-width: 860px)').matches) {
+setOpen(false);
+}
+})();
+</script>
+
 
 <script is:inline>
 (() => {
@@ -464,6 +503,7 @@ max-width: none;
 }
 
 .docs-shell {
+--docs-sticky-top: 4.9rem;
 --docs-rail-label-size: var(--font-size-xs);
 --docs-rail-link-size: 0.85rem;
 --docs-rail-sub-size: 0.8rem;
@@ -489,8 +529,8 @@ radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--color-focus) 9%, tran
 /* LEFT SIDEBAR */
 .docs-sidebar {
 position: sticky;
-top: 1rem;
-height: calc(100vh - 2rem);
+top: var(--docs-sticky-top);
+height: calc(100vh - var(--docs-sticky-top) - 1rem);
 overflow-y: auto;
 scrollbar-width: thin;
 scrollbar-color: var(--color-border) transparent;
@@ -498,6 +538,30 @@ align-self: start;
 }
 .docs-sidebar__inner {
 padding: 1rem;
+}
+
+.docs-mobile-nav-toggle {
+display: none;
+width: 100%;
+align-items: center;
+justify-content: space-between;
+gap: 0.75rem;
+margin: 0 0 0.65rem;
+padding: 0.65rem 0.72rem;
+border: 1px solid var(--color-border);
+border-radius: var(--radius-sm);
+background: color-mix(in srgb, var(--color-bg-elevated) 88%, var(--color-surface));
+color: var(--color-text);
+font: inherit;
+font-size: var(--font-size-sm);
+font-weight: 700;
+text-align: left;
+cursor: pointer;
+}
+
+.docs-mobile-nav-toggle:focus-visible {
+outline: 3px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+outline-offset: 2px;
 }
 .docs-back-link {
 display: inline-flex;
@@ -912,9 +976,9 @@ line-height: 1.3;
 /* RIGHT TOC */
 .docs-toc {
 position: sticky;
-top: 1rem;
+top: var(--docs-sticky-top);
 height: fit-content;
-max-height: calc(100vh - 2rem);
+max-height: calc(100vh - var(--docs-sticky-top) - 1rem);
 overflow-y: auto;
 padding: 1rem;
 scrollbar-width: thin;
@@ -1067,7 +1131,10 @@ position: relative;
 height: auto;
 top: auto;
 }
-.docs-sidebar__inner { padding: 1rem; }
+.docs-sidebar__inner { padding: 0.85rem; }
+.docs-mobile-nav-toggle { display: flex; }
+.docs-sidebar__nav { display: none; }
+.docs-sidebar[data-mobile-open='true'] .docs-sidebar__nav { display: block; }
 .docs-article { padding: 1rem; }
 }
 @media (max-width: 520px) {
