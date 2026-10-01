@@ -1,0 +1,211 @@
+---
+interface Step {
+  title: string;
+  detail: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  compact?: boolean;
+}
+
+const {
+  eyebrow = 'Architecture Approach',
+  title = 'From problem framing to validated target architecture',
+  description = 'A consistent reasoning chain keeps technology choices traceable to business needs, constraints, trade-offs and evidence.',
+  compact = false,
+} = Astro.props;
+
+const steps: Step[] = [
+  { title: 'Understand', detail: 'Problem, stakeholders and drivers' },
+  { title: 'Bound', detail: 'Scope, constraints and dependencies' },
+  { title: 'Evaluate', detail: 'Current state, options and trade-offs' },
+  { title: 'Design', detail: 'Target state, boundaries and flows' },
+  { title: 'Transition', detail: 'Sequencing, controls and operability' },
+  { title: 'Validate', detail: 'Evidence, outcomes and lessons' },
+];
+---
+
+<section class:list={['architecture-flow', { 'architecture-flow--compact': compact }]} data-reveal="soft">
+  <div class="architecture-flow__intro">
+    <p class="architecture-flow__eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    <p>{description}</p>
+  </div>
+
+  <ol class="architecture-flow__steps" aria-label="Architecture reasoning flow">
+    {steps.map((step, index) => (
+      <li class="architecture-flow__step">
+        <span class="architecture-flow__index">{String(index + 1).padStart(2, '0')}</span>
+        <div>
+          <strong>{step.title}</strong>
+          <span>{step.detail}</span>
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <div class="architecture-flow__trace" aria-hidden="true">
+    <span>Driver / concern</span>
+    <span>→</span>
+    <span>Constraint</span>
+    <span>→</span>
+    <span>Decision</span>
+    <span>→</span>
+    <span>Architecture</span>
+    <span>→</span>
+    <span>Evidence</span>
+  </div>
+</section>
+
+<style>
+  .architecture-flow {
+    display: grid;
+    gap: clamp(1.1rem, 2vw, 1.7rem);
+    padding: clamp(1.1rem, 2vw, 1.65rem);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 34%);
+    box-shadow: var(--shadow-md);
+  }
+
+  .architecture-flow--compact {
+    padding: 1rem;
+  }
+
+  .architecture-flow__intro {
+    max-width: 49rem;
+  }
+
+  .architecture-flow__eyebrow {
+    margin: 0 0 0.35rem;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .architecture-flow h2 {
+    margin: 0;
+    font-size: var(--font-size-heading-md);
+  }
+
+  .architecture-flow__intro > p:last-child {
+    margin: 0.65rem 0 0;
+    max-width: 44rem;
+    font-size: var(--font-size-ui);
+  }
+
+  .architecture-flow__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .architecture-flow__step {
+    position: relative;
+    min-width: 0;
+    padding: 0.8rem;
+    border-left: 2px solid color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
+    background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .architecture-flow__step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -0.57rem;
+    top: 50%;
+    z-index: 2;
+    transform: translate(50%, -50%);
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .architecture-flow__index {
+    display: block;
+    margin-bottom: 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    color: var(--color-accent);
+  }
+
+  .architecture-flow__step strong,
+  .architecture-flow__step span:last-child {
+    display: block;
+  }
+
+  .architecture-flow__step strong {
+    margin-bottom: 0.28rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+  }
+
+  .architecture-flow__step span:last-child {
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+  }
+
+  .architecture-flow__trace {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--color-border);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .architecture-flow__trace span:nth-child(even) {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 980px) {
+    .architecture-flow__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .architecture-flow__step:nth-child(3)::after,
+    .architecture-flow__step:last-child::after {
+      display: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .architecture-flow__steps {
+      grid-template-columns: 1fr;
+    }
+
+    .architecture-flow__step::after {
+      display: none;
+    }
+
+    .architecture-flow__step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.7rem;
+      align-items: start;
+    }
+
+    .architecture-flow__index {
+      margin: 0;
+      padding-top: 0.12rem;
+    }
+
+    .architecture-flow__trace {
+      display: none;
+    }
+  }
+</style>
