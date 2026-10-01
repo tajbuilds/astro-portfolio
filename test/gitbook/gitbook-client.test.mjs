@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { createGitBookClient } from '../../src/lib/gitbook/client.ts';
 import {
   findPageByPath,
+  formatProjectTagLabel,
   mapProjectSummary,
   normalizeGitBookMarkdown,
   normalizeGitBookProjectTags,
@@ -117,6 +118,12 @@ test('normalizes GitBook frontmatter and duplicate page heading', () => {
     normalizeGitBookMarkdown(markdown, 'Target Architecture'),
     ['## Design', '', 'Body.'].join('\n'),
   );
+});
+
+test('formats canonical project tag keys for presentation', () => {
+  assert.equal(formatProjectTagLabel('cloudflare'), 'Cloudflare');
+  assert.equal(formatProjectTagLabel('edge-architecture'), 'Edge Architecture');
+  assert.equal(formatProjectTagLabel('api-architecture'), 'API Architecture');
 });
 
 test('GitBook client keeps credentials server-side and requests Markdown', async () => {

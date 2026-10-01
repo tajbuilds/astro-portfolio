@@ -1,57 +1,79 @@
 ---
+import { env } from 'cloudflare:workers';
+
 import MainLayout from '../../../layouts/MainLayout.astro';
 import Container from '../../../components/Container.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import ProjectCard from '../../../components/ProjectCard.astro';
 import PillTag from '../../../components/PillTag.astro';
 import {
-	contentSlug,
-	getPublishedWorkEntries,
-	slugifyTag,
-} from '../../../lib/data/portfolio-data';
+	createGitBookPortfolioFromEnv,
+	formatProjectTagLabel,
+	normalizeProjectTagKey,
+} from '../../../lib/gitbook';
+import type {
+	GitBookRuntimeEnv,
+	PortfolioProjectSummary,
+} from '../../../lib/gitbook';
 
-const allWork = await getPublishedWorkEntries();
-const tagSlug = Astro.params.tag ?? '';
-const tag = allWork
-	.flatMap((item) => item.data.tags)
-	.find((entry) => slugifyTag(entry) === tagSlug);
+export const prerender = false;
 
-if (!tag) {
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+const tagSlug = normalizeProjectTagKey(Astro.params.tag ?? '');
+
+if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	return new Response('Portfolio content is not configured in this environment.', { status: 503 });
+}
+
+let canonicalTag = '';
+let filtered: PortfolioProjectSummary[] = [];
+
+try {
+	const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+	const [tags, projects] = await Promise.all([
+		portfolio.getProjectTags(),
+		portfolio.getProjectsByTag(tagSlug),
+	]);
+
+	canonicalTag =
+		tags.find((tag) => normalizeProjectTagKey(tag) === tagSlug) ?? '';
+	filtered = projects;
+} catch (error) {
+	console.error('GitBook tag discovery failed.', error);
+	return new Response('Portfolio content is temporarily unavailable.', { status: 503 });
+}
+
+if (!canonicalTag) {
 	return Astro.redirect('/work/', 302);
 }
 
-const filtered = allWork.filter((item) =>
-	item.data.tags.some((entry) => slugifyTag(entry) === tagSlug),
-);
+const tagLabel = formatProjectTagLabel(canonicalTag);
 ---
 
 <MainLayout
-	title={`${tag} | Work | Tajinder Singh`}
-	description={`Architecture case studies tagged ${tag}, covering related systems, delivery patterns, and implementation decisions.`}
-	keywords={[tag, 'Work', 'Case Study', 'Solutions Architect']}
+	title={`${tagLabel} | Work | Tajinder Singh`}
+	description={`Architecture case studies tagged ${tagLabel}, covering related systems, delivery patterns, and implementation decisions.`}
+	keywords={[tagLabel, 'Work', 'Case Study', 'Solutions Architect']}
 	width="full"
 >
 	<Container size="wide">
 		<SectionHeading
 			eyebrow="Filtered"
-			title={`Work tagged: ${tag}`}
+			title={`Work tagged: ${tagLabel}`}
 			description="Focused case studies within this domain."
 		/>
 		<p class="tag-back"><PillTag label="<- Back to all work" href="/work/" /></p>
 		<ul class="work-grid">
-			{
-				filtered.map((item) => (
-					<li>
-						<ProjectCard
-							title={item.data.title}
-							description={item.data.description}
-							tags={item.data.tags}
-							date={item.data.date}
-							href={`/work/${contentSlug(item.id)}/`}
-						/>
-					</li>
-				))
-			}
+			{filtered.map((project) => (
+				<li>
+					<ProjectCard
+						title={project.title}
+						description={project.description}
+						tags={project.tags.map(formatProjectTagLabel)}
+						href={`/work/cms-preview/${project.slug}/`}
+					/>
+				</li>
+			))}
 		</ul>
 	</Container>
 </MainLayout>

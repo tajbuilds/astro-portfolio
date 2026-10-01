@@ -41,6 +41,40 @@ const normalizeTagLabel = (tag: unknown): string => {
 export const normalizeProjectTagKey = (tag: string) =>
   tag.trim().toLocaleLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
+const PROJECT_TAG_INITIALISMS = new Set([
+  'ai',
+  'api',
+  'cdn',
+  'ci',
+  'cms',
+  'css',
+  'd1',
+  'html',
+  'http',
+  'https',
+  'js',
+  'json',
+  'ml',
+  'r2',
+  'seo',
+  'sql',
+  'ssr',
+  'ts',
+  'ui',
+  'ux',
+]);
+
+export const formatProjectTagLabel = (tag: string) =>
+  normalizeProjectTagKey(tag)
+    .split('-')
+    .filter(Boolean)
+    .map((part) =>
+      PROJECT_TAG_INITIALISMS.has(part)
+        ? part.toUpperCase()
+        : `${part.charAt(0).toUpperCase()}${part.slice(1)}`,
+    )
+    .join(' ');
+
 export const normalizeGitBookProjectTags = (tags: unknown[] | null | undefined) => {
   const seen = new Set<string>();
   const normalized: string[] = [];

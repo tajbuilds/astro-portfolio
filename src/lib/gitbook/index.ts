@@ -34,6 +34,7 @@ export {
   mapProject,
   mapProjectSummary,
   normalizeGitBookPath,
+  formatProjectTagLabel,
   normalizeGitBookProjectTags,
   normalizeProjectTagKey,
   isReservedProjectTag,
