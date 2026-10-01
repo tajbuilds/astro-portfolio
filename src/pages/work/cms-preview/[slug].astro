@@ -21,7 +21,7 @@ const project = projects.find((entry) => entry.slug.toLowerCase() === slug) ?? n
 const navigation = project ? await portfolio.getProjectPages(slug) : null;
 
 const sectionHref = (relativePath: string) =>
-	`/work/cms-preview/${project?.slug}/${relativePath
+	`/work/cms-preview/${project?.slug}/section/${relativePath
 		.split('/')
 		.filter(Boolean)
 		.map((segment) => encodeURIComponent(segment))
