@@ -8,9 +8,9 @@ import type {
 
 const CACHE_SCHEMA_VERSION = 'v1';
 
-export const GITBOOK_TREE_FRESH_TTL_SECONDS = 5 * 60;
-export const GITBOOK_PAGE_FRESH_TTL_SECONDS = 15 * 60;
-export const GITBOOK_CACHE_RETENTION_SECONDS = 24 * 60 * 60;
+export const GITBOOK_TREE_FRESH_TTL_SECONDS = 60 * 60;
+export const GITBOOK_PAGE_FRESH_TTL_SECONDS = 6 * 60 * 60;
+export const GITBOOK_CACHE_RETENTION_SECONDS = 7 * 24 * 60 * 60;
 
 type CacheEnvelope<T> = {
   cachedAt: number;
