@@ -1,0 +1,185 @@
+---
+import { env } from 'cloudflare:workers';
+import MainLayout from '../../../layouts/MainLayout.astro';
+import Container from '../../../components/Container.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { createGitBookPortfolioFromEnv } from '../../../lib/gitbook';
+import type { GitBookRuntimeEnv } from '../../../lib/gitbook';
+
+export const prerender = false;
+
+const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+
+if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	return new Response('GitBook preview is not configured in this environment.', { status: 503 });
+}
+
+const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+const project = await portfolio.getProject(slug);
+
+if (!project) {
+	return new Response('GitBook project not found.', { status: 404 });
+}
+---
+
+<MainLayout
+	title={`${project.title} | CMS Preview | Tajinder Singh`}
+	description={project.description}
+	noindex={true}
+	width="full"
+>
+	<Container size="wide">
+		<a class="preview-back" href="/work/">&lt;- Back to work</a>
+
+		<section class="preview-hero surface-card surface-card--feature">
+			<p class="preview-kicker">GitBook CMS Preview</p>
+			<h1>{project.title}</h1>
+			<p class="preview-description">{project.description}</p>
+			<div class="preview-meta" aria-label="CMS project metadata">
+				<span>{project.sectionCount} architecture sections</span>
+				<span>Source: private GitBook CMS</span>
+				<span>Route candidate: /work/{project.slug}</span>
+			</div>
+		</section>
+
+		<section class="preview-structure">
+			<SectionHeading
+				eyebrow="Live hierarchy"
+				title="Case study structure"
+				description="This navigation is generated from the child-page order in GitBook. The next migration slice will turn these sections into the full architecture reader."
+			/>
+
+			<ol class="preview-sections">
+				{
+					project.navigation.map((page, index) => (
+						<li class="surface-card surface-card--soft">
+							<span class="preview-sections__number">{String(index + 1).padStart(2, '0')}</span>
+							<div>
+								<h2>{page.title}</h2>
+								{page.description && <p>{page.description}</p>}
+								<code>{page.relativePath}</code>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+
+		<section class="preview-proof surface-card surface-card--soft">
+			<p class="preview-proof__eyebrow">Vertical slice status</p>
+			<h2>GitBook discovery is live</h2>
+			<p>
+				This page is intentionally temporary and excluded from search indexing. It proves that Astro can discover
+				the project, read its summary and reconstruct its ordered architecture hierarchy without a duplicate
+				project record in the repository.
+			</p>
+		</section>
+	</Container>
+</MainLayout>
+
+<style>
+	.preview-back {
+		display: inline-flex;
+		margin-bottom: var(--space-5);
+		font-size: var(--font-size-sm);
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.preview-hero {
+		padding: clamp(1.25rem, 3vw, 2.25rem);
+		margin-bottom: var(--space-7);
+	}
+
+	.preview-kicker,
+	.preview-proof__eyebrow {
+		margin: 0 0 var(--space-2);
+		color: var(--color-accent);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+
+	.preview-hero h1 {
+		font-size: clamp(2rem, 1.45rem + 2.4vw, 3.8rem);
+		max-width: 18ch;
+	}
+
+	.preview-description {
+		max-width: 68ch;
+		font-size: var(--font-size-body-lg);
+	}
+
+	.preview-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-top: var(--space-5);
+	}
+
+	.preview-meta span {
+		padding: 0.35rem 0.65rem;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-bg-elevated) 74%, transparent);
+		color: var(--color-text-muted);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+	}
+
+	.preview-structure {
+		margin-bottom: var(--space-7);
+	}
+
+	.preview-sections {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: var(--space-3);
+	}
+
+	.preview-sections li {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: start;
+		padding: 1rem;
+	}
+
+	.preview-sections__number {
+		min-width: 2.4rem;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: var(--font-size-sm);
+		color: var(--color-text-muted);
+	}
+
+	.preview-sections h2 {
+		margin: 0 0 0.3rem;
+		font-size: 1.05rem;
+	}
+
+	.preview-sections p {
+		margin: 0 0 0.5rem;
+		font-size: var(--font-size-ui);
+	}
+
+	.preview-sections code {
+		font-size: var(--font-size-xs);
+	}
+
+	.preview-proof {
+		padding: 1rem 1.1rem;
+	}
+
+	.preview-proof h2 {
+		margin-bottom: 0.4rem;
+		font-size: 1.15rem;
+	}
+
+	.preview-proof p:last-child {
+		margin-bottom: 0;
+	}
+</style>
