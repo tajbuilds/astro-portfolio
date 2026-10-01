@@ -38,9 +38,9 @@ Adding, removing, renaming or reclassifying a portfolio project should not requi
 
 Production GitBook reads are cached in a dedicated Cloudflare Workers KV binding named `GITBOOK_CACHE`.
 
-- project/page hierarchy: fresh for 5 minutes;
-- page Markdown: fresh for 15 minutes;
-- cached values are retained for up to 24 hours so transient GitBook `429`, network, or `5xx` failures can fall back to the last known content;
+- project/page hierarchy: fresh for 1 hour;
+- page Markdown: fresh for 6 hours;
+- cached values are retained for up to 7 days so transient GitBook `429`, network, or `5xx` failures can fall back to the last known content;
 - authentication and other non-transient GitBook errors are not hidden by stale cache;
 - when the cache binding is unavailable, the adapter safely falls back to direct GitBook reads.
 
