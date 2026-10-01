@@ -1,0 +1,144 @@
+---
+import DocumentationReader from './DocumentationReader.astro';
+import type { NavNode } from './DocNavTree.astro';
+import type {
+	PortfolioDocumentPage,
+	PortfolioNavigationNode,
+	PortfolioProjectSummary,
+} from '../lib/gitbook';
+
+type FlatNavigationNode = PortfolioNavigationNode & { depth: number };
+
+interface Props {
+	project: PortfolioProjectSummary;
+	navigation: PortfolioNavigationNode[];
+	projectHref: string;
+	pageHref: (relativePath: string) => string;
+	currentPage?: PortfolioDocumentPage | null;
+	rootMarkdown?: string;
+	backHref: string;
+	backLabel: string;
+	kicker?: string;
+	noindex?: boolean;
+	sourceLabel?: string;
+}
+
+const {
+	project,
+	navigation,
+	projectHref,
+	pageHref,
+	currentPage = null,
+	rootMarkdown = '',
+	backHref,
+	backLabel,
+	kicker = 'CMS Reader Preview',
+	noindex = true,
+	sourceLabel = 'GitBook CMS',
+} = Astro.props;
+
+const flattenNavigation = (
+	nodes: PortfolioNavigationNode[],
+	depth = 0,
+): FlatNavigationNode[] =>
+	nodes.flatMap((node) => [
+		{ ...node, depth },
+		...flattenNavigation(node.children, depth + 1),
+	]);
+
+const toReaderNav = (nodes: PortfolioNavigationNode[]): NavNode[] =>
+	nodes.map((node, index) => ({
+		id: node.id,
+		title: node.title,
+		slug_path: node.relativePath,
+		nav_order: index,
+		children: toReaderNav(node.children),
+	}));
+
+const flatNavigation = flattenNavigation(navigation);
+const navTree = toReaderNav(navigation);
+const currentPath = currentPage?.relativePath ?? '';
+const currentIndex = currentPage
+	? flatNavigation.findIndex((node) => node.relativePath === currentPath)
+	: -1;
+const currentNavigation = currentIndex >= 0 ? flatNavigation[currentIndex] : null;
+
+const breadcrumbs: { label: string; href: string }[] = [
+	{ label: 'Work', href: '/work/' },
+	{ label: project.title, href: projectHref },
+];
+
+if (currentPage) {
+	const pathSegments = currentPage.relativePath.split('/').filter(Boolean);
+	for (let index = 0; index < pathSegments.length; index += 1) {
+		const relativePath = pathSegments.slice(0, index + 1).join('/');
+		const node = flatNavigation.find((entry) => entry.relativePath === relativePath);
+		if (node) {
+			breadcrumbs.push({ label: node.title, href: pageHref(relativePath) });
+		}
+	}
+}
+
+const firstSection = flatNavigation[0] ?? null;
+const previous =
+	currentPage && currentIndex > 0
+		? {
+				title: flatNavigation[currentIndex - 1].title,
+				href: pageHref(flatNavigation[currentIndex - 1].relativePath),
+			}
+		: currentPage && currentIndex === 0
+			? { title: project.title, href: projectHref }
+			: null;
+
+const next =
+	currentPage && currentIndex >= 0 && currentIndex < flatNavigation.length - 1
+		? {
+				title: flatNavigation[currentIndex + 1].title,
+				href: pageHref(flatNavigation[currentIndex + 1].relativePath),
+			}
+		: !currentPage && firstSection
+			? { title: firstSection.title, href: pageHref(firstSection.relativePath) }
+			: null;
+
+const currentTitle = currentPage?.title ?? project.title;
+const documentTitle = currentPage
+	? `${currentTitle} | ${project.title} | CMS Preview`
+	: `${project.title} | CMS Preview`;
+const description =
+	currentPage?.description || project.description || 'Architecture case study';
+const summary =
+	currentPage?.description ||
+	project.description ||
+	'Architecture notes, implementation decisions and delivery context for this case study.';
+const markdown = currentPage?.markdown ?? rootMarkdown;
+const depthLabel = currentPage
+	? currentNavigation
+		? currentNavigation.depth === 0
+			? 'Section'
+			: `Depth ${currentNavigation.depth + 1}`
+		: 'Section'
+	: 'Overview';
+---
+
+<DocumentationReader
+	title={documentTitle}
+	description={description}
+	projectTitle={project.title}
+	currentTitle={currentTitle}
+	currentSlugPath={currentPath}
+	navTree={navTree}
+	toLink={pageHref}
+	breadcrumbs={breadcrumbs}
+	summary={summary}
+	sectionCount={flatNavigation.length}
+	depthLabel={depthLabel}
+	sourceLabel={sourceLabel}
+	markdown={markdown}
+	previous={previous}
+	next={next}
+	backHref={backHref}
+	backLabel={backLabel}
+	kicker={kicker}
+	noindex={noindex}
+	searchEnabled={false}
+/>

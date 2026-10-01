@@ -36,7 +36,6 @@ export type GitBookClient = {
   readonly spaceId: string;
   listPages(): Promise<GitBookPagesResponse>;
   getPageById(pageId: string): Promise<GitBookPage>;
-  getPageByPath(pagePath: string): Promise<GitBookPage>;
 };
 
 export type PortfolioNavigationNode = {

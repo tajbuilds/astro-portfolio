@@ -34,8 +34,8 @@ const {
 	mainClass,
 } = Astro.props;
 const pathname = Astro.url.pathname;
-const showQuickContact = !pathname.startsWith('/contact') && !pathname.startsWith('/docs');
-const enableMermaid = pathname.startsWith('/docs');
+const showQuickContact =
+	mainClass !== 'docs-pg' && !pathname.startsWith('/contact') && !pathname.startsWith('/docs');
 const gaMeasurementId = (env.PUBLIC_GA_MEASUREMENT_ID ?? import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
 ---
 
@@ -102,7 +102,6 @@ const gaMeasurementId = (env.PUBLIC_GA_MEASUREMENT_ID ?? import.meta.env.PUBLIC_
 			<slot />
 		</main>
 		<Footer />
-		{enableMermaid && <script type="module" src="/scripts/starlight-mermaid.js"></script>}
 		{showQuickContact && <QuickContact />}
 		<AnalyticsConsent measurementId={gaMeasurementId} />
 		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
