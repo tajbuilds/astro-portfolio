@@ -8,7 +8,7 @@ import type {
 
 const DEFAULT_API_BASE_URL = 'https://api.gitbook.com/v1';
 
-const trimSlashes = (value: string) => value.replace(/^\\/+|\\/+$/g, '');
+const trimSlashes = (value: string) => value.replace(/^\/+|\/+$/g, '');
 
 const encodeContentPath = (value: string) =>
   trimSlashes(value)
@@ -41,7 +41,7 @@ export const createGitBookClient = (options: GitBookClientOptions): GitBookClien
   const token = requireValue(options.token, 'GITBOOK_TOKEN');
   const spaceId = requireValue(options.spaceId, 'GITBOOK_SPACE_ID');
   const fetchImpl = options.fetchImpl ?? fetch;
-  const apiBaseUrl = (options.apiBaseUrl ?? DEFAULT_API_BASE_URL).replace(/\\/+$/g, '');
+  const apiBaseUrl = (options.apiBaseUrl ?? DEFAULT_API_BASE_URL).replace(/\/+$/g, '');
 
   const request = async <T>(pathname: string, searchParams?: URLSearchParams): Promise<T> => {
     const url = new URL(`${apiBaseUrl}${pathname}`);
