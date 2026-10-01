@@ -35,9 +35,9 @@ The target implementation must not use an iframe and must not require manual dup
 
 The intended end state is:
 
-1. Create a new project in GitBook.
-2. Add project metadata and documentation in GitBook.
-3. Publish/merge the GitBook content.
+1. Create a new project as a direct child of the configured GitBook `Projects` root.
+2. Set its title, slug, description, icon and documentation hierarchy in GitBook.
+3. Merge the GitBook content into the private Portfolio CMS space.
 4. The project automatically appears on the Astro portfolio.
 5. Project pages and child documentation routes render natively on `tajs.io`.
 6. No Astro content file needs to be created manually for the project.
@@ -52,15 +52,14 @@ GitBook is the source of truth for:
 - project title
 - project slug/path
 - project description
-- project metadata
-- project visibility
-- project ordering
-- project tags/categories
-- technology list
-- role
-- project status
-- featured state
-- optional project/card media reference
+- project placement beneath the configured `Projects` root
+- project ordering from GitBook sibling order
+- page hierarchy
+- page icon where supplied
+
+For the first implementation, hierarchy is deliberately the publication contract: a direct child of `Projects` is a portfolio project. Private authoring guidance, templates and drafts that must never be exposed by Astro live outside that tree.
+
+Extended card metadata such as role, year, categories, technologies, featured state and media may be added later when a stable first-class GitBook representation is proven. Astro must not invent a second manually maintained project record merely to supply those fields.
 - long-form documentation
 - documentation hierarchy
 - architecture documentation
@@ -101,9 +100,17 @@ Portfolio
 +-- Learning
 ```
 
-A direct child of the configured Projects root is considered a portfolio project when its metadata marks it as visible/published.
+A direct child of the configured `Projects` root is a portfolio project.
 
-The exact metadata convention will be validated against the GitBook API before implementation.
+The `Projects` hierarchy itself is the initial publication/discovery contract:
+
+- direct children are projects;
+- sibling order is display order;
+- title, slug/path, description and icon come from the GitBook page tree;
+- child pages form the project's architecture/documentation navigation;
+- content outside `Projects` is not exposed by project discovery.
+
+API testing showed that custom page variables and Markdown frontmatter tags are not reliably surfaced through the normal GitBook page-tree/Markdown API, so the first implementation does not depend on them.
 
 ## 5. Proposed Astro Routes
 
@@ -331,7 +338,8 @@ Removal happens late in the migration, not at the beginning.
 - Confirm individual page retrieval.
 - Confirm Markdown/structured content quality.
 - Confirm Mermaid survives the content path.
-- Confirm useful metadata is available.
+- Confirm the page-tree fields needed for initial discovery are available.
+- Record the hierarchy-based publication contract and defer unsupported extended metadata.
 - Confirm rate limits/caching requirements.
 
 No existing production data path is removed in this phase.
@@ -357,11 +365,11 @@ Build a GitBook-backed project listing without removing the existing portfolio s
 
 Validate:
 
-- ordering
-- visibility
-- metadata
+- ordering from GitBook sibling order
+- discovery from direct children of `Projects`
+- title/slug/description/icon mapping
 - card rendering
-- missing metadata behaviour
+- sensible behaviour when optional page fields are absent
 - empty state
 - API failure behaviour
 
@@ -550,7 +558,7 @@ It should prove:
 1. server-side GitBook authentication,
 2. retrieval of the Projects hierarchy,
 3. retrieval of one representative project's Markdown/content,
-4. metadata mapping,
+4. hierarchy and core page-field mapping,
 5. Mermaid source preservation,
 6. error handling,
 7. basic cache behaviour.

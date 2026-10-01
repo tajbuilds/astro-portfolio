@@ -30,6 +30,8 @@
 		"CONTACT_FROM_EMAIL": "Portfolio Contact <noreply@tajs.io>",
 		"CONTACT_SUBJECT_PREFIX": "[tajs.io] Contact Form",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAACj5smKRjyW5M3sV",
-		"PUBLIC_GA_MEASUREMENT_ID": "G-27X2LV520R"
+		"PUBLIC_GA_MEASUREMENT_ID": "G-27X2LV520R",
+		"GITBOOK_SPACE_ID": "jGKRPrGvWyP45CoyEeoJ",
+		"GITBOOK_PROJECTS_PATH": "projects"
 	}
 }
