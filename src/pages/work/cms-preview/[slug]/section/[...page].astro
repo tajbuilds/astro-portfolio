@@ -2,9 +2,9 @@
 import { env } from 'cloudflare:workers';
 import { marked } from 'marked';
 
-import MainLayout from '../../../../layouts/MainLayout.astro';
-import Container from '../../../../components/Container.astro';
-import { createGitBookPortfolioFromEnv } from '../../../../lib/gitbook';
+import MainLayout from '../../../../../layouts/MainLayout.astro';
+import Container from '../../../../../components/Container.astro';
+import { createGitBookPortfolioFromEnv } from '../../../../../lib/gitbook';
 import type {
 	GitBookRuntimeEnv,
 	PortfolioNavigationNode,
