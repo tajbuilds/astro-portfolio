@@ -42,7 +42,7 @@ The intended end state is:
 5. Project pages and child documentation routes render natively on `tajs.io`.
 6. No Astro content file needs to be created manually for the project.
 7. No D1 sync operation is required.
-8. ChatGPT can read, create and maintain the same GitBook documentation through the GitBook integration.
+8. The same GitBook documentation remains maintainable through the GitBook integration.
 
 ## 3. Source-of-Truth Model
 
