@@ -36,6 +36,27 @@ Build locally:
 npm run build
 ```
 
+### GitBook CMS local preview
+
+The GitBook migration reads private CMS content at runtime. Keep the API token out of Git:
+
+```bash
+cp .dev.vars.example .dev.vars
+```
+
+Then set `GITBOOK_TOKEN` in `.dev.vars` and run the Cloudflare runtime preview:
+
+```bash
+npm run preview
+```
+
+Useful routes while the migration is in progress:
+
+- `/work/` — existing portfolio plus GitBook-discovered cards when the token is configured
+- `/work/cms-preview/<project-slug>/` — temporary no-index GitBook hierarchy preview
+
+The non-secret GitBook space ID and Projects path are configured in `wrangler.json`. The token must remain a runtime secret/local dev variable.
+
 ## Deployment
 
 Cloudflare deployment uses Wrangler:
