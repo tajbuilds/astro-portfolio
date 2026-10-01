@@ -12,14 +12,14 @@
 		"publish": true
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^13.2.1",
-		"astro": "^6.1.9",
+		"@astrojs/cloudflare": "^14.3.3",
+		"astro": "^7.3.5",
 		"marked": "^15.0.12",
 		"typescript": "5.9.3"
 	},
 	"devDependencies": {
 		"@types/node": "^26.6.3",
-		"wrangler": "4.84.1"
+		"wrangler": "4.145.0"
 	},
 	"engines": {
 		"node": ">=22"
@@ -38,6 +38,6 @@
 	},
 	"type": "module",
 	"overrides": {
-		"wrangler": "4.84.1"
+		"wrangler": "4.145.0"
 	}
 }
