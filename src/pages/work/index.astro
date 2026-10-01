@@ -5,14 +5,12 @@ import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
-import ProofStrip from '../../components/ProofStrip.astro';
 import {
-	createGitBookPortfolioFromEnv,
-	formatProjectTagLabel,
-	normalizeProjectTagKey,
+  createGitBookPortfolioFromEnv,
+  formatProjectTagLabel,
+  normalizeProjectTagKey,
 } from '../../lib/gitbook';
 import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../../lib/gitbook';
-import { workOverviewProofItems } from '../../lib/proof-data';
 
 export const prerender = false;
 
@@ -22,124 +20,262 @@ let tags: string[] = [];
 let gitbookError = false;
 
 if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
-	try {
-		const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
-		[gitbookProjects, tags] = await Promise.all([
-			portfolio.getProjects(),
-			portfolio.getProjectTags(),
-		]);
-	} catch (error) {
-		gitbookError = true;
-		console.error('GitBook project discovery failed on /work.', error);
-	}
+  try {
+    const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+    [gitbookProjects, tags] = await Promise.all([
+      portfolio.getProjects(),
+      portfolio.getProjectTags(),
+    ]);
+  } catch (error) {
+    gitbookError = true;
+    console.error('GitBook project discovery failed on /work.', error);
+  }
 } else {
-	gitbookError = true;
+  gitbookError = true;
 }
+
+const evidence = [
+  ['Context', 'Why change was needed'],
+  ['Current state', 'Where responsibilities sat'],
+  ['Options', 'What alternatives were considered'],
+  ['Target state', 'How responsibilities changed'],
+  ['Decisions', 'Why the direction was selected'],
+  ['Validation', 'How confidence was established'],
+];
 ---
 
 <MainLayout
-	title="Work | Tajinder Singh"
-	description="Architecture case studies focused on edge security, automation, and data/search systems."
-	width="full"
+  title="Architecture Work | Tajinder Singh"
+  description="Solution and integration architecture case studies covering current state, options, target architecture, decisions, transition and validation."
+  width="full"
 >
-	<Container size="wide">
-		<section class="work-intro">
-			<div data-reveal="soft">
-				<SectionHeading
-					eyebrow="Portfolio"
-					title="Case Studies"
-					description="Selected architecture and platform work across verification pipelines, search systems, and high-leverage automation."
-				/>
-			</div>
-		</section>
+  <Container size="wide">
+    <section class="work-hero" data-reveal="soft">
+      <p class="work-hero__eyebrow">Architecture Portfolio</p>
+      <h1>Case studies built around decisions, not implementation volume.</h1>
+      <p>
+        Each project follows the reasoning from business or operational problem through constraints, architecture
+        options, system boundaries, target state, cross-cutting concerns, transition and evidence.
+      </p>
+    </section>
 
-		<section class="work-filter surface-card surface-card--soft" aria-label="Filter by tag" data-reveal="soft">
-			<p>Filter by focus area:</p>
-			<div class="work-filter__tags">
-				<PillTag label="All" href="/work/" />
-				{tags.map((tag) => (
-					<PillTag
-						label={formatProjectTagLabel(tag)}
-						href={`/work/tags/${normalizeProjectTagKey(tag)}/`}
-					/>
-				))}
-			</div>
-		</section>
+    <section class="evidence-model" aria-label="What each case study demonstrates" data-reveal="soft">
+      {evidence.map(([title, copy], index) => (
+        <article>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <strong>{title}</strong>
+            <p>{copy}</p>
+          </div>
+        </article>
+      ))}
+    </section>
 
-		<ProofStrip
-			eyebrow="Selected Outcomes"
-			title="Common improvements across the case studies"
-			items={workOverviewProofItems}
-			compact={true}
-		/>
+    <section class="work-toolbar" data-reveal="soft">
+      <div>
+        <p class="work-toolbar__label">Explore by focus area</p>
+        <p class="work-toolbar__hint">Tags describe architecture domains, technologies and material system concerns.</p>
+      </div>
+      <div class="work-filter__tags">
+        <PillTag label="All" href="/work/" />
+        {tags.map((tag) => (
+          <PillTag
+            label={formatProjectTagLabel(tag)}
+            href={`/work/tags/${normalizeProjectTagKey(tag)}/`}
+          />
+        ))}
+      </div>
+    </section>
 
-		<section>
-			{gitbookProjects.length > 0 ? (
-				<ul class="work-grid">
-					{gitbookProjects.map((project) => (
-						<li data-reveal="soft">
-							<ProjectCard
-								title={project.title}
-								description={project.description}
-								tags={project.tags.map(formatProjectTagLabel)}
-								href={`/work/${project.slug}/`}
-							/>
-						</li>
-					))}
-				</ul>
-			) : (
-				<p class="section-intro">
-					{gitbookError
-						? 'Case studies are temporarily unavailable.'
-						: 'No case studies have been published yet.'}
-				</p>
-			)}
-		</section>
-	</Container>
+    <section class="work-list">
+      <SectionHeading
+        eyebrow="Case Studies"
+        title="Architecture you can inspect"
+        description="Open a project to move through the architecture dossier and see the context, views, decisions, trade-offs and validation behind the design."
+      />
+
+      {gitbookProjects.length > 0 ? (
+        <ul class="work-grid">
+          {gitbookProjects.map((project) => (
+            <li data-reveal="soft">
+              <ProjectCard
+                title={project.title}
+                description={project.description}
+                tags={project.tags.map(formatProjectTagLabel)}
+                sectionCount={project.sectionCount}
+                href={`/work/${project.slug}/`}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="section-intro">
+          {gitbookError
+            ? 'Case studies are temporarily unavailable.'
+            : 'No case studies have been published yet.'}
+        </p>
+      )}
+    </section>
+  </Container>
 </MainLayout>
 
 <style>
-	.work-intro {
-		margin-bottom: var(--space-6);
-	}
+  .work-hero {
+    max-width: 58rem;
+    margin-bottom: clamp(2rem, 4vw, 3.4rem);
+  }
 
-	.work-filter {
-		display: grid;
-		gap: var(--space-3);
-		margin-bottom: var(--space-6);
-		padding: 0.95rem;
-	}
+  .work-hero__eyebrow,
+  .work-toolbar__label {
+    margin: 0 0 0.45rem;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
 
-	.work-filter p {
-		margin: 0;
-		font-size: var(--font-size-sm);
-		font-weight: 600;
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-	}
+  .work-hero h1 {
+    margin: 0;
+    max-width: 16ch;
+    font-size: clamp(2rem, 1.5rem + 1.7vw, 3.2rem);
+    line-height: 1.03;
+  }
 
-	.work-filter__tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-	}
+  .work-hero > p:last-child {
+    max-width: 48rem;
+    margin: 1rem 0 0;
+    font-size: var(--font-size-body-lg);
+  }
 
-	.work-grid {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: var(--space-4);
-	}
+  .evidence-model {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
 
-	.work-grid li {
-		height: 100%;
-	}
+  .evidence-model article {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+    padding: 0.9rem 0.75rem;
+    border-right: 1px solid var(--color-border);
+  }
 
-	@media (max-width: 900px) {
-		.work-grid {
-			grid-template-columns: 1fr;
-		}
-	}
+  .evidence-model article:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .evidence-model article:nth-child(-n + 3) {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .evidence-model span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .evidence-model strong {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.88rem;
+  }
+
+  .evidence-model p {
+    margin: 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .work-toolbar {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1.45fr);
+    gap: var(--space-4);
+    align-items: start;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .work-toolbar__hint {
+    margin: 0;
+    max-width: 26rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .work-filter__tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+
+  .work-list :global(.section-heading) {
+    margin-bottom: var(--space-5);
+  }
+
+  .work-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .work-grid li {
+    height: 100%;
+  }
+
+  @media (max-width: 900px) {
+    .evidence-model {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .evidence-model article,
+    .evidence-model article:nth-child(3n) {
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .evidence-model article:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .evidence-model article:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+
+    .work-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .work-filter__tags {
+      justify-content: flex-start;
+    }
+
+    .work-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .evidence-model {
+      grid-template-columns: 1fr;
+    }
+
+    .evidence-model article,
+    .evidence-model article:nth-child(2n),
+    .evidence-model article:nth-last-child(-n + 2) {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .evidence-model article:last-child {
+      border-bottom: 0;
+    }
+  }
 </style>
