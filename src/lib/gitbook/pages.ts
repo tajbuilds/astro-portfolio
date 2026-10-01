@@ -1,4 +1,4 @@
-import { joinGitBookPath, mapDocumentPage, mapNavigationNode, normalizeGitBookPath } from './mapper.ts';
+import { findPageByPath, joinGitBookPath, mapDocumentPage, mapNavigationNode, normalizeGitBookPath } from './mapper.ts';
 import { DEFAULT_PROJECTS_PATH, resolveProjectsRoot } from './projects.ts';
 import type {
   GitBookClient,
@@ -46,7 +46,7 @@ export const getPortfolioPage = async (
     targetPath === normalizeGitBookPath(project.path) ||
     targetPath.startsWith(`${normalizeGitBookPath(project.path)}/`);
 
-  if (!isWithinProject) return null;
+  if (!isWithinProject || !findPageByPath([project], targetPath)) return null;
 
   const detail = await client.getPageByPath(targetPath);
   return mapDocumentPage(detail, project.path);
