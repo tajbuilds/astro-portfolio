@@ -33,20 +33,23 @@ The target implementation must not use an iframe and must not require manual dup
 
 ## 2. Desired Authoring Workflow
 
-The intended end state is:
+The intended end state is that ordinary portfolio content changes happen in GitBook without requiring an Astro code change.
 
 1. Create a new project as a direct child of the configured GitBook `Projects` root.
-2. Set its title, slug, description, icon and documentation hierarchy in GitBook.
-3. Merge the GitBook content into the private Portfolio CMS space.
-4. The project automatically appears on the Astro portfolio.
-5. Project pages and child documentation routes render natively on `tajs.io`.
-6. No Astro content file needs to be created manually for the project.
-7. No D1 sync operation is required.
-8. The same GitBook documentation remains maintainable through the GitBook integration.
+2. Set its title, slug, description, icon, project tags and documentation hierarchy in GitBook.
+3. Add the reserved `showcase` tag when the project should be eligible for homepage showcase placement.
+4. Merge the GitBook content into the private Portfolio CMS space.
+5. The project automatically appears on `/work`, its public tag filters, sitemap and project routes.
+6. Showcase projects automatically populate the homepage according to the website's presentation limit and GitBook sibling order.
+7. Project pages and child documentation routes render natively on `tajs.io`.
+8. No Astro project record, homepage slug list, tag registry or D1 content row needs to be created manually.
+9. No documentation sync operation is required.
+
+A website code change should only be needed for presentation or product behaviour changes, for example changing the homepage from two showcase cards to three. Changing which projects are showcased, adding a project, changing its title/description, changing its public tags or adding documentation sections must be CMS-only operations.
 
 ## 3. Source-of-Truth Model
 
-GitBook is the source of truth for:
+GitBook is the single source of truth for portfolio content and portfolio classification:
 
 - project existence
 - project title
@@ -54,20 +57,26 @@ GitBook is the source of truth for:
 - project description
 - project placement beneath the configured `Projects` root
 - project ordering from GitBook sibling order
+- project icon where supplied
+- project-root tags
+- homepage showcase eligibility
 - page hierarchy
-- page icon where supplied
-
-For the first implementation, hierarchy is deliberately the publication contract: a direct child of `Projects` is a portfolio project. Private authoring guidance, templates and drafts that must never be exposed by Astro live outside that tree.
-
-Extended card metadata such as role, year, categories, technologies, featured state and media may be added later when a stable first-class GitBook representation is proven. Astro must not invent a second manually maintained project record merely to supply those fields.
 - long-form documentation
-- documentation hierarchy
 - architecture documentation
 - Mermaid source
 - architecture decisions / ADRs
-- updated timestamps
+- updated timestamps when exposed reliably by the API
 
-Astro must not maintain a second copy of this information unless a value is purely presentational.
+The publication contract is hierarchy-based: a direct child of `Projects` is a public portfolio project. Private authoring guidance, templates and drafts that must never be exposed by Astro live outside that tree.
+
+Project-root tags have two roles:
+
+- the reserved tag `showcase` is an internal presentation control and is not displayed as a public project tag;
+- all other supported project-root tags are public portfolio taxonomy and drive card labels and `/work/tags/[tag]` filtering.
+
+Showcase ordering is deterministic. Astro applies the website presentation rule, such as showing at most two homepage projects, while the selected projects come from GitBook and retain GitBook sibling order. Project names or slugs must never be hard-coded into homepage selection logic.
+
+Astro must not maintain a second manually curated project registry, homepage project list, tag registry or documentation copy. Values that are purely presentational may remain in Astro.
 
 ## 4. Proposed GitBook Information Architecture
 
@@ -102,15 +111,15 @@ Portfolio
 
 A direct child of the configured `Projects` root is a portfolio project.
 
-The `Projects` hierarchy itself is the initial publication/discovery contract:
+The `Projects` hierarchy is the publication/discovery contract:
 
 - direct children are projects;
-- sibling order is display order;
-- title, slug/path, description and icon come from the GitBook page tree;
+- sibling order is display order and showcase precedence;
+- title, slug/path, description, icon and tags come from the GitBook page tree;
 - child pages form the project's architecture/documentation navigation;
 - content outside `Projects` is not exposed by project discovery.
 
-API testing showed that custom page variables and Markdown frontmatter tags are not reliably surfaced through the normal GitBook page-tree/Markdown API, so the first implementation does not depend on them.
+GitBook page tags are the project metadata mechanism for the first production model. The adapter owns reserved-tag interpretation so presentation controls such as `showcase` do not leak into public taxonomy. The implementation must use the API fields actually returned by GitBook rather than Markdown frontmatter or a second Astro-side metadata file.
 
 ## 5. Proposed Astro Routes
 
@@ -132,9 +141,11 @@ Examples:
 /work/jet2holidays/api-integration
 ```
 
-The current split between short project records under `/work` and long documentation under `/docs/case-studies` should only remain if testing demonstrates a real user or SEO benefit.
+The final public portfolio hierarchy is `/work`. The current split between short project records under `/work` and long documentation under `/docs/case-studies` is migration-only and should be removed after route cutover.
 
-Existing production URLs must not be removed without a redirect plan.
+Temporary `/work/cms-preview/*` routes remain `noindex` until the final public routes are ready.
+
+Existing production URLs must not be removed without permanent redirects. Legacy `/docs/case-studies/<project>/...` URLs should redirect to the equivalent `/work/<project>/...` route so bookmarks and search-engine signals are preserved.
 
 ## 6. Astro Responsibilities
 
@@ -184,11 +195,16 @@ Desired application-facing functions:
 
 ```ts
 getProjects()
+getShowcaseProjects(limit)
+getProjectTags()
+getProjectsByTag(tag)
 getProject(projectSlug)
 getProjectPages(projectSlug)
 getPage(projectSlug, pagePath)
 searchDocs(query)
 ```
+
+The normalized project model should expose public tags and derived showcase state so homepage, work listing, tag routes, sitemap, search and mobile/API consumers all use the same data contract.
 
 Astro pages/components should consume these functions rather than depending directly on GitBook API response shapes.
 
@@ -274,16 +290,20 @@ No browser-side GitBook credential exposure.
 
 The sitemap should be generated from the GitBook project/page hierarchy.
 
-Adding a new visible GitBook project or child page should therefore automatically affect:
+Adding or editing a visible GitBook project should therefore automatically affect:
 
+- homepage showcase when the reserved `showcase` tag is present
 - `/work` project listing
+- public project tags
+- `/work/tags/[tag]` filtering
 - project navigation
-- documentation routes
+- project/documentation routes
 - sitemap
 - search
+- mobile/API project payloads where applicable
 - related navigation where applicable
 
-No manual route registration should be required.
+No manual route registration, homepage slug list or tag registration should be required.
 
 ## 13. Existing Components to Preserve
 
@@ -305,8 +325,11 @@ The migration should primarily replace the data layer first.
 
 ## 14. Existing Components to Remove Eventually
 
-Only after the GitBook replacement is validated:
+Only after every consumer has migrated to the GitBook portfolio model:
 
+- temporary `/work/cms-preview/*` routes
+- migration-only GitBook project card components
+- legacy `/docs` reader routes after permanent redirects are active
 - D1 documentation binding
 - D1 `case_studies` dependency
 - D1 `documents` dependency
@@ -316,9 +339,10 @@ Only after the GitBook replacement is validated:
 - Outline-to-D1 sync worker dependency
 - manual sync workflow
 - obsolete D1 schema/migration documentation
-- duplicate project content under Astro, if fully replaced by GitBook
+- static `src/content/work` project content after homepage, work, tags, sitemap and mobile/API consumers no longer depend on it
+- Astro content-schema fields that exist only for the legacy work collection
 
-Removal happens late in the migration, not at the beginning.
+Removal happens late in the migration and only when repository search confirms there are no remaining consumers.
 
 ## 15. Migration Strategy
 
@@ -393,16 +417,36 @@ Validate:
 - previous/next
 - mobile layout
 
-### Phase 5 - Search and sitemap
+### Phase 5 - Portfolio metadata contract
 
-Replace/parallel-test:
+Promote project-root GitBook metadata into the normalized portfolio model.
 
-- D1 search with GitBook-backed search
-- D1 sitemap discovery with GitBook page-tree discovery
+Implement and validate:
 
-### Phase 6 - Route consolidation
+- public project tags from GitBook page tags
+- reserved `showcase` tag handling
+- deterministic showcase order from GitBook sibling order
+- exclusion of reserved tags from public taxonomy
+- unique project-tag discovery
+- project filtering by tag
+- request-local hierarchy reuse where it avoids redundant API calls
 
-If approved after testing, move toward:
+No homepage or tag route should contain hard-coded project names or slugs.
+
+### Phase 6 - Migrate portfolio discovery surfaces
+
+Move content-driven portfolio surfaces to the GitBook model:
+
+- homepage showcase
+- `/work` project listing
+- `/work/tags/[tag]`
+- reusable project-card inputs
+
+The homepage keeps its Astro-owned presentation limit, but project selection comes entirely from GitBook metadata.
+
+### Phase 7 - Route consolidation
+
+Promote GitBook-backed content to the final public route model:
 
 ```text
 /work
@@ -410,26 +454,56 @@ If approved after testing, move toward:
 /work/[project]/[...slug]
 ```
 
-Implement redirects from existing public documentation URLs before removing them.
+Remove migration-only UI distinctions between GitBook projects and legacy projects.
 
-### Phase 7 - Remove duplicate content model
+Temporary `/work/cms-preview/*` routes remain `noindex` until cutover and are removed after validation.
 
-Once GitBook-backed project discovery is proven, remove the need to create matching project content manually in Astro.
+### Phase 8 - Search and sitemap
 
-Creating a valid GitBook project should be sufficient for it to appear on the portfolio.
+Replace/parallel-test:
 
-### Phase 8 - Remove D1 and sync worker
+- D1 search with GitBook-backed search
+- static/D1 sitemap discovery with GitBook project/page/tag discovery
 
-Only after full functional validation:
+The sitemap must contain final public `/work` routes and must not publish temporary preview routes.
 
+### Phase 9 - Mobile/API migration
+
+Move mobile and other API consumers from the Astro work collection to the normalized GitBook project model.
+
+Validate payload compatibility and explicitly document any public contract changes before removing the legacy collection.
+
+### Phase 10 - Legacy route redirects
+
+Add permanent redirects from legacy documentation URLs to the final `/work` hierarchy.
+
+Examples:
+
+```text
+/docs/ -> /work/
+/docs/case-studies/<project>/ -> /work/<project>/
+/docs/case-studies/<project>/<page>/ -> /work/<project>/<page>/
+```
+
+Validate redirect status codes, nested paths and canonical metadata before deleting the legacy route implementation.
+
+### Phase 11 - Remove duplicate content model and D1 documentation path
+
+Only after all consumers use GitBook:
+
+- remove static `src/content/work` project records
+- remove obsolete work collection/schema dependencies
 - remove D1 docs reads
 - remove D1 docs search
 - remove D1 docs sitemap queries
 - remove D1 binding if it has no unrelated use
 - retire the Outline-to-D1 sync workflow
-- archive/delete obsolete code only after rollback risk is acceptable
+- remove legacy `/docs` implementation while preserving redirects
+- remove migration-only CMS preview code
 
-### Phase 9 - Production readiness
+Repository search must confirm that no runtime consumer still depends on removed sources.
+
+### Phase 12 - Production readiness and UI pass
 
 Run full validation:
 
@@ -441,8 +515,11 @@ Run full validation:
 - production build
 - route testing
 - redirects
-- mobile
+- homepage showcase behaviour
+- tag discovery/filtering
+- mobile/API payloads
 - dark/light themes
+- responsive/mobile
 - accessibility smoke test
 - SEO metadata
 - sitemap
@@ -451,6 +528,8 @@ Run full validation:
 - error/fallback behaviour
 - cold API requests
 - cached requests
+
+Complete the dedicated UI/UX polish after the content architecture and route model are stable.
 
 Only then mark the migration PR ready for review.
 
@@ -522,21 +601,25 @@ The final PR to `main` must not be merged simply because individual features wor
 
 Required final conditions:
 
-- GitBook is the confirmed source of truth.
+- GitBook is the confirmed source of truth for portfolio projects, classification and long-form content.
 - Creating a project in GitBook causes it to appear automatically in the portfolio.
-- No duplicate Astro project entry is required for the migrated content model.
+- Adding/removing the reserved `showcase` tag controls homepage eligibility without a code change.
+- Adding/removing a public project tag updates tag discovery and filtering without a code change.
+- No duplicate Astro project entry, homepage slug list or tag registry is required.
 - Documentation renders natively, not through iframe.
 - Project hierarchy works.
 - Mermaid works.
+- final `/work` routes are indexable and use correct canonical metadata.
 - search works.
-- sitemap works.
+- sitemap works and excludes temporary preview routes.
+- mobile/API consumers no longer depend on removed legacy project content.
 - cache behaviour works.
 - credentials remain server-side.
 - existing public links are preserved or redirected.
+- legacy D1/static portfolio sources have no remaining runtime consumers before removal.
 - all automated checks pass.
 - production build passes.
 - full manual acceptance testing is complete.
-- D1 removal has not broken unrelated functionality.
 - the migration has explicit final approval.
 
 ## 19. Rollback Principle
@@ -549,18 +632,18 @@ If a GitBook assumption proves unsuitable, the migration branch can be changed o
 
 After production migration, retain a documented rollback path for the first release.
 
-## 20. First Implementation Task
+## 20. Current Implementation Focus
 
-The first code change after this plan should be a narrow GitBook API spike, not D1 removal.
+The GitBook API spike, project discovery proof and shared documentation reader are complete on the migration path.
 
-It should prove:
+The next implementation slice is the portfolio metadata contract:
 
-1. server-side GitBook authentication,
-2. retrieval of the Projects hierarchy,
-3. retrieval of one representative project's Markdown/content,
-4. hierarchy and core page-field mapping,
-5. Mermaid source preservation,
-6. error handling,
-7. basic cache behaviour.
+1. map GitBook project-root tags into the normalized project summary;
+2. derive `showcase` from the reserved project tag;
+3. expose only non-reserved tags as public taxonomy;
+4. add adapter helpers for showcase selection, tag discovery and tag filtering;
+5. preserve deterministic GitBook sibling order;
+6. add focused unit tests;
+7. validate the adapter before migrating homepage or tag-route consumers.
 
-Only after that spike is successful should the broader migration begin.
+After that contract is proven, migrate homepage and `/work` discovery surfaces before removing any legacy data source.
