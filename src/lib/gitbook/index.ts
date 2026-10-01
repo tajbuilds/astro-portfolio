@@ -1,6 +1,12 @@
 import { createGitBookClientFromEnv } from './client.ts';
 import { getPortfolioPage, getPortfolioProjectPages } from './pages.ts';
-import { getPortfolioProject, listPortfolioProjects } from './projects.ts';
+import {
+  getPortfolioProject,
+  listPortfolioProjects,
+  listPortfolioProjectsByTag,
+  listPortfolioProjectTags,
+  listShowcasePortfolioProjects,
+} from './projects.ts';
 import type {
   GitBookClient,
   GitBookPortfolio,
@@ -15,6 +21,9 @@ export {
   GitBookContentError,
   getPortfolioProject,
   listPortfolioProjects,
+  listPortfolioProjectsByTag,
+  listPortfolioProjectTags,
+  listShowcasePortfolioProjects,
 } from './projects.ts';
 export {
   countDescendants,
@@ -25,6 +34,10 @@ export {
   mapProject,
   mapProjectSummary,
   normalizeGitBookPath,
+  normalizeGitBookProjectTags,
+  normalizeProjectTagKey,
+  isReservedProjectTag,
+  SHOWCASE_PROJECT_TAG,
 } from './mapper.ts';
 export type * from './types.ts';
 
@@ -45,6 +58,9 @@ export const createGitBookPortfolio = (
 
   return {
     getProjects: () => listPortfolioProjects(requestClient, options),
+    getShowcaseProjects: (limit) => listShowcasePortfolioProjects(requestClient, limit, options),
+    getProjectTags: () => listPortfolioProjectTags(requestClient, options),
+    getProjectsByTag: (tag) => listPortfolioProjectsByTag(requestClient, tag, options),
     getProject: (projectSlug) => getPortfolioProject(requestClient, projectSlug, options),
     getProjectPages: (projectSlug) => getPortfolioProjectPages(requestClient, projectSlug, options),
     getPage: (projectSlug, pagePath) =>

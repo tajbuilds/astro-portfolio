@@ -6,6 +6,7 @@ import {
   findPageByPath,
   mapProjectSummary,
   normalizeGitBookMarkdown,
+  normalizeGitBookProjectTags,
   normalizeGitBookPath,
 } from '../../src/lib/gitbook/mapper.ts';
 import { createGitBookPortfolio } from '../../src/lib/gitbook/index.ts';
@@ -24,6 +25,14 @@ const fixtureTree = {
           slug: 'edge-cache-api-proxy',
           path: 'projects/edge-cache-api-proxy',
           description: 'Architecture case study.',
+          tags: [
+            { tag: { kind: 'tag', tag: 'showcase' } },
+            { tag: { kind: 'tag', tag: 'cloudflare' } },
+            { tag: { kind: 'tag', tag: 'edge-architecture' } },
+            { tag: { kind: 'tag', tag: 'caching' } },
+            { tag: { kind: 'tag', tag: 'api-architecture' } },
+            'cloudflare',
+          ],
           pages: [
             {
               id: 'page-1',
@@ -34,6 +43,18 @@ const fixtureTree = {
               pages: [],
             },
           ],
+        },
+        {
+          id: 'project-2',
+          title: 'Jet2 Integration',
+          slug: 'jet2-integration',
+          path: 'projects/jet2-integration',
+          description: 'Integration case study.',
+          tags: [
+            { tag: { kind: 'tag', tag: 'integration' } },
+            { tag: { kind: 'tag', tag: 'api-architecture' } },
+          ],
+          pages: [],
         },
       ],
     },
@@ -51,6 +72,32 @@ test('finds nested pages and maps project order from hierarchy', () => {
   assert.equal(summary.slug, 'edge-cache-api-proxy');
   assert.equal(summary.order, 0);
   assert.equal(summary.sectionCount, 1);
+});
+
+test('maps project tags and keeps showcase as reserved metadata', () => {
+  const project = findPageByPath(fixtureTree.pages, 'projects/edge-cache-api-proxy');
+  assert.ok(project);
+
+  const summary = mapProjectSummary(project, 0);
+  assert.equal(summary.showcase, true);
+  assert.deepEqual(summary.tags, [
+    'cloudflare',
+    'edge-architecture',
+    'caching',
+    'api-architecture',
+  ]);
+});
+
+test('normalizes live GitBook page tags without duplicates', () => {
+  assert.deepEqual(
+    normalizeGitBookProjectTags([
+      { tag: { kind: 'tag', tag: 'cloudflare' } },
+      { tag: { kind: 'tag', tag: 'Cloudflare' } },
+      { tag: { kind: 'tag', tag: 'edge-architecture' } },
+      null,
+    ]),
+    ['cloudflare', 'edge-architecture'],
+  );
 });
 
 test('normalizes GitBook frontmatter and duplicate page heading', () => {
@@ -132,7 +179,27 @@ test('portfolio discovers only direct children of Projects and reads project/pag
 
   const portfolio = createGitBookPortfolio(client);
   const projects = await portfolio.getProjects();
-  assert.deepEqual(projects.map((project) => project.slug), ['edge-cache-api-proxy']);
+  assert.deepEqual(
+    projects.map((project) => project.slug),
+    ['edge-cache-api-proxy', 'jet2-integration'],
+  );
+
+  const showcase = await portfolio.getShowcaseProjects(2);
+  assert.deepEqual(showcase.map((project) => project.slug), ['edge-cache-api-proxy']);
+
+  assert.deepEqual(await portfolio.getProjectTags(), [
+    'api-architecture',
+    'caching',
+    'cloudflare',
+    'edge-architecture',
+    'integration',
+  ]);
+
+  const edgeProjects = await portfolio.getProjectsByTag('edge-architecture');
+  assert.deepEqual(edgeProjects.map((project) => project.slug), ['edge-cache-api-proxy']);
+
+  const integrationProjects = await portfolio.getProjectsByTag('integration');
+  assert.deepEqual(integrationProjects.map((project) => project.slug), ['jet2-integration']);
 
   const project = await portfolio.getProject('edge-cache-api-proxy');
   assert.equal(project?.markdown, '## Body');
