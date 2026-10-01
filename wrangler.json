@@ -19,5 +19,14 @@
 		"CONTACT_SUBJECT_PREFIX": "[tajs.io] Contact Form",
 		"PUBLIC_GA_MEASUREMENT_ID": "G-27X2LV520R",
 		"GITBOOK_SPACE_ID": "jGKRPrGvWyP45CoyEeoJ"
-	}
+	},
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "7e21fea5b71046eaa3b4acf69ebc0582"
+		},
+		{
+			"binding": "GITBOOK_CACHE"
+		}
+	]
 }
