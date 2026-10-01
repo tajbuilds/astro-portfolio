@@ -16,9 +16,11 @@ if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
 }
 
 const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
-const project = await portfolio.getProject(slug);
+const projects = await portfolio.getProjects();
+const project = projects.find((entry) => entry.slug.toLowerCase() === slug) ?? null;
+const navigation = project ? await portfolio.getProjectPages(slug) : null;
 
-if (!project) {
+if (!project || !navigation) {
 	return new Response('GitBook project not found.', { status: 404 });
 }
 ---
@@ -52,7 +54,7 @@ if (!project) {
 
 			<ol class="preview-sections">
 				{
-					project.navigation.map((page, index) => (
+					navigation.map((page, index) => (
 						<li class="surface-card surface-card--soft">
 							<span class="preview-sections__number">{String(index + 1).padStart(2, '0')}</span>
 							<div>
