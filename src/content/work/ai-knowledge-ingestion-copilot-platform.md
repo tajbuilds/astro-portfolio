@@ -7,7 +7,6 @@ tags:
   - Knowledge Engineering
 featured: false
 draft: false
-externalCaseStudyUrl: "/docs/case-studies/ai-knowledge-ingestion-copilot-enablement-platform/"
 ---
 
 ## TL;DR

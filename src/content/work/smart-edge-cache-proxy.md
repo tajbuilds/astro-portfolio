@@ -131,8 +131,3 @@ Validated system behaviour under different request patterns and failure scenario
 
 Iterated on the design based on observed performance and operational requirements.
 
-## Full Implementation Detail
-
-A deeper breakdown of implementation, configuration, and supporting components is available below.
-
-[Read Full Case Study →](/docs/case-studies/smart-edge-cache-proxy/)

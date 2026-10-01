@@ -3,6 +3,10 @@ import { env } from 'cloudflare:workers';
 
 import GitBookDocumentationReader from '../../../components/GitBookDocumentationReader.astro';
 import {
+	contentSlug,
+	getPublishedWorkEntries,
+} from '../../../lib/data/portfolio-data';
+import {
 	createGitBookPortfolioFromEnv,
 	type GitBookRuntimeEnv,
 	type PortfolioDocumentPage,
@@ -16,7 +20,19 @@ const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
 const pagePath = Astro.params.page?.trim() ?? '';
 const gitbookEnv = env as unknown as GitBookRuntimeEnv;
 
+const legacyRootRedirect = async () => {
+	const legacyWork = await getPublishedWorkEntries();
+	const exists = legacyWork.some(
+		(entry) => contentSlug(entry.id).toLowerCase() === slug,
+	);
+	return exists
+		? Astro.redirect(`/work/${encodeURIComponent(slug)}/`, 301)
+		: null;
+};
+
 if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	const legacyRedirect = await legacyRootRedirect();
+	if (legacyRedirect) return legacyRedirect;
 	return new Response('Portfolio content is not configured in this environment.', { status: 503 });
 }
 
@@ -34,12 +50,16 @@ try {
 	]);
 } catch (error) {
 	console.error(`GitBook page lookup failed for /work/${slug}/${pagePath}/.`, error);
+	const legacyRedirect = await legacyRootRedirect();
+	if (legacyRedirect) return legacyRedirect;
 	return new Response('Portfolio content is temporarily unavailable.', { status: 503 });
 }
 
 const project = projects.find((entry) => entry.slug.toLowerCase() === slug) ?? null;
 
 if (!project || !navigation || !page) {
+	const legacyRedirect = await legacyRootRedirect();
+	if (legacyRedirect) return legacyRedirect;
 	return new Response('Case study page not found.', { status: 404 });
 }
 

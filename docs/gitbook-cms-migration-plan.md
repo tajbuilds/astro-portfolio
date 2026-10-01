@@ -270,21 +270,11 @@ The cache is an optimisation, not a second content database.
 
 ## 11. Search
 
-Current D1-backed search should ultimately be replaced by the GitBook search/content API where suitable.
+The legacy D1 documentation search endpoint is not part of the target architecture.
 
-The public search UI remains controlled by Astro.
+The current public GitBook-backed Work reader has no active search UI, so the migration should remove the unused D1 search path rather than reproduce it solely for compatibility.
 
-Target flow:
-
-```text
-Search UI
-  -> Astro search endpoint
-  -> GitBook
-  -> normalised results
-  -> Astro UI
-```
-
-No browser-side GitBook credential exposure.
+If portfolio search is reintroduced later, it must use the GitBook adapter/search API behind an Astro server endpoint. GitBook credentials must remain server-side.
 
 ## 12. Sitemap and Discovery
 
@@ -299,7 +289,6 @@ Adding or editing a visible GitBook project should therefore automatically affec
 - project navigation
 - project/documentation routes
 - sitemap
-- search
 - mobile/API project payloads where applicable
 - related navigation where applicable
 
@@ -458,14 +447,23 @@ Remove migration-only UI distinctions between GitBook projects and legacy projec
 
 Temporary `/work/cms-preview/*` routes remain `noindex` until cutover and are removed after validation.
 
-### Phase 8 - Search and sitemap
+### Phase 8 - Sitemap, legacy docs redirects and D1 retirement
 
-Replace/parallel-test:
+Replace static/D1 sitemap discovery with GitBook project/page/tag discovery.
 
-- D1 search with GitBook-backed search
-- static/D1 sitemap discovery with GitBook project/page/tag discovery
+The sitemap must contain final public `/work` routes and must not publish temporary preview or legacy `/docs` routes.
 
-The sitemap must contain final public `/work` routes and must not publish temporary preview routes.
+Retire the old documentation runtime in the same cohesive cutover:
+
+- `/docs/` permanently redirects to `/work/`;
+- `/docs/case-studies/<project>/...` permanently redirects into the equivalent `/work/<project>/...` hierarchy;
+- remove D1 documentation reads;
+- remove the unused D1 documentation search endpoint and reader search UI;
+- remove D1 sitemap queries;
+- remove the Cloudflare `DB` binding once repository search confirms no unrelated consumer;
+- remove obsolete D1 schema/runtime documentation.
+
+Do not implement a replacement search service unless a public search requirement exists.
 
 ### Phase 9 - Mobile/API migration
 
@@ -473,35 +471,25 @@ Move mobile and other API consumers from the Astro work collection to the normal
 
 Validate payload compatibility and explicitly document any public contract changes before removing the legacy collection.
 
-### Phase 10 - Legacy route redirects
+### Phase 10 - Remove the remaining legacy Work content model
 
-Add permanent redirects from legacy documentation URLs to the final `/work` hierarchy.
+After mobile/API consumers use GitBook:
 
-Examples:
+- remove static `src/content/work` project records;
+- remove obsolete work collection/schema dependencies;
+- remove Decap content-authoring configuration if it has no remaining purpose;
+- remove legacy static Work fallback logic;
+- remove migration-only CMS preview redirect routes once external compatibility no longer requires them.
 
-```text
-/docs/ -> /work/
-/docs/case-studies/<project>/ -> /work/<project>/
-/docs/case-studies/<project>/<page>/ -> /work/<project>/<page>/
-```
-
-Validate redirect status codes, nested paths and canonical metadata before deleting the legacy route implementation.
-
-### Phase 11 - Remove duplicate content model and D1 documentation path
-
-Only after all consumers use GitBook:
-
-- remove static `src/content/work` project records
-- remove obsolete work collection/schema dependencies
-- remove D1 docs reads
-- remove D1 docs search
-- remove D1 docs sitemap queries
-- remove D1 binding if it has no unrelated use
-- retire the Outline-to-D1 sync workflow
-- remove legacy `/docs` implementation while preserving redirects
-- remove migration-only CMS preview code
+The previous Outline-to-D1 documentation pipeline is already retired by Phase 8 and must not be retained as a fallback content architecture.
 
 Repository search must confirm that no runtime consumer still depends on removed sources.
+
+### Phase 11 - Repository and deployment cleanup
+
+Remove stale migration/runtime artifacts that describe systems no longer deployed, while preserving useful historical architecture records only when explicitly labelled as historical.
+
+Confirm Cloudflare configuration contains only active bindings and that the README describes GitBook as the portfolio content source of truth.
 
 ### Phase 12 - Production readiness and UI pass
 
@@ -523,7 +511,7 @@ Run full validation:
 - accessibility smoke test
 - SEO metadata
 - sitemap
-- search
+- sitemap discovery
 - caching
 - error/fallback behaviour
 - cold API requests
@@ -553,9 +541,9 @@ integration/gitbook-cms-migration
   +-- feat/gitbook-client
   +-- feat/gitbook-project-discovery
   +-- feat/gitbook-doc-renderer
-  +-- feat/gitbook-search
   +-- feat/gitbook-routing
-  +-- chore/remove-d1-docs
+  +-- refactor/retire-d1-docs
+  +-- feat/gitbook-mobile-api
 ```
 
 Feature PRs target:
@@ -610,8 +598,8 @@ Required final conditions:
 - Project hierarchy works.
 - Mermaid works.
 - final `/work` routes are indexable and use correct canonical metadata.
-- search works.
-- sitemap works and excludes temporary preview routes.
+- sitemap works and excludes temporary preview and legacy docs routes.
+- no retired D1 docs/search runtime remains.
 - mobile/API consumers no longer depend on removed legacy project content.
 - cache behaviour works.
 - credentials remain server-side.
@@ -634,16 +622,15 @@ After production migration, retain a documented rollback path for the first rele
 
 ## 20. Current Implementation Focus
 
-The GitBook API spike, project discovery proof and shared documentation reader are complete on the migration path.
+The GitBook adapter, shared reader, project metadata contract, CMS-driven homepage/Work/tag discovery and public `/work/<project>/...` routes are implemented on the migration stack.
 
-The next implementation slice is the portfolio metadata contract:
+The current implementation slice retires the legacy documentation runtime:
 
-1. map GitBook project-root tags into the normalized project summary;
-2. derive `showcase` from the reserved project tag;
-3. expose only non-reserved tags as public taxonomy;
-4. add adapter helpers for showcase selection, tag discovery and tag filtering;
-5. preserve deterministic GitBook sibling order;
-6. add focused unit tests;
-7. validate the adapter before migrating homepage or tag-route consumers.
+1. generate the sitemap from GitBook projects, pages and tags;
+2. convert `/docs` into permanent redirects only;
+3. remove D1 documentation reads/search/sitemap access;
+4. remove the Cloudflare `DB` binding;
+5. remove unused D1 search UI and obsolete D1 schema/runtime documentation;
+6. preserve temporary legacy static Work fallbacks until mobile/API migration is complete.
 
-After that contract is proven, migrate homepage and `/work` discovery surfaces before removing any legacy data source.
+After this cutover, the next active slice is mobile/API migration to the normalized GitBook project model. Once those consumers are migrated, remove `src/content/work`, Decap authoring remnants and static Work fallback logic.
