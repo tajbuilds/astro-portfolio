@@ -107,4 +107,7 @@ test('portfolio discovers only direct children of Projects and reads project/pag
   const page = await portfolio.getPage('edge-cache-api-proxy', 'target-architecture');
   assert.equal(page?.relativePath, 'target-architecture');
   assert.equal(page?.markdown, '# Target Architecture');
+
+  const missing = await portfolio.getPage('edge-cache-api-proxy', 'does-not-exist');
+  assert.equal(missing, null);
 });
