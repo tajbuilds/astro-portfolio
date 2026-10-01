@@ -8,7 +8,7 @@ import type {
 } from './types.ts';
 
 export const normalizeGitBookPath = (value: string | null | undefined) =>
-  (value ?? '').trim().replace(/^\\/+|\\/+$/g, '');
+  (value ?? '').trim().replace(/^\/+|\/+$/g, '');
 
 export const joinGitBookPath = (...parts: Array<string | null | undefined>) =>
   parts.map(normalizeGitBookPath).filter(Boolean).join('/');
