@@ -19,6 +19,7 @@ GitBook is the single source of truth for portfolio content.
 
 ```text
 GitBook
+  -> GitBook KV cache
   -> src/lib/gitbook/*
   -> Astro / Cloudflare Worker
   -> /work/<project>/...
@@ -32,6 +33,18 @@ Project-root tags drive portfolio behaviour:
 - all other project-root tags are public taxonomy used by Work filters and tag routes.
 
 Adding, removing, renaming or reclassifying a portfolio project should not require a code change.
+
+### GitBook cache
+
+Production GitBook reads are cached in a dedicated Cloudflare Workers KV binding named `GITBOOK_CACHE`.
+
+- project/page hierarchy: fresh for 5 minutes;
+- page Markdown: fresh for 15 minutes;
+- cached values are retained for up to 24 hours so transient GitBook `429`, network, or `5xx` failures can fall back to the last known content;
+- authentication and other non-transient GitBook errors are not hidden by stale cache;
+- when the cache binding is unavailable, the adapter safely falls back to direct GitBook reads.
+
+The Astro Cloudflare adapter's `SESSION` KV remains separate from CMS caching.
 
 ## Public Routes
 
@@ -100,7 +113,9 @@ Runtime secrets configured outside the repository:
 - `RESEND_API_KEY`
 - `TURNSTILE_SITE_SECRET`
 
-Public runtime variables are defined in `wrangler.json`.
+Public runtime variables and KV bindings are defined in `wrangler.json`.
+
+The existing `SESSION` KV namespace is explicitly bound for Astro session storage. `GITBOOK_CACHE` is declared separately; Wrangler can provision that namespace automatically on deployment when it does not yet have an ID.
 
 ## Mobile API
 
