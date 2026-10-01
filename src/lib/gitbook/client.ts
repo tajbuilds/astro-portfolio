@@ -71,6 +71,21 @@ export const createGitBookClient = (options: GitBookClientOptions): GitBookClien
   return {
     spaceId,
     listPages: () => request<GitBookPagesResponse>(`/spaces/${encodeURIComponent(spaceId)}/content/pages`),
+    getPageById: (pageId: string) => {
+      const cleanPageId = pageId.trim();
+      if (!cleanPageId) throw new Error('GitBook page ID cannot be empty.');
+
+      const params = new URLSearchParams({
+        format: 'markdown',
+        metadata: 'true',
+        'format.markdown.refs': 'relative',
+      });
+
+      return request<GitBookPage>(
+        `/spaces/${encodeURIComponent(spaceId)}/content/page/${encodeURIComponent(cleanPageId)}`,
+        params,
+      );
+    },
     getPageByPath: (pagePath: string) => {
       const encodedPath = encodeContentPath(pagePath);
       if (!encodedPath) throw new Error('GitBook page path cannot be empty.');
