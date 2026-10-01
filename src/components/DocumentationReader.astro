@@ -221,8 +221,7 @@ toggle.addEventListener('click', () => {
 setOpen(toggle.getAttribute('aria-expanded') !== 'true');
 });
 
-const current = nav.querySelector('[aria-current="page"]');
-if (current && window.matchMedia('(max-width: 860px)').matches) {
+if (window.matchMedia('(max-width: 860px)').matches) {
 setOpen(false);
 }
 })();
@@ -1133,7 +1132,8 @@ top: auto;
 }
 .docs-sidebar__inner { padding: 0.85rem; }
 .docs-mobile-nav-toggle { display: flex; }
-.docs-sidebar__nav { display: none; }
+.docs-sidebar__nav { display: block; }
+.docs-sidebar[data-mobile-open='false'] .docs-sidebar__nav { display: none; }
 .docs-sidebar[data-mobile-open='true'] .docs-sidebar__nav { display: block; }
 .docs-article { padding: 1rem; }
 }
