@@ -16,3 +16,14 @@ interface Env {
   GITBOOK_SPACE_ID?: string;
   GITBOOK_PROJECTS_PATH?: string;
 }
+
+// Cloudflare secrets are set via `wrangler secret` / `.dev.vars` and are
+// intentionally absent from wrangler.json, so they are declared here to
+// augment the generated Cloudflare.Env type.
+declare namespace Cloudflare {
+  interface Env {
+    RESEND_API_KEY: string;
+    TURNSTILE_SITE_SECRET: string;
+    GITBOOK_TOKEN?: string;
+  }
+}

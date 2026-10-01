@@ -6,7 +6,7 @@ import {
 	type PortfolioNavigationNode,
 	type PortfolioProject,
 	type PortfolioProjectSummary,
-} from './gitbook';
+} from './gitbook/index.ts';
 
 export const MOBILE_API_VERSION = '2.0';
 export const MOBILE_READ_CACHE =
