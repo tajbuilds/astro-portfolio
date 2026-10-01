@@ -1,0 +1,392 @@
+---
+import { env } from 'cloudflare:workers';
+import { marked } from 'marked';
+
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import Container from '../../../../components/Container.astro';
+import { createGitBookPortfolioFromEnv } from '../../../../lib/gitbook';
+import type {
+	GitBookRuntimeEnv,
+	PortfolioNavigationNode,
+} from '../../../../lib/gitbook';
+
+export const prerender = false;
+
+const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
+const pagePath = Astro.params.page?.trim() ?? '';
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+
+if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	return new Response('GitBook preview is not configured in this environment.', { status: 503 });
+}
+
+const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+const project = await portfolio.getProject(slug);
+const navigation = await portfolio.getProjectPages(slug);
+const page = await portfolio.getPage(slug, pagePath);
+
+if (!project || !navigation || !page) {
+	return new Response('GitBook project page not found.', { status: 404 });
+}
+
+type FlatNavigationNode = PortfolioNavigationNode & { depth: number };
+
+const flattenNavigation = (
+	nodes: PortfolioNavigationNode[],
+	depth = 0,
+): FlatNavigationNode[] =>
+	nodes.flatMap((node) => [
+		{ ...node, depth },
+		...flattenNavigation(node.children, depth + 1),
+	]);
+
+const flatNavigation = flattenNavigation(navigation);
+const currentIndex = flatNavigation.findIndex(
+	(node) => node.relativePath === page.relativePath,
+);
+const previousPage = currentIndex > 0 ? flatNavigation[currentIndex - 1] : null;
+const nextPage =
+	currentIndex >= 0 && currentIndex < flatNavigation.length - 1
+		? flatNavigation[currentIndex + 1]
+		: null;
+
+const pageHref = (relativePath: string) =>
+	`/work/cms-preview/${project.slug}/${relativePath
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/')}/`;
+
+const bodyHtml = await marked.parse(page.markdown || '');
+---
+
+<MainLayout
+	title={`${page.title} | ${project.title} | CMS Preview`}
+	description={page.description || project.description}
+	noindex={true}
+	type="article"
+	width="full"
+>
+	<Container size="wide">
+		<a class="reader-back" href={`/work/cms-preview/${project.slug}/`}>
+			&lt;- Back to case study structure
+		</a>
+
+		<div class="reader-shell">
+			<aside class="reader-nav surface-card surface-card--soft">
+				<p class="reader-nav__eyebrow">GitBook CMS</p>
+				<h2>{project.title}</h2>
+				<nav aria-label="Case study sections">
+					<ul>
+						{
+							flatNavigation.map((item) => (
+								<li style={`--nav-depth: ${item.depth}`}>
+									<a
+										href={pageHref(item.relativePath)}
+										aria-current={item.relativePath === page.relativePath ? 'page' : undefined}
+									>
+										{item.title}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</nav>
+			</aside>
+
+			<article class="reader-article surface-card surface-card--standard">
+				<header class="reader-hero">
+					<p class="reader-kicker">GitBook CMS Preview</p>
+					<h1>{page.title}</h1>
+					{page.description && <p>{page.description}</p>}
+				</header>
+
+				<div class="reader-prose" data-gitbook-content>
+					<Fragment set:html={bodyHtml} />
+				</div>
+
+				{
+					(previousPage || nextPage) && (
+						<nav class="reader-pager" aria-label="Section navigation">
+							{previousPage ? (
+								<a href={pageHref(previousPage.relativePath)}>
+									<span>Previous</span>
+									<strong>{previousPage.title}</strong>
+								</a>
+							) : (
+								<span />
+							)}
+							{nextPage ? (
+								<a class="reader-pager__next" href={pageHref(nextPage.relativePath)}>
+									<span>Next</span>
+									<strong>{nextPage.title}</strong>
+								</a>
+							) : (
+								<span />
+							)}
+						</nav>
+					)
+				}
+			</article>
+		</div>
+	</Container>
+</MainLayout>
+
+<script type="module" src="/scripts/starlight-mermaid.js"></script>
+
+<style>
+	.reader-back {
+		display: inline-flex;
+		margin-bottom: var(--space-5);
+		font-size: var(--font-size-sm);
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.reader-shell {
+		display: grid;
+		grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr);
+		gap: var(--space-5);
+		align-items: start;
+	}
+
+	.reader-nav {
+		position: sticky;
+		top: 1rem;
+		max-height: calc(100vh - 2rem);
+		overflow-y: auto;
+		padding: 1rem;
+	}
+
+	.reader-nav__eyebrow,
+	.reader-kicker {
+		margin: 0 0 var(--space-2);
+		color: var(--color-accent);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.reader-nav h2 {
+		margin: 0 0 var(--space-4);
+		font-size: 1rem;
+		line-height: 1.35;
+	}
+
+	.reader-nav ul {
+		display: grid;
+		gap: 0.2rem;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	.reader-nav li {
+		padding-left: calc(var(--nav-depth) * 0.7rem);
+	}
+
+	.reader-nav a {
+		display: block;
+		padding: 0.42rem 0.55rem;
+		border-radius: var(--radius-sm);
+		color: var(--color-text-muted);
+		font-size: 0.86rem;
+		line-height: 1.35;
+		text-decoration: none;
+	}
+
+	.reader-nav a:hover {
+		color: var(--color-text);
+		background: color-mix(in srgb, var(--color-border) 45%, transparent);
+	}
+
+	.reader-nav a[aria-current='page'] {
+		color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		font-weight: 700;
+	}
+
+	.reader-article {
+		min-width: 0;
+		padding: clamp(1.1rem, 2vw, 1.75rem);
+	}
+
+	.reader-hero {
+		margin-bottom: clamp(1.5rem, 3vw, 2.2rem);
+		padding-bottom: var(--space-5);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.reader-hero h1 {
+		margin: 0;
+		font-size: clamp(2rem, 1.45rem + 2vw, 3.25rem);
+		line-height: 1.08;
+	}
+
+	.reader-hero > p:last-child {
+		max-width: 68ch;
+		margin: var(--space-3) 0 0;
+		color: var(--color-text-muted);
+		font-size: var(--font-size-body-lg);
+	}
+
+	.reader-prose {
+		font-size: var(--font-size-ui);
+		line-height: 1.75;
+	}
+
+	.reader-prose :global(* + *) {
+		margin-top: 1rem;
+	}
+
+	.reader-prose :global(h1),
+	.reader-prose :global(h2),
+	.reader-prose :global(h3),
+	.reader-prose :global(h4) {
+		scroll-margin-top: 5rem;
+		color: var(--color-text);
+		line-height: 1.3;
+	}
+
+	.reader-prose :global(h1) {
+		font-size: 1.65rem;
+	}
+
+	.reader-prose :global(h2) {
+		margin-top: 2rem;
+		padding-bottom: 0.35rem;
+		border-bottom: 1px solid var(--color-border);
+		font-size: 1.4rem;
+	}
+
+	.reader-prose :global(h3) {
+		margin-top: 1.6rem;
+		font-size: 1.15rem;
+	}
+
+	.reader-prose :global(p),
+	.reader-prose :global(li) {
+		color: var(--color-text-muted);
+	}
+
+	.reader-prose :global(strong) {
+		color: var(--color-text);
+	}
+
+	.reader-prose :global(ul),
+	.reader-prose :global(ol) {
+		padding-left: 1.4rem;
+	}
+
+	.reader-prose :global(pre) {
+		overflow-x: auto;
+		padding: 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--docs-code-bg);
+	}
+
+	.reader-prose :global(code) {
+		font-size: 0.9em;
+	}
+
+	.reader-prose :global(:not(pre) > code) {
+		padding: 0.12rem 0.3rem;
+		border: 1px solid var(--docs-inline-code-border);
+		border-radius: var(--radius-sm);
+		background: var(--docs-inline-code-bg);
+	}
+
+	.reader-prose :global(blockquote) {
+		margin-inline: 0;
+		padding: 0.8rem 1rem;
+		border-left: 3px solid var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+	}
+
+	.reader-prose :global(table) {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		border-collapse: collapse;
+	}
+
+	.reader-prose :global(th),
+	.reader-prose :global(td) {
+		padding: 0.55rem 0.7rem;
+		border: 1px solid var(--color-border);
+		text-align: left;
+		vertical-align: top;
+	}
+
+	.reader-prose :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--radius-sm);
+	}
+
+	.reader-prose :global(.mermaid) {
+		overflow-x: auto;
+		padding: var(--space-3);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--diagram-bg);
+	}
+
+	.reader-pager {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-3);
+		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.reader-pager a {
+		display: grid;
+		gap: 0.2rem;
+		padding: 0.85rem 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.reader-pager a:hover {
+		border-color: var(--color-accent);
+	}
+
+	.reader-pager span {
+		color: var(--color-text-muted);
+		font-size: var(--font-size-xs);
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	.reader-pager strong {
+		font-size: var(--font-size-ui);
+	}
+
+	.reader-pager__next {
+		text-align: right;
+	}
+
+	@media (max-width: 900px) {
+		.reader-shell {
+			grid-template-columns: 1fr;
+		}
+
+		.reader-nav {
+			position: relative;
+			top: auto;
+			max-height: none;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.reader-pager {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
