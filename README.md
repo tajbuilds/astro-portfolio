@@ -1,6 +1,6 @@
-# Taj | Solutions Architect Portfolio
+# Taj | Solution & Integration Architect Portfolio
 
-Architecture-first portfolio built with Astro and deployed on Cloudflare Workers.
+Architecture-first portfolio presenting solution and integration architecture through GitBook-backed case studies, built with Astro and deployed on Cloudflare Workers.
 
 This repository powers https://tajs.io and renders portfolio projects and long-form case studies from a private GitBook CMS.
 
