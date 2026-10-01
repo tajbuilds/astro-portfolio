@@ -19,4 +19,7 @@ interface Env {
   GISCUS_CATEGORY?: string;
   GISCUS_CATEGORY_ID?: string;
   GISCUS_LANG?: string;
+  GITBOOK_TOKEN?: string;
+  GITBOOK_SPACE_ID?: string;
+  GITBOOK_PROJECTS_PATH?: string;
 }
