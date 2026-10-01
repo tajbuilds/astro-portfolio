@@ -21,9 +21,10 @@ if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
 }
 
 const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
-const project = await portfolio.getProject(slug);
-const navigation = await portfolio.getProjectPages(slug);
-const page = await portfolio.getPage(slug, pagePath);
+const projects = await portfolio.getProjects();
+const project = projects.find((entry) => entry.slug.toLowerCase() === slug) ?? null;
+const navigation = project ? await portfolio.getProjectPages(slug) : null;
+const page = project ? await portfolio.getPage(slug, pagePath) : null;
 
 if (!project || !navigation || !page) {
 	return new Response('GitBook project page not found.', { status: 404 });
