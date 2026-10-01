@@ -13,6 +13,32 @@ export const normalizeGitBookPath = (value: string | null | undefined) =>
 export const joinGitBookPath = (...parts: Array<string | null | undefined>) =>
   parts.map(normalizeGitBookPath).filter(Boolean).join('/');
 
+export const normalizeGitBookMarkdown = (
+  markdown: string | null | undefined,
+  pageTitle?: string | null,
+) => {
+  let content = (markdown ?? '').replace(/^\uFEFF/, '');
+
+  if (content.startsWith('---')) {
+    content = content.replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, '');
+  }
+
+  content = content.replace(/^\s+/, '');
+
+  const title = pageTitle?.trim();
+  if (title) {
+    const lines = content.split(/\r?\n/);
+    const firstLine = lines[0]?.trim() ?? '';
+    if (firstLine.toLocaleLowerCase() === `# ${title}`.toLocaleLowerCase()) {
+      lines.shift();
+      while (lines[0]?.trim() === '') lines.shift();
+      content = lines.join('\n');
+    }
+  }
+
+  return content.trimEnd();
+};
+
 export const findPageByPath = (
   pages: GitBookPageTreeNode[],
   targetPath: string,
@@ -76,7 +102,7 @@ export const mapProject = (
   order: number,
 ): PortfolioProject => ({
   ...mapProjectSummary(treePage, order),
-  markdown: detailPage.markdown ?? '',
+  markdown: normalizeGitBookMarkdown(detailPage.markdown, detailPage.title),
   navigation: (treePage.pages ?? []).map((page) => mapNavigationNode(page, treePage.path)),
 });
 
@@ -93,7 +119,7 @@ export const mapDocumentPage = (
     relativePath: nav.relativePath,
     description: nav.description,
     ...(nav.icon ? { icon: nav.icon } : {}),
-    markdown: page.markdown ?? '',
+    markdown: normalizeGitBookMarkdown(page.markdown, page.title),
     children: nav.children,
   };
 };

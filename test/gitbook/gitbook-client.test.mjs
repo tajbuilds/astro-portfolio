@@ -5,6 +5,7 @@ import { createGitBookClient } from '../../src/lib/gitbook/client.ts';
 import {
   findPageByPath,
   mapProjectSummary,
+  normalizeGitBookMarkdown,
   normalizeGitBookPath,
 } from '../../src/lib/gitbook/mapper.ts';
 import { createGitBookPortfolio } from '../../src/lib/gitbook/index.ts';
@@ -52,6 +53,25 @@ test('finds nested pages and maps project order from hierarchy', () => {
   assert.equal(summary.sectionCount, 1);
 });
 
+test('normalizes GitBook frontmatter and duplicate page heading', () => {
+  const markdown = [
+    '---',
+    'description: Target state.',
+    '---',
+    '',
+    '# Target Architecture',
+    '',
+    '## Design',
+    '',
+    'Body.',
+  ].join('\n');
+
+  assert.equal(
+    normalizeGitBookMarkdown(markdown, 'Target Architecture'),
+    ['## Design', '', 'Body.'].join('\n'),
+  );
+});
+
 test('GitBook client keeps credentials server-side and requests Markdown', async () => {
   let seenUrl = '';
   let seenAuth = '';
@@ -85,9 +105,11 @@ test('GitBook client keeps credentials server-side and requests Markdown', async
 });
 
 test('portfolio discovers only direct children of Projects and reads project/page Markdown', async () => {
+  let listPagesCalls = 0;
   const client = {
     spaceId: 'space-id',
     async listPages() {
+      listPagesCalls += 1;
       return fixtureTree;
     },
     async getPageById(pageId) {
@@ -101,12 +123,10 @@ test('portfolio discovers only direct children of Projects and reads project/pag
       };
       const page = findById(fixtureTree.pages);
       if (!page) throw new Error(`missing fixture page: ${pageId}`);
-      return { ...page, markdown: `# ${page.title}` };
-    },
-    async getPageByPath(path) {
-      const page = findPageByPath(fixtureTree.pages, path);
-      if (!page) throw new Error(`missing fixture page: ${path}`);
-      return { ...page, markdown: `# ${page.title}` };
+      return {
+        ...page,
+        markdown: ['---', `description: ${page.description ?? ''}`, '---', '', `# ${page.title}`, '', '## Body'].join('\n'),
+      };
     },
   };
 
@@ -115,13 +135,14 @@ test('portfolio discovers only direct children of Projects and reads project/pag
   assert.deepEqual(projects.map((project) => project.slug), ['edge-cache-api-proxy']);
 
   const project = await portfolio.getProject('edge-cache-api-proxy');
-  assert.equal(project?.markdown, '# Edge Cache & API Proxy');
+  assert.equal(project?.markdown, '## Body');
   assert.equal(project?.navigation[0]?.relativePath, 'target-architecture');
 
   const page = await portfolio.getPage('edge-cache-api-proxy', 'target-architecture');
   assert.equal(page?.relativePath, 'target-architecture');
-  assert.equal(page?.markdown, '# Target Architecture');
+  assert.equal(page?.markdown, '## Body');
 
   const missing = await portfolio.getPage('edge-cache-api-proxy', 'does-not-exist');
   assert.equal(missing, null);
+  assert.equal(listPagesCalls, 1);
 });

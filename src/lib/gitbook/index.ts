@@ -31,12 +31,26 @@ export type * from './types.ts';
 export const createGitBookPortfolio = (
   client: GitBookClient,
   options: GitBookPortfolioOptions = {},
-): GitBookPortfolio => ({
-  getProjects: () => listPortfolioProjects(client, options),
-  getProject: (projectSlug) => getPortfolioProject(client, projectSlug, options),
-  getProjectPages: (projectSlug) => getPortfolioProjectPages(client, projectSlug, options),
-  getPage: (projectSlug, pagePath) => getPortfolioPage(client, projectSlug, pagePath, options),
-});
+): GitBookPortfolio => {
+  let pageTreeRequest: ReturnType<GitBookClient['listPages']> | null = null;
+
+  const requestClient: GitBookClient = {
+    spaceId: client.spaceId,
+    listPages: () => {
+      pageTreeRequest ??= client.listPages();
+      return pageTreeRequest;
+    },
+    getPageById: (pageId) => client.getPageById(pageId),
+  };
+
+  return {
+    getProjects: () => listPortfolioProjects(requestClient, options),
+    getProject: (projectSlug) => getPortfolioProject(requestClient, projectSlug, options),
+    getProjectPages: (projectSlug) => getPortfolioProjectPages(requestClient, projectSlug, options),
+    getPage: (projectSlug, pagePath) =>
+      getPortfolioPage(requestClient, projectSlug, pagePath, options),
+  };
+};
 
 export const createGitBookPortfolioFromEnv = (
   env: GitBookRuntimeEnv,

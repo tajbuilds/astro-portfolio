@@ -50,6 +50,6 @@ export const getPortfolioProject = async (
   if (projectIndex < 0) return null;
 
   const projectTree = root.pages![projectIndex];
-  const detailPage = await client.getPageByPath(projectTree.path);
+  const detailPage = await client.getPageById(projectTree.id);
   return mapProject(projectTree, detailPage, projectIndex);
 };
