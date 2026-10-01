@@ -35,7 +35,7 @@ const {
 	backLabel,
 	kicker = 'Architecture Case Study',
 	noindex = false,
-	sourceLabel = 'Project documentation',
+	sourceLabel = 'Architecture dossier',
 	titleSuffix = 'Tajinder Singh',
 } = Astro.props;
 
@@ -111,7 +111,7 @@ const description =
 const summary =
 	currentPage?.description ||
 	project.description ||
-	'Architecture notes, implementation decisions and delivery context for this case study.';
+	'Architecture context, viewpoints, decisions, trade-offs, transition and validation for this case study.';
 const markdown = currentPage?.markdown ?? rootMarkdown;
 const depthLabel = currentPage
 	? currentNavigation
