@@ -52,17 +52,17 @@ const tagLabel = formatProjectTagLabel(canonicalTag);
 
 <MainLayout
 	title={`${tagLabel} | Work | Tajinder Singh`}
-	description={`Architecture case studies tagged ${tagLabel}, covering related systems, delivery patterns, and implementation decisions.`}
-	keywords={[tagLabel, 'Work', 'Case Study', 'Solutions Architect']}
+	description={`Architecture case studies tagged ${tagLabel}, covering system context, design decisions, target architecture and validation.`}
+	keywords={[tagLabel, 'Architecture Portfolio', 'Case Study', 'Solution Architect', 'Integration Architect']}
 	width="full"
 >
 	<Container size="wide">
 		<SectionHeading
-			eyebrow="Filtered"
-			title={`Work tagged: ${tagLabel}`}
-			description="Focused case studies within this domain."
+			eyebrow="Architecture Portfolio"
+			title={`Case studies: ${tagLabel}`}
+			description="Architecture case studies connected to this domain, technology or material system concern."
 		/>
-		<p class="tag-back"><PillTag label="<- Back to all work" href="/work/" /></p>
+		<p class="tag-back"><PillTag label="← Back to all work" href="/work/" /></p>
 		<ul class="work-grid">
 			{filtered.map((project) => (
 				<li>
@@ -70,6 +70,7 @@ const tagLabel = formatProjectTagLabel(canonicalTag);
 						title={project.title}
 						description={project.description}
 						tags={project.tags.map(formatProjectTagLabel)}
+						sectionCount={project.sectionCount}
 						href={`/work/${project.slug}/`}
 					/>
 				</li>

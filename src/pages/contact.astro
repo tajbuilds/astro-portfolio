@@ -10,10 +10,10 @@ export const prerender = false;
 const turnstileSiteKey = TURNSTILE_SITE_KEY;
 
 const conversationAreas = [
-	'Platform rebuilds and modernization work',
-	'Verification and intake architecture',
-	'Automation-heavy workflows and service handoffs',
-	'Search, retrieval, or data movement design',
+	'Architecture roles and team opportunities',
+	'Solution or integration design challenges',
+	'Platform modernisation and system-boundary work',
+	'Search, information, automation or AI-enabled architecture',
 ];
 
 const directLinks = [
@@ -40,26 +40,26 @@ const directLinks = [
 ];
 ---
 
-<MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh for architecture and automation projects.">
+<MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh about architecture roles, collaboration and solution or integration design.">
 	<Container size="wide">
 		<section class="contact-hero">
 			<div class="contact-hero__copy">
-				<p class="contact-hero__kicker" data-reveal="soft">Contact · Architecture Conversations</p>
-				<h1 data-reveal="soft">Planning a platform rebuild, designing a better intake path, or trying to remove friction from a system that has grown harder to operate?</h1>
+				<p class="contact-hero__kicker" data-reveal="soft">Contact · Architecture & Collaboration</p>
+				<h1 data-reveal="soft">Architecture roles, collaboration, or a system problem worth discussing?</h1>
 				<p class="contact-hero__support" data-reveal="soft">
-					I am open to conversations where the problem is architectural, operational, or system-level rather
-					than purely cosmetic. That usually means entry-point control, automation workflows, search systems,
-					service integration, or a delivery path that needs clearer structure.
+					I am open to architecture roles, professional collaboration and conversations where a system needs
+					clearer boundaries, integration responsibilities, information flows, transition planning or
+					operational structure.
 				</p>
 				<div class="contact-hero__actions" data-reveal="soft">
-					<ButtonLink href="/work">See Relevant Work</ButtonLink>
+					<ButtonLink href="/work">Explore Architecture Work</ButtonLink>
 					<ButtonLink href="mailto:contact@tajs.io" variant="secondary">Email Directly</ButtonLink>
 				</div>
 			</div>
 
 			<aside class="contact-hero__aside" data-reveal="right">
 				<div class="contact-summary surface-card surface-card--soft">
-					<p class="contact-summary__label">Good fit for</p>
+					<p class="contact-summary__label">Open to</p>
 					<ul>
 						{conversationAreas.map((item) => <li>{item}</li>)}
 					</ul>
@@ -67,8 +67,8 @@ const directLinks = [
 				<div class="contact-summary contact-summary--quiet surface-card surface-card--soft">
 					<p class="contact-summary__label">What helps</p>
 					<p>
-						If you already know the current constraint, affected system, and what “better” needs to look like,
-						share that context up front. It makes the conversation more useful, faster.
+						If you are discussing a role or a system problem, the most useful context is the current situation,
+						the main constraint and what needs to become clearer, safer, faster or easier to operate.
 					</p>
 				</div>
 			</aside>
@@ -79,8 +79,8 @@ const directLinks = [
 				<div class="contact-form-shell">
 					<SectionHeading
 						eyebrow="Start Here"
-						title="Describe the problem, the current system, and what needs to improve."
-						description="This page is meant for meaningful architecture conversations, not generic outreach. If the work involves system structure, delivery paths, or platform reliability, send context."
+						title="Share the context that matters."
+						description="For roles, collaboration or architecture discussions, a little context about the organisation, system or challenge helps make the conversation useful."
 					/>
 
 					<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
@@ -179,8 +179,8 @@ const directLinks = [
 				<section class="contact-rail-card contact-rail-card--note surface-card surface-card--soft" data-reveal="soft">
 					<p class="contact-rail-card__eyebrow">Best conversations</p>
 					<p>
-						The most useful enquiries usually describe the current architecture, the friction point, and what
-						needs to become more predictable, faster, safer, or easier to operate.
+						Useful conversations usually start with the current situation, the important constraint and the
+						decision or outcome that needs greater clarity.
 					</p>
 				</section>
 			</aside>

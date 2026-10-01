@@ -209,7 +209,7 @@
 	--shadow-md: 0 14px 34px rgba(4, 10, 8, 0.58);
 	--shadow-lg: 0 24px 58px rgba(4, 10, 8, 0.68);
 
-	--font-sans: "IBM Plex Sans", "Atkinson", "Segoe UI", sans-serif;
+	--font-sans: "Atkinson", "IBM Plex Sans", "Segoe UI", sans-serif;
 	--diagram-bg: #13251d;
 	--diagram-node-bg: #1b3329;
 	--diagram-node-border: #3f6a57;
@@ -262,7 +262,7 @@
 	--shadow-md: 0 14px 34px rgba(8, 5, 16, 0.56);
 	--shadow-lg: 0 24px 58px rgba(8, 5, 16, 0.66);
 
-	--font-sans: "IBM Plex Sans", "Atkinson", "Segoe UI", sans-serif;
+	--font-sans: "Atkinson", "IBM Plex Sans", "Segoe UI", sans-serif;
 	--diagram-bg: #241d36;
 	--diagram-node-bg: #302746;
 	--diagram-node-border: #655288;

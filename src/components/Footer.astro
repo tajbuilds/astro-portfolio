@@ -13,6 +13,10 @@ const today = new Date();
 				width="36"
 				height="36"
 			/>
+			<div class="footer-title">
+				<strong>Tajinder Singh</strong>
+				<span>Solution &amp; Integration Architect</span>
+			</div>
 			<div class="footer-links" aria-label="Footer contact links">
 				<a
 					class="footer-icon-link"
@@ -74,7 +78,7 @@ const today = new Date();
 			</div>
 		</div>
 		<div class="footer-meta">
-			<p>&copy; {today.getFullYear()} Tajinder Singh. Built with Astro and deployed on Cloudflare.</p>
+			<p>&copy; {today.getFullYear()} Tajinder Singh. Architecture portfolio · United Kingdom.</p>
 			<div class="footer-legal">
 				<a class="privacy-link" href="/privacy">Privacy</a>
 				<button id="analytics-settings-trigger" type="button" class="privacy-link analytics-settings-button">
@@ -116,6 +120,21 @@ const today = new Date();
 		align-items: center;
 		gap: var(--space-3);
 		flex-wrap: wrap;
+	}
+
+	.footer-title {
+		display: grid;
+		gap: 0.08rem;
+	}
+
+	.footer-title strong {
+		font-size: var(--font-size-sm);
+		color: var(--color-text);
+	}
+
+	.footer-title span {
+		font-size: var(--font-size-xs);
+		color: var(--color-text-muted);
 	}
 
 	.footer-meta {

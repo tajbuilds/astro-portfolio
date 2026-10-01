@@ -21,6 +21,7 @@ import { SITE_BRAND } from '../consts';
 					aria-haspopup="menu"
 					aria-expanded="false"
 					aria-controls="theme-picker-menu"
+					aria-label="Choose site theme"
 				>
 					<span class="theme-picker__icon" aria-hidden="true">
 						<svg viewBox="0 0 24 24" fill="none" focusable="false">
@@ -257,8 +258,8 @@ import { SITE_BRAND } from '../consts';
 		display: inline-flex;
 		align-items: center;
 		justify-content: flex-start;
-		min-width: 6.45rem;
-		padding: 0.44rem 1.75rem 0.44rem 1.8rem;
+		min-width: 3.15rem;
+		padding: 0.44rem 1.55rem;
 		border: 1px solid var(--color-border);
 		background: color-mix(in srgb, var(--color-bg-elevated) 88%, var(--color-surface));
 		box-shadow: var(--shadow-sm);
@@ -335,7 +336,7 @@ import { SITE_BRAND } from '../consts';
 	}
 
 	.theme-picker__label {
-		display: block;
+		display: none;
 		position: relative;
 		z-index: 1;
 		padding-right: 0.15rem;
@@ -357,7 +358,7 @@ import { SITE_BRAND } from '../consts';
 		top: calc(100% + var(--space-2));
 		right: 0;
 		z-index: 110;
-		min-width: 100%;
+		min-width: 8.5rem;
 		padding: var(--space-1);
 		border: 1px solid var(--color-border);
 		border-radius: 0.8rem;

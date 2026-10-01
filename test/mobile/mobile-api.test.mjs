@@ -54,7 +54,7 @@ test('maps GitBook project summaries to mobile API v2 shape', () => {
 		title: 'Edge Cache & API Proxy',
 		summary: 'Architecture case study.',
 		tags: ['Cloudflare', 'API Architecture'],
-		role: 'Solutions Architect',
+		role: 'Solution & Integration Architect',
 		timeline: null,
 		coverImageUrl: '/images/work-default-cover.svg',
 		publishedAt: null,

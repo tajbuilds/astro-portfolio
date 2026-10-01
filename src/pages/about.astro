@@ -3,456 +3,431 @@ import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ButtonLink from '../components/ButtonLink.astro';
+import ArchitectureReasoning from '../components/ArchitectureReasoning.astro';
 
-const designAreas = [
-	{
-		title: 'Platform modernisation',
-		copy: 'Restructuring brittle delivery paths into systems that are easier to operate, evolve, and govern over time.',
-	},
-	{
-		title: 'Edge systems and intake control',
-		copy: 'Designing request entry layers, verification gates, and routing controls that reduce abuse before it reaches core services.',
-	},
-	{
-		title: 'Automation and workflow design',
-		copy: 'Replacing ad-hoc manual operations with observable, event-driven workflows that hold up under production pressure.',
-	},
-	{
-		title: 'Search and retrieval architecture',
-		copy: 'Building structured search pipelines, facet logic, and query contracts that scale beyond browser-side filtering or CMS constraints.',
-	},
-	{
-		title: 'Integrations and operational tooling',
-		copy: 'Connecting services through clear contracts, safer handoff points, and practical tooling for teams who need reliability more than novelty.',
-	},
-	{
-		title: 'Failure-aware delivery',
-		copy: 'Designing with replay risk, fallback behavior, invalidation, and observability in mind before the first incident exposes those gaps.',
-	},
+const responsibilities = [
+  {
+    title: 'Discovery & problem framing',
+    copy: 'Clarifying business need, stakeholder concerns, existing constraints and the real system boundary before selecting technology.',
+  },
+  {
+    title: 'Current & target architecture',
+    copy: 'Making the baseline understandable, defining responsibility changes and communicating a target state through the minimum useful viewpoints.',
+  },
+  {
+    title: 'Integration & information design',
+    copy: 'Defining APIs, hand-offs, information ownership, transformation and trust boundaries between platforms and services.',
+  },
+  {
+    title: 'Options & architecture decisions',
+    copy: 'Comparing realistic approaches, exposing trade-offs and keeping major decisions traceable to drivers and constraints.',
+  },
+  {
+    title: 'Transition & operational readiness',
+    copy: 'Considering coexistence, sequencing, fallback, observability, support boundaries and the practical path from current to target state.',
+  },
+  {
+    title: 'Validation & delivery guidance',
+    copy: 'Using prototypes, testing, stakeholder review and production evidence to increase confidence before and after implementation.',
+  },
+];
+
+const artefacts = [
+  'System context and boundary views',
+  'Current-state / target-state diagrams',
+  'Integration and request flows',
+  'Information and ownership flows',
+  'Architecture decisions and trade-offs',
+  'Non-functional requirements',
+  'Transition and coexistence approaches',
+  'Proof-of-concept and validation evidence',
 ];
 
 const principles = [
-	'Verification-first over trust-by-default',
-	'Pragmatic systems thinking over vague platform claims',
-	'Delivery speed balanced against maintainability',
-	'Platform patterns over isolated feature work',
-];
-
-const strengths = [
-	{
-		title: 'Edge verification',
-		copy: 'Public entry points, token validation, request governance, and route-level control.',
-	},
-	{
-		title: 'Workflow architecture',
-		copy: 'Automation design that reduces operational drag without creating hidden system fragility.',
-	},
-	{
-		title: 'Search and data flow',
-		copy: 'Ingestion pipelines, schema discipline, and retrieval architecture for large changing datasets.',
-	},
-	{
-		title: 'Platform clarity',
-		copy: 'Turning unclear delivery paths into systems with explicit contracts, decisions, and supportable behavior.',
-	},
+  'Start with the problem and constraints, not the product.',
+  'Make responsibilities and boundaries explicit.',
+  'Prefer understandable, operable systems over unnecessary sophistication.',
+  'Design for failure, transition and support — not only the happy path.',
+  'Use technology detail when it explains an architectural decision.',
 ];
 ---
 
-<MainLayout title="About | Tajinder Singh" description="Authority-led profile page for Tajinder Singh, Solutions Architect focused on edge, automation, and data systems.">
-	<Container size="wide">
-		<section class="about-hero">
-			<div class="about-hero__copy">
-				<p class="about-hero__kicker" data-reveal="soft">About · Solutions Architect</p>
-				<h1 data-reveal="soft">Architecture that reduces operational drag and gives teams more control over how systems behave in production.</h1>
-				<p class="about-hero__positioning" data-reveal="soft">
-					I work across edge infrastructure, automation, search, and service integration, with a focus on
-					designing systems that are clear to operate, resilient under pressure, and grounded in real delivery
-					constraints.
-				</p>
-				<p class="about-hero__support" data-reveal="soft">
-					My work tends to sit where verification, routing, orchestration, and information architecture meet.
-					The goal is rarely to add more moving parts. It is to create a system that behaves predictably, scales
-					with less firefighting, and stays maintainable after launch.
-				</p>
-				<div class="about-hero__actions" data-reveal="soft">
-					<ButtonLink href="/work">View Work</ButtonLink>
-					<ButtonLink href="/contact" variant="secondary">Start a Conversation</ButtonLink>
-				</div>
-			</div>
+<MainLayout
+  title="About | Tajinder Singh"
+  description="About Tajinder Singh, a Solution and Integration Architect focused on architecture reasoning, system boundaries, integrations, information flows and operationally reliable platforms."
+>
+  <Container size="wide">
+    <section class="about-hero">
+      <div class="about-hero__copy" data-reveal="soft">
+        <p class="about-hero__kicker">About · Solution &amp; Integration Architect</p>
+        <h1>I work between the problem, the systems and the teams that have to make the solution real.</h1>
+        <p class="about-hero__positioning">
+          My role is to turn business and operational needs into architecture that is clear enough to discuss,
+          challenge, implement and support.
+        </p>
+        <p class="about-hero__support">
+          That means understanding current state, defining boundaries, comparing options, shaping integration and
+          information flows, making trade-offs visible and guiding a practical path toward the target state.
+        </p>
+        <div class="about-hero__actions">
+          <ButtonLink href="/work">Explore Case Studies</ButtonLink>
+          <ButtonLink href="/contact" variant="secondary">Get in Touch</ButtonLink>
+        </div>
+      </div>
 
-			<div class="about-hero__visual" data-reveal="right">
-				<figure class="about-portrait">
-					<img
-						src="/images/tajinder-singh-portrait.jpg"
-						alt="Portrait of Tajinder Singh"
-						loading="lazy"
-						width="640"
-						height="800"
-					/>
-				</figure>
-				<div class="about-hero__notes">
-					<article class="about-note surface-card surface-card--soft">
-						<p class="about-note__label">Working lens</p>
-						<p class="about-note__value">Constraint-aware, failure-aware, and biased toward operational clarity.</p>
-					</article>
-					<article class="about-note surface-card surface-card--soft">
-						<p class="about-note__label">Primary domains</p>
-						<p class="about-note__value">Edge control, workflow architecture, search systems, and service integration.</p>
-					</article>
-				</div>
-			</div>
-		</section>
+      <aside class="about-profile surface-card surface-card--feature" data-reveal="right">
+        <img
+          src="/images/tajinder-singh-portrait.jpg"
+          alt="Portrait of Tajinder Singh"
+          loading="lazy"
+          width="300"
+          height="300"
+        />
+        <div>
+          <p class="about-profile__label">Architecture practice</p>
+          <strong>Solution design · integration design · architecture communication · technical validation</strong>
+        </div>
+        <dl>
+          <div>
+            <dt>Primary lens</dt>
+            <dd>Responsibilities, boundaries and traceable decisions</dd>
+          </div>
+          <div>
+            <dt>Delivery style</dt>
+            <dd>Architecture-led, hands-on where validation helps</dd>
+          </div>
+          <div>
+            <dt>Current direction</dt>
+            <dd>Deeper solution, integration and technical architecture</dd>
+          </div>
+        </dl>
+      </aside>
+    </section>
 
-		<section class="page-section">
-			<div data-reveal="soft">
-				<SectionHeading
-					eyebrow="What I Design"
-					title="Systems that need clearer contracts, stronger control, and less operational friction"
-					description="The work is usually not a single feature. It is the architecture around how requests arrive, how decisions are made, and how systems hand off responsibility safely."
-				/>
-			</div>
-			<div class="authority-grid authority-grid--three">
-				{designAreas.map((item) => (
-					<article class="authority-card surface-card surface-card--standard" data-reveal="soft">
-						<h3>{item.title}</h3>
-						<p>{item.copy}</p>
-					</article>
-				))}
-			</div>
-		</section>
+    <section class="page-section">
+      <ArchitectureReasoning
+        eyebrow="How I Work"
+        title="A repeatable architecture reasoning chain"
+        description="Frameworks inform the discipline, but the public output stays practical: understand the concern, bound the problem, evaluate options, design the target, plan transition and validate the result."
+      />
+    </section>
 
-		<section class="page-section dual-section">
-			<article class="authority-panel surface-card surface-card--feature authority-panel--emphasis" data-reveal="soft">
-				<SectionHeading
-					eyebrow="How I Think"
-					title="Architecture should make systems more legible, not just more sophisticated."
-				/>
-				<ul class="principles-list">
-					{principles.map((item) => <li>{item}</li>)}
-				</ul>
-			</article>
+    <section class="page-section">
+      <SectionHeading
+        eyebrow="Architectural Responsibility"
+        title="What I contribute to the work"
+        description="The emphasis is on architectural responsibility and communication rather than implementation volume."
+      />
+      <div class="responsibility-list">
+        {responsibilities.map((item, index) => (
+          <article data-reveal="soft">
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.copy}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
 
-			<article class="authority-panel surface-card surface-card--standard" data-reveal="soft">
-				<SectionHeading
-					eyebrow="Current Focus"
-					title="Continuing development that supports deeper platform judgement"
-				/>
-				<p>
-					Alongside platform architecture work, I am completing a Level 7 AI and Data Science apprenticeship.
-					My current focus includes statistical modelling, model validation, feature engineering, and the
-					production considerations that matter when analytical systems meet operational reality.
-				</p>
-				<p>
-					That work sharpens the analytical side of my architecture practice without turning it into vague AI
-					positioning. The interest remains the same: useful systems, clearer contracts, and more predictable
-					behavior at scale.
-				</p>
-			</article>
-		</section>
+    <section class="page-section about-grid">
+      <article class="about-panel surface-card surface-card--feature" data-reveal="soft">
+        <SectionHeading
+          eyebrow="Architecture Artefacts"
+          title="Making the reasoning inspectable"
+          description="The exact set varies by project; the goal is always to answer a stakeholder concern rather than create diagrams for their own sake."
+        />
+        <div class="artefact-grid">
+          {artefacts.map((item) => <span>{item}</span>)}
+        </div>
+      </article>
 
-		<section class="page-section">
-			<div data-reveal="soft">
-				<SectionHeading
-					eyebrow="Selected Strengths"
-					title="Core domains I repeatedly work across"
-					description="These are the areas that show up most often in the case studies and platform work on this site."
-				/>
-			</div>
-			<div class="authority-grid authority-grid--four">
-				{strengths.map((item) => (
-					<article class="authority-card surface-card surface-card--standard authority-card--compact" data-reveal="soft">
-						<h3>{item.title}</h3>
-						<p>{item.copy}</p>
-					</article>
-				))}
-			</div>
-		</section>
+      <article class="about-panel surface-card surface-card--soft" data-reveal="soft">
+        <SectionHeading
+          eyebrow="Principles"
+          title="How I judge a design"
+        />
+        <ul class="principles-list">
+          {principles.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </section>
 
-		<section class="page-section about-cta surface-card surface-card--feature" data-reveal="soft">
-			<p class="about-cta__eyebrow">Work Together</p>
-			<h2>If you need a clearer architecture direction for an edge, automation, or search-heavy platform, start with the work or get in touch.</h2>
-			<div class="about-cta__actions">
-				<ButtonLink href="/work">Explore Case Studies</ButtonLink>
-				<ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
-			</div>
-		</section>
-	</Container>
+    <section class="page-section development-panel" data-reveal="soft">
+      <div>
+        <p class="development-panel__eyebrow">Professional Development</p>
+        <h2>Extending the architecture lens into AI and data systems.</h2>
+      </div>
+      <div>
+        <p>
+          I am completing a Level 7 AI and Data Science apprenticeship, developing deeper understanding of statistical
+          modelling, model validation, feature engineering and the production considerations around analytical systems.
+        </p>
+        <p>
+          I treat that as an extension of architecture practice: understanding the behaviour, constraints and operating
+          model of AI/data capabilities well enough to place them responsibly within wider systems.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section about-cta surface-card surface-card--feature" data-reveal="soft">
+      <div>
+        <p class="about-cta__eyebrow">Explore the evidence</p>
+        <h2>The case studies show the architecture decisions, not just the technologies used.</h2>
+      </div>
+      <div class="about-cta__actions">
+        <ButtonLink href="/work">View Architecture Work</ButtonLink>
+        <ButtonLink href="/contact" variant="secondary">Contact</ButtonLink>
+      </div>
+    </section>
+  </Container>
 </MainLayout>
 
 <style>
-	.page-section {
-		margin-bottom: clamp(var(--space-6), 5vw, var(--space-8));
-	}
+  .page-section {
+    margin-top: clamp(2.5rem, 5vw, 5rem);
+  }
 
-	.about-hero {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.86fr);
-		gap: clamp(var(--space-3), 1.5vw, var(--space-5));
-		align-items: center;
-		min-height: min(35rem, calc(100svh - 10.6rem));
-		padding: clamp(0.75rem, 1.1vw, 1rem);
-		border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
-		border-radius: calc(var(--radius-lg) + 0.2rem);
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 89%, transparent)),
-			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 34%),
-			radial-gradient(circle at bottom left, color-mix(in srgb, var(--color-focus) 10%, transparent), transparent 26%);
-		box-shadow: var(--shadow-md);
-		overflow: hidden;
-	}
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(18rem, 0.88fr);
+    gap: clamp(1.2rem, 3vw, 2.5rem);
+    align-items: center;
+  }
 
-	.about-hero::before {
-		content: '';
-		position: absolute;
-		top: -5rem;
-		right: -3rem;
-		width: 16rem;
-		height: 16rem;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-		filter: blur(36px);
-		opacity: 0.68;
-		pointer-events: none;
-	}
+  .about-hero__copy {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 43rem;
+  }
 
-	.about-hero__copy,
-	.about-hero__visual {
-		position: relative;
-		z-index: 1;
-	}
+  .about-hero__kicker,
+  .about-profile__label,
+  .development-panel__eyebrow,
+  .about-cta__eyebrow {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
 
-	.about-hero__copy {
-		display: grid;
-		gap: var(--space-3);
-		max-width: 35rem;
-	}
+  .about-hero h1 {
+    margin: 0;
+    max-width: 15ch;
+    font-size: clamp(2rem, 1.45rem + 1.75vw, 3.2rem);
+    line-height: 1.03;
+  }
 
-	.about-hero__kicker,
-	.about-cta__eyebrow,
-	.about-note__label {
-		margin: 0;
-		font-size: var(--font-size-xs);
-		font-weight: 700;
-		letter-spacing: 0.11em;
-		text-transform: uppercase;
-		color: var(--color-accent);
-	}
+  .about-hero__positioning,
+  .about-hero__support {
+    margin: 0;
+    max-width: 39rem;
+  }
 
-	.about-hero h1 {
-		margin: 0;
-		font-size: clamp(1.75rem, 1.38rem + 1.45vw, 2.9rem);
-		line-height: 1.02;
-		max-width: 12.6ch;
-	}
+  .about-hero__positioning {
+    font-size: var(--font-size-body-lg);
+    color: var(--color-text);
+  }
 
-	.about-hero__positioning,
-	.about-hero__support {
-		margin: 0;
-	}
+  .about-hero__support {
+    font-size: var(--font-size-ui);
+  }
 
-	.about-hero__positioning {
-		font-size: var(--font-size-ui);
-		max-width: 30rem;
-	}
+  .about-hero__actions,
+  .about-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
 
-	.about-hero__support {
-		max-width: 28rem;
-		font-size: var(--font-size-sm);
-		color: var(--color-text);
-		opacity: 0.88;
-	}
+  .about-profile {
+    display: grid;
+    gap: var(--space-3);
+    padding: 1rem;
+  }
 
-	.about-hero__actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		padding-top: var(--space-1);
-	}
+  .about-profile img {
+    width: 5.2rem;
+    height: 5.2rem;
+    object-fit: cover;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
 
-	.about-hero__visual {
-		display: grid;
-		gap: var(--space-2);
-	}
+  .about-profile strong {
+    display: block;
+    max-width: 27rem;
+    line-height: 1.45;
+    font-size: 0.95rem;
+  }
 
-	.about-portrait {
-		margin: 0;
-		padding: 0.48rem;
-		border-radius: calc(var(--radius-lg) - 0.1rem);
-		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
-			linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 52%);
-		box-shadow: var(--shadow-sm);
-	}
+  .about-profile dl {
+    margin: 0;
+    display: grid;
+    border-top: 1px solid var(--color-border);
+  }
 
-	.about-portrait img {
-		width: 100%;
-		aspect-ratio: 4 / 4.35;
-		object-fit: cover;
-		border-radius: calc(var(--radius-lg) - 0.45rem);
-	}
+  .about-profile dl div {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-3);
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
 
-	.about-hero__notes {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: var(--space-2);
-	}
+  .about-profile dt {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-text);
+  }
 
-	.about-note,
-	.authority-card,
-	.authority-panel,
-	.about-cta {
-		padding: 0.9rem;
-	}
+  .about-profile dd {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
 
-	.about-note {
-		display: grid;
-		gap: var(--space-1);
-	}
+  .responsibility-list {
+    display: grid;
+    border-top: 1px solid var(--color-border);
+  }
 
-	.about-note__value {
-		margin: 0;
-		font-size: var(--font-size-sm);
-		line-height: 1.55;
-	}
+  .responsibility-list article {
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
 
-	.authority-grid {
-		display: grid;
-		gap: var(--space-4);
-	}
+  .responsibility-list article > span {
+    padding-top: 0.15rem;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-accent);
+  }
 
-	.authority-grid--three {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
+  .responsibility-list h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.08rem;
+  }
 
-	.authority-grid--four {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-	}
+  .responsibility-list p {
+    margin: 0;
+    max-width: 54rem;
+    font-size: var(--font-size-ui);
+  }
 
-	.authority-card,
-	.authority-panel {
-		transition:
-			transform var(--motion-base) var(--ease-emphasis),
-			box-shadow var(--motion-base) var(--ease-standard),
-			border-color var(--motion-fast) var(--ease-standard);
-	}
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--space-4);
+  }
 
-	.authority-card:hover,
-	.authority-panel:hover {
-		transform: translateY(-3px);
-		box-shadow: var(--shadow-md);
-		border-color: color-mix(in srgb, var(--color-accent) 26%, var(--color-border));
-	}
+  .about-panel {
+    padding: 1.2rem;
+  }
 
-	.authority-card h3 {
-		margin: 0 0 var(--space-2);
-		font-size: 1.08rem;
-	}
+  .about-panel :global(.section-heading) {
+    margin-bottom: var(--space-4);
+  }
 
-	.authority-card p,
-	.authority-panel p {
-		margin: 0;
-	}
+  .artefact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--color-border);
+  }
 
-	.authority-card--compact {
-		min-height: 100%;
-	}
+  .artefact-grid span {
+    padding: 0.7rem 0.2rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+  }
 
-	.dual-section {
-		display: grid;
-		grid-template-columns: 1.05fr 0.95fr;
-		gap: 1rem;
-	}
+  .artefact-grid span:nth-child(even) {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--color-border);
+  }
 
-	.authority-panel {
-		display: grid;
-		align-content: start;
-		gap: var(--space-4);
-		padding: 1.2rem;
-	}
+  .principles-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: var(--space-3);
+  }
 
-	.authority-panel :global(.section-heading) {
-		margin-bottom: 0;
-	}
+  .development-panel {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    gap: var(--space-5);
+    padding: 1.2rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
 
-	.authority-panel--emphasis {
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
-			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 38%);
-	}
+  .development-panel h2 {
+    margin: 0.35rem 0 0;
+    font-size: clamp(1.35rem, 1.15rem + 0.7vw, 1.9rem);
+  }
 
-	.principles-list {
-		margin: 0;
-		padding-left: 1.1rem;
-		display: grid;
-		gap: var(--space-3);
-	}
+  .development-panel p:last-child {
+    margin-bottom: 0;
+  }
 
-	.about-cta {
-		display: grid;
-		gap: var(--space-4);
-		padding: clamp(1.2rem, 2vw, 1.8rem);
-		border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 96%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
-			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 34%);
-		box-shadow: var(--shadow-md);
-	}
+  .about-cta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-5);
+    align-items: end;
+    padding: clamp(1.2rem, 2vw, 1.7rem);
+  }
 
-	.about-cta h2 {
-		margin: 0;
-		max-width: 18ch;
-		font-size: clamp(1.8rem, 1.35rem + 1.25vw, 2.7rem);
-	}
+  .about-cta h2 {
+    margin: 0.35rem 0 0;
+    max-width: 21ch;
+    font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2.2rem);
+  }
 
-	.about-cta__actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-3);
-	}
+  @media (max-width: 960px) {
+    .about-hero,
+    .about-grid,
+    .development-panel {
+      grid-template-columns: 1fr;
+    }
 
-	@media (max-width: 1100px) {
-		.about-hero,
-		.dual-section {
-			grid-template-columns: 1fr;
-		}
+    .about-cta {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
 
-		.about-hero {
-			min-height: auto;
-		}
+  @media (max-width: 600px) {
+    .about-hero h1 {
+      max-width: none;
+    }
 
-		.authority-grid--four {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
+    .about-profile dl div {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
 
-	@media (max-width: 900px) {
-		.authority-grid--three,
-		.authority-grid--four,
-		.about-hero__notes {
-			grid-template-columns: 1fr;
-		}
+    .responsibility-list article {
+      grid-template-columns: 2.2rem minmax(0, 1fr);
+      gap: var(--space-2);
+    }
 
-		.about-hero h1 {
-			max-width: none;
-			font-size: clamp(1.7rem, 1.4rem + 1.5vw, 2.35rem);
-		}
+    .artefact-grid {
+      grid-template-columns: 1fr;
+    }
 
-		.about-cta h2 {
-			max-width: none;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.authority-card,
-		.authority-panel {
-			transition: none;
-		}
-
-		.authority-card:hover,
-		.authority-panel:hover {
-			transform: none;
-		}
-	}
+    .artefact-grid span:nth-child(even) {
+      padding-left: 0.2rem;
+      border-left: 0;
+    }
+  }
 </style>

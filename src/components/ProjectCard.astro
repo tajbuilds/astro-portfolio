@@ -2,134 +2,178 @@
 import PillTag from './PillTag.astro';
 
 interface Props {
-	title: string;
-	description: string;
-	tags: string[];
-	href: string;
-	compact?: boolean;
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  sectionCount?: number;
+  compact?: boolean;
 }
 
-const { title, description, tags, href, compact = false } = Astro.props;
+const { title, description, tags, href, sectionCount = 0, compact = false } = Astro.props;
 const displayTags = tags.slice(0, 3);
+const architectureSignals = ['Current state', 'Options', 'Target state', 'Decisions', 'Validation'];
 ---
 
-<a class="project-card-link" href={href} aria-label={`Open case study: ${title}`}>
-	<article
-		class:list={['project-card', 'surface-card', 'surface-card--standard', { 'project-card--compact': compact }]}
-	>
-		<h3>{title}</h3>
-		<p>{description}</p>
-		<div class="project-card__tags">
-			{displayTags.map((tag) => <PillTag label={tag} />)}
-		</div>
-		<span class="project-card__cta">Read case study <span aria-hidden="true">-></span></span>
-	</article>
+<a class="project-card-link" href={href} aria-label={`Explore architecture case study: ${title}`}>
+  <article class:list={['project-card', 'surface-card', 'surface-card--standard', { 'project-card--compact': compact }]}>
+    <div class="project-card__meta">
+      <span>Architecture case study</span>
+      {sectionCount > 0 && <span>{sectionCount} views</span>}
+    </div>
+    <div class="project-card__body">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+    <div class="project-card__evidence" aria-label="Architecture evidence">
+      {architectureSignals.slice(0, compact ? 3 : 5).map((item) => <span>{item}</span>)}
+    </div>
+    <div class="project-card__tags">
+      {displayTags.map((tag) => <PillTag label={tag} />)}
+    </div>
+    <span class="project-card__cta">Explore architecture <span aria-hidden="true">→</span></span>
+  </article>
 </a>
 
 <style>
-	.project-card-link {
-		display: block;
-		height: 100%;
-		text-decoration: none;
-		color: inherit;
-		border-radius: var(--radius-md);
-	}
+  .project-card-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius-md);
+  }
 
-	.project-card {
-		position: relative;
-		isolation: isolate;
-		display: grid;
-		gap: var(--space-3);
-		height: 100%;
-		padding: 1.25rem;
-		border-radius: var(--radius-md);
-		overflow: hidden;
-		transition:
-			border-color var(--motion-fast) var(--ease-standard),
-			box-shadow var(--motion-base) var(--ease-standard),
-			transform var(--motion-base) var(--ease-emphasis),
-			background-color var(--motion-base) var(--ease-standard);
-	}
+  .project-card {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-rows: auto auto auto auto 1fr;
+    gap: var(--space-3);
+    height: 100%;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition:
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-base) var(--ease-standard),
+      transform var(--motion-base) var(--ease-emphasis),
+      background-color var(--motion-base) var(--ease-standard);
+  }
 
-	.project-card::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(130deg, color-mix(in srgb, var(--color-accent) 14%, transparent), transparent 42%),
-			linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.08) 50%, transparent 82%);
-		opacity: 0;
-		transform: translateX(-14%);
-		transition:
-			opacity var(--motion-base) var(--ease-standard),
-			transform 680ms var(--ease-emphasis);
-		pointer-events: none;
-	}
+  .project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(130deg, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 46%),
+      linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.06) 50%, transparent 82%);
+    opacity: 0;
+    transform: translateX(-14%);
+    transition: opacity var(--motion-base) var(--ease-standard), transform 680ms var(--ease-emphasis);
+    pointer-events: none;
+  }
 
-	.project-card:hover,
-	.project-card:focus-within {
-		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
-		box-shadow: var(--shadow-lg);
-		transform: translateY(-5px);
-		background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
-	}
+  .project-card:hover,
+  .project-card:focus-within {
+    border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    background: color-mix(in srgb, var(--color-bg-elevated) 94%, transparent);
+  }
 
-	.project-card:hover::before,
-	.project-card:focus-within::before {
-		opacity: 1;
-		transform: translateX(12%);
-	}
+  .project-card:hover::before,
+  .project-card:focus-within::before {
+    opacity: 1;
+    transform: translateX(12%);
+  }
 
-	.project-card h3 {
-		margin: 0;
-		font-size: 1.2rem;
-	}
+  .project-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.45rem;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
 
-	.project-card p {
-		margin: 0;
-		font-size: 0.96rem;
-	}
+  .project-card__body {
+    display: grid;
+    gap: var(--space-2);
+  }
 
-	.project-card__tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		margin-top: 0.15rem;
-	}
+  .project-card h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1.08rem + 0.32vw, 1.48rem);
+  }
 
-	.project-card__cta {
-		font-size: var(--font-size-ui);
-		font-weight: 700;
-		color: var(--color-accent);
-		transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
-	}
+  .project-card p {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.62;
+  }
 
-	.project-card-link:hover .project-card__cta,
-	.project-card-link:focus-visible .project-card__cta {
-		color: var(--color-accent-strong);
-		transform: translateX(4px);
-	}
+  .project-card__evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding-top: var(--space-2);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  }
 
-	.project-card-link:focus-visible {
-		outline: none;
-	}
+  .project-card__evidence span {
+    padding: 0.2rem 0.42rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    font-weight: 650;
+  }
 
-	.project-card--compact {
-		padding: 1rem;
-	}
+  .project-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		.project-card,
-		.project-card::before,
-		.project-card__cta {
-			transition: none;
-		}
+  .project-card__cta {
+    align-self: end;
+    font-size: var(--font-size-ui);
+    font-weight: 700;
+    color: var(--color-accent);
+    transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+  }
 
-		.project-card:hover,
-		.project-card:focus-within,
-		.project-card-link:hover .project-card__cta,
-		.project-card-link:focus-visible .project-card__cta {
-			transform: none;
-		}
-	}
+  .project-card-link:hover .project-card__cta,
+  .project-card-link:focus-visible .project-card__cta {
+    color: var(--color-accent-strong);
+    transform: translateX(4px);
+  }
+
+  .project-card-link:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+    outline-offset: 3px;
+  }
+
+  .project-card--compact {
+    padding: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .project-card::before,
+    .project-card__cta {
+      transition: none;
+    }
+
+    .project-card:hover,
+    .project-card:focus-within,
+    .project-card-link:hover .project-card__cta,
+    .project-card-link:focus-visible .project-card__cta {
+      transform: none;
+    }
+  }
 </style>

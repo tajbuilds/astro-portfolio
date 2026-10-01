@@ -2,188 +2,222 @@
 import PillTag from './PillTag.astro';
 
 interface Props {
-	title: string;
-	summary: string;
-	tags: string[];
-	href: string;
-	accent?: string;
-	index?: number;
+  title: string;
+  summary: string;
+  tags: string[];
+  href: string;
+  sectionCount?: number;
+  accent?: string;
+  index?: number;
 }
 
-const { title, summary, tags, href, accent = 'primary', index = 1 } = Astro.props;
+const {
+  title,
+  summary,
+  tags,
+  href,
+  sectionCount = 0,
+  accent = 'primary',
+  index = 1,
+} = Astro.props;
+
 const displayTags = tags.slice(0, 3);
+const evidence = ['Current state', 'Options', 'Target state', 'Decisions', 'Validation'];
 ---
 
-<a class="flagship-card-link" href={href} aria-label={`Open flagship case study: ${title}`}>
-	<article class:list={['flagship-card', 'surface-card', 'surface-card--feature', `flagship-card--${accent}`]}>
-		<div class="flagship-card__topline">
-			<span class="flagship-card__index">0{index}</span>
-		</div>
+<a class="flagship-card-link" href={href} aria-label={`Explore flagship architecture case study: ${title}`}>
+  <article class:list={['flagship-card', 'surface-card', 'surface-card--feature', `flagship-card--${accent}`]}>
+    <div class="flagship-card__topline">
+      <span class="flagship-card__index">0{index}</span>
+      {sectionCount > 0 && <span class="flagship-card__count">{sectionCount} architecture views</span>}
+    </div>
 
-		<div class="flagship-card__body">
-			<h3>{title}</h3>
-			<p class="flagship-card__summary">{summary}</p>
-		</div>
+    <div class="flagship-card__body">
+      <p class="flagship-card__label">Architecture case study</p>
+      <h3>{title}</h3>
+      <p class="flagship-card__summary">{summary}</p>
+      <div class="flagship-card__evidence" aria-label="Architecture evidence">
+        {evidence.map((item) => <span>{item}</span>)}
+      </div>
+    </div>
 
-		<div class="flagship-card__footer">
-			<div class="flagship-card__tags">
-				{displayTags.map((tag) => <PillTag label={tag} />)}
-			</div>
-			<span class="flagship-card__cta">Read case study <span aria-hidden="true">-></span></span>
-		</div>
-	</article>
+    <div class="flagship-card__footer">
+      <div class="flagship-card__tags">
+        {displayTags.map((tag) => <PillTag label={tag} />)}
+      </div>
+      <span class="flagship-card__cta">Explore architecture <span aria-hidden="true">→</span></span>
+    </div>
+  </article>
 </a>
 
 <style>
-	.flagship-card-link {
-		display: block;
-		height: 100%;
-		text-decoration: none;
-		color: inherit;
-	}
+  .flagship-card-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius-lg);
+  }
 
-	.flagship-card {
-		position: relative;
-		isolation: isolate;
-		display: grid;
-		grid-template-rows: auto 1fr auto;
-		gap: var(--space-4);
-		height: 100%;
-		min-height: 19rem;
-		padding: 1.35rem;
-		border-radius: calc(var(--radius-lg) - 0.15rem);
-		overflow: hidden;
-		transition:
-			transform var(--motion-base) var(--ease-emphasis),
-			box-shadow var(--motion-base) var(--ease-standard),
-			border-color var(--motion-fast) var(--ease-standard),
-			background-color var(--motion-base) var(--ease-standard);
-	}
+  .flagship-card {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-4);
+    height: 100%;
+    min-height: 21rem;
+    padding: 1.35rem;
+    border-radius: calc(var(--radius-lg) - 0.15rem);
+    overflow: hidden;
+    transition:
+      transform var(--motion-base) var(--ease-emphasis),
+      box-shadow var(--motion-base) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard);
+  }
 
-	.flagship-card::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(125deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 40%),
-			linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.08) 50%, transparent 80%);
-		opacity: 0;
-		transform: translateX(-16%);
-		transition:
-			opacity var(--motion-base) var(--ease-standard),
-			transform 760ms var(--ease-emphasis);
-		pointer-events: none;
-	}
+  .flagship-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(125deg, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 40%),
+      linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.08) 50%, transparent 80%);
+    opacity: 0;
+    transform: translateX(-16%);
+    transition: opacity var(--motion-base) var(--ease-standard), transform 760ms var(--ease-emphasis);
+    pointer-events: none;
+  }
 
-	.flagship-card-link:hover .flagship-card,
-	.flagship-card-link:focus-visible .flagship-card {
-		transform: translateY(-6px);
-		box-shadow: var(--shadow-lg);
-		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
-	}
+  .flagship-card-link:hover .flagship-card,
+  .flagship-card-link:focus-visible .flagship-card {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+  }
 
-	.flagship-card-link:hover .flagship-card::before,
-	.flagship-card-link:focus-visible .flagship-card::before {
-		opacity: 1;
-		transform: translateX(14%);
-	}
+  .flagship-card-link:hover .flagship-card::before,
+  .flagship-card-link:focus-visible .flagship-card::before {
+    opacity: 1;
+    transform: translateX(14%);
+  }
 
-	.flagship-card--secondary {
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
-			radial-gradient(circle at top right, color-mix(in srgb, var(--color-focus) 13%, transparent), transparent 40%);
-	}
+  .flagship-card-link:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+    outline-offset: 3px;
+  }
 
-	.flagship-card--tertiary {
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
-			radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent-strong) 12%, transparent), transparent 42%);
-	}
+  .flagship-card--secondary {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-focus) 13%, transparent), transparent 40%);
+  }
 
-	.flagship-card__topline {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-3);
-	}
+  .flagship-card--tertiary {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg-elevated) 95%, transparent), color-mix(in srgb, var(--color-bg-elevated) 90%, transparent)),
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent-strong) 12%, transparent), transparent 42%);
+  }
 
-	.flagship-card__index {
-		font-size: var(--font-size-xs);
-		font-weight: 700;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--color-accent);
-	}
+  .flagship-card__topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
 
-	.flagship-card__body {
-		display: grid;
-		align-content: start;
-		gap: var(--space-3);
-	}
+  .flagship-card__index,
+  .flagship-card__count,
+  .flagship-card__label {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
 
-	.flagship-card h3 {
-		margin: 0;
-		font-size: clamp(1.18rem, 1.05rem + 0.38vw, 1.48rem);
-		font-weight: 700;
-		line-height: 1.2;
-	}
+  .flagship-card__count {
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
 
-	.flagship-card__summary,
-	.flagship-card__impact {
-		margin: 0;
-	}
+  .flagship-card__body {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+  }
 
-	.flagship-card__summary {
-		font-size: 0.98rem;
-		line-height: 1.65;
-		color: var(--color-text-muted);
-		max-width: 36ch;
-	}
+  .flagship-card h3 {
+    margin: 0;
+    font-size: clamp(1.3rem, 1.12rem + 0.48vw, 1.65rem);
+    font-weight: 700;
+    line-height: 1.18;
+  }
 
-	.flagship-card__impact {
-		font-size: var(--font-size-sm);
-		font-weight: 700;
-		letter-spacing: 0.03em;
-		color: var(--color-text);
-	}
+  .flagship-card__summary {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    max-width: 43ch;
+  }
 
-	.flagship-card__footer {
-		display: grid;
-		gap: var(--space-3);
-		align-content: end;
-	}
+  .flagship-card__evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding-top: var(--space-2);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  }
 
-	.flagship-card__tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35rem;
-	}
+  .flagship-card__evidence span {
+    padding: 0.2rem 0.42rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface) 68%, transparent);
+    color: var(--color-text-muted);
+    font-size: 0.71rem;
+    font-weight: 650;
+  }
 
-	.flagship-card__cta {
-		font-size: var(--font-size-ui);
-		font-weight: 700;
-		color: var(--color-accent);
-		transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
-	}
+  .flagship-card__footer {
+    display: grid;
+    gap: var(--space-3);
+    align-content: end;
+  }
 
-	.flagship-card-link:hover .flagship-card__cta,
-	.flagship-card-link:focus-visible .flagship-card__cta {
-		color: var(--color-accent-strong);
-		transform: translateX(4px);
-	}
+  .flagship-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		.flagship-card,
-		.flagship-card::before,
-		.flagship-card__cta {
-			transition: none;
-		}
+  .flagship-card__cta {
+    font-size: var(--font-size-ui);
+    font-weight: 700;
+    color: var(--color-accent);
+    transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+  }
 
-		.flagship-card-link:hover .flagship-card,
-		.flagship-card-link:focus-visible .flagship-card,
-		.flagship-card-link:hover .flagship-card__cta,
-		.flagship-card-link:focus-visible .flagship-card__cta {
-			transform: none;
-		}
-	}
+  .flagship-card-link:hover .flagship-card__cta,
+  .flagship-card-link:focus-visible .flagship-card__cta {
+    color: var(--color-accent-strong);
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flagship-card,
+    .flagship-card::before,
+    .flagship-card__cta {
+      transition: none;
+    }
+
+    .flagship-card-link:hover .flagship-card,
+    .flagship-card-link:focus-visible .flagship-card,
+    .flagship-card-link:hover .flagship-card__cta,
+    .flagship-card-link:focus-visible .flagship-card__cta {
+      transform: none;
+    }
+  }
 </style>

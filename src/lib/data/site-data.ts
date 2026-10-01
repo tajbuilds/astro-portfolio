@@ -1,7 +1,7 @@
 export const profileData = {
 	name: 'Tajinder Singh',
-	role: 'Solutions Architect',
-	tagline: 'Architecture-first systems for edge, automation, and data',
+	role: 'Solution & Integration Architect',
+	tagline: 'Clear system boundaries, integration patterns and evidence-led architecture',
 	avatarUrl: '/images/tajinder-singh-portrait.jpg',
 	location: 'United Kingdom',
 } as const;
@@ -13,10 +13,10 @@ export const ctaData = {
 
 export const aboutData = {
 	name: 'Tajinder Singh',
-	headline: 'Solutions Architect',
-	bio: 'Solutions architect focused on edge verification, automation-first flows, and operationally reliable data systems.',
-	skills: ['Cloudflare Workers', 'n8n', 'TypeScript', 'Meilisearch', 'Xano'],
-	focusAreas: ['Edge systems', 'Automation', 'Search and data platforms'],
+	headline: 'Solution & Integration Architect',
+	bio: 'Solution and Integration Architect focused on system boundaries, integration contracts, information flows and operationally reliable platforms.',
+	skills: ['Solution architecture', 'Integration architecture', 'Architecture decisions', 'Cloud platforms', 'Information flows'],
+	focusAreas: ['Solution & integration architecture', 'Cloud & platform architecture', 'Information & search architecture'],
 	avatarUrl: '/images/tajinder-singh-portrait.jpg',
 	social: [
 		{ label: 'GitHub', url: 'https://github.com/tajbuilds' },

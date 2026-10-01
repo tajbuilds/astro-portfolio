@@ -91,7 +91,7 @@ export const toWorkSummary = (project: PortfolioProjectSummary) => ({
 	title: project.title,
 	summary: project.description,
 	tags: project.tags.map(formatProjectTagLabel),
-	role: 'Solutions Architect',
+	role: 'Solution & Integration Architect',
 	timeline: null,
 	coverImageUrl: DEFAULT_COVER_IMAGE,
 	publishedAt: null,
