@@ -11,12 +11,19 @@ interface Env {
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SITE_SECRET: string;
   RESEND_API_KEY: string;
-  MEDIA_BUCKET: R2Bucket;
-  MEDIA_UPLOAD_TOKEN?: string;
   PUBLIC_GA_MEASUREMENT_ID?: string;
-  GISCUS_REPO?: string;
-  GISCUS_REPO_ID?: string;
-  GISCUS_CATEGORY?: string;
-  GISCUS_CATEGORY_ID?: string;
-  GISCUS_LANG?: string;
+  GITBOOK_TOKEN?: string;
+  GITBOOK_SPACE_ID?: string;
+  GITBOOK_PROJECTS_PATH?: string;
+}
+
+// Cloudflare secrets are set via `wrangler secret` / `.dev.vars` and are
+// intentionally absent from wrangler.json, so they are declared here to
+// augment the generated Cloudflare.Env type.
+declare namespace Cloudflare {
+  interface Env {
+    RESEND_API_KEY: string;
+    TURNSTILE_SITE_SECRET: string;
+    GITBOOK_TOKEN?: string;
+  }
 }

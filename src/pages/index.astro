@@ -1,4 +1,5 @@
 ---
+import { env } from 'cloudflare:workers';
 import MainLayout from '../layouts/MainLayout.astro';
 import Container from '../components/Container.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -6,20 +7,26 @@ import ButtonLink from '../components/ButtonLink.astro';
 import PillTag from '../components/PillTag.astro';
 import FlagshipCaseStudyCard from '../components/FlagshipCaseStudyCard.astro';
 import ProofStrip from '../components/ProofStrip.astro';
-import { contentSlug, getPublishedWorkEntries } from '../lib/data/portfolio-data';
+import {
+	createGitBookPortfolioFromEnv,
+	formatProjectTagLabel,
+} from '../lib/gitbook';
+import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../lib/gitbook';
 import { homepageProofItems } from '../lib/proof-data';
 
-const featuredWorkSlugs = [
-	'smart-edge-cache-proxy',
-	'webflow-turnstile-edge-worker-pipeline',
-	'faceted-deals-search-engine',
-	'distributed-emergency-notification-system',
-	'internal-ml-workbench-modernization',
-];
+export const prerender = false;
 
-const featured = (await getPublishedWorkEntries())
-	.filter((entry) => featuredWorkSlugs.includes(contentSlug(entry.id)))
-	.sort((a, b) => featuredWorkSlugs.indexOf(contentSlug(a.id)) - featuredWorkSlugs.indexOf(contentSlug(b.id)));
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+let featured: PortfolioProjectSummary[] = [];
+
+if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	try {
+		const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+		featured = await portfolio.getShowcaseProjects(2);
+	} catch (error) {
+		console.error('GitBook showcase discovery failed on the homepage.', error);
+	}
+}
 
 const proofChips = [
 	'Cloudflare Workers',
@@ -127,11 +134,10 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 					{featured.map((item, index) => (
 						<li class:list={['flagship-grid__item', { 'flagship-grid__item--lead': index === 0 }]} data-reveal="soft">
 							<FlagshipCaseStudyCard
-								title={item.data.title}
-								summary={item.data.description}
-								tags={item.data.tags}
-								date={item.data.date}
-								href={`/work/${contentSlug(item.id)}/`}
+								title={item.title}
+								summary={item.description}
+								tags={item.tags.map(formatProjectTagLabel)}
+								href={`/work/${item.slug}/`}
 								index={index + 1}
 								accent={flagshipAccents[index] ?? 'primary'}
 							/>
@@ -491,7 +497,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 		padding: 0;
 		margin: 0;
 		display: grid;
-		grid-template-columns: 1.15fr 0.85fr 0.85fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: var(--space-3);
 		align-items: stretch;
 	}
@@ -501,7 +507,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
 	}
 
 	.flagship-grid__item--lead {
-		grid-row: span 2;
+		grid-row: auto;
 	}
 
 	.grid {

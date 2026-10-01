@@ -1,13 +1,21 @@
 import type { APIRoute } from 'astro';
-import { fail, getWorkEntries, ok, toWorkSummary } from '../../../lib/mobile-api';
-import { ctaData, profileData } from '../../../lib/data/portfolio-data';
+import { env } from 'cloudflare:workers';
+
+import { ctaData, profileData } from '../../../lib/data/site-data';
+import {
+	createMobilePortfolio,
+	fail,
+	ok,
+	toWorkSummary,
+} from '../../../lib/mobile-api';
+import type { GitBookRuntimeEnv } from '../../../lib/gitbook';
 
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
 	try {
-		const work = await getWorkEntries();
-		const featuredWork = work.filter((entry) => entry.data.featured).slice(0, 4).map(toWorkSummary);
+		const portfolio = createMobilePortfolio(env as unknown as GitBookRuntimeEnv);
+		const featuredWork = (await portfolio.getShowcaseProjects(4)).map(toWorkSummary);
 
 		return ok({
 			profile: profileData,

@@ -1,4 +1,5 @@
 ---
+import { env } from 'cloudflare:workers';
 import MainLayout from '../../layouts/MainLayout.astro';
 import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
@@ -6,15 +7,34 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
 import ProofStrip from '../../components/ProofStrip.astro';
 import {
-	contentSlug,
-	getPublishedWorkEntries,
-	getPublishedWorkTags,
-	slugifyTag,
-} from '../../lib/data/portfolio-data';
+	createGitBookPortfolioFromEnv,
+	formatProjectTagLabel,
+	normalizeProjectTagKey,
+} from '../../lib/gitbook';
+import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../../lib/gitbook';
 import { workOverviewProofItems } from '../../lib/proof-data';
 
-const workItems = await getPublishedWorkEntries();
-const tags = await getPublishedWorkTags();
+export const prerender = false;
+
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+let gitbookProjects: PortfolioProjectSummary[] = [];
+let tags: string[] = [];
+let gitbookError = false;
+
+if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	try {
+		const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+		[gitbookProjects, tags] = await Promise.all([
+			portfolio.getProjects(),
+			portfolio.getProjectTags(),
+		]);
+	} catch (error) {
+		gitbookError = true;
+		console.error('GitBook project discovery failed on /work.', error);
+	}
+} else {
+	gitbookError = true;
+}
 ---
 
 <MainLayout
@@ -37,7 +57,12 @@ const tags = await getPublishedWorkTags();
 			<p>Filter by focus area:</p>
 			<div class="work-filter__tags">
 				<PillTag label="All" href="/work/" />
-				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${slugifyTag(tag)}/`} />)}
+				{tags.map((tag) => (
+					<PillTag
+						label={formatProjectTagLabel(tag)}
+						href={`/work/tags/${normalizeProjectTagKey(tag)}/`}
+					/>
+				))}
 			</div>
 		</section>
 
@@ -49,21 +74,26 @@ const tags = await getPublishedWorkTags();
 		/>
 
 		<section>
-			<ul class="work-grid">
-				{
-					workItems.map((item) => (
+			{gitbookProjects.length > 0 ? (
+				<ul class="work-grid">
+					{gitbookProjects.map((project) => (
 						<li data-reveal="soft">
 							<ProjectCard
-								title={item.data.title}
-								description={item.data.description}
-								tags={item.data.tags}
-								date={item.data.date}
-								href={`/work/${contentSlug(item.id)}/`}
+								title={project.title}
+								description={project.description}
+								tags={project.tags.map(formatProjectTagLabel)}
+								href={`/work/${project.slug}/`}
 							/>
 						</li>
-					))
-				}
-			</ul>
+					))}
+				</ul>
+			) : (
+				<p class="section-intro">
+					{gitbookError
+						? 'Case studies are temporarily unavailable.'
+						: 'No case studies have been published yet.'}
+				</p>
+			)}
 		</section>
 	</Container>
 </MainLayout>
@@ -113,4 +143,3 @@ const tags = await getPublishedWorkTags();
 		}
 	}
 </style>
-

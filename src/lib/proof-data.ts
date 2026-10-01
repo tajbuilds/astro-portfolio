@@ -22,65 +22,6 @@ export const homepageProofItems: ProofItem[] = [
 	},
 ];
 
-const workProofMap: Record<string, ProofItem[]> = {
-	'smart-edge-cache-proxy': [
-		{
-			label: 'What changed',
-			copy: 'Equivalent requests now resolve to deterministic cache keys instead of fragmenting across noisy query variants.',
-		},
-		{
-			label: 'Operational gain',
-			copy: 'Cache behavior can be changed through KV policy without relying on redeploys for each routing adjustment.',
-		},
-		{
-			label: 'Reliability',
-			copy: 'Invalidation moved toward versioned logical refresh rather than relying on less predictable physical deletes.',
-		},
-	],
-	'webflow-turnstile-edge-worker-pipeline': [
-		{
-			label: 'What changed',
-			copy: 'Only verified and authentic submissions reach downstream workflows instead of allowing noisy public intake paths.',
-		},
-		{
-			label: 'Operational gain',
-			copy: 'Routing logic became deterministic across forms and domains rather than drifting through scattered controls.',
-		},
-		{
-			label: 'Visibility',
-			copy: 'Blocked and allowed paths now produce usable telemetry for troubleshooting and review.',
-		},
-	],
-	'faceted-deals-search-engine': [
-		{
-			label: 'What changed',
-			copy: 'Filtering moved from browser-side complexity into a structured server-side search architecture.',
-		},
-		{
-			label: 'Operational gain',
-			copy: 'The query contract became clearer, reducing frontend branching and future backend coupling.',
-		},
-		{
-			label: 'Scalability',
-			copy: 'Discovery now holds up against large changing datasets without leaning on fragile client-side filtering.',
-		},
-	],
-	'internal-ml-workbench-modernization': [
-		{
-			label: 'What changed',
-			copy: 'A stale monolithic ML tool became a modular internal workbench with clearer boundaries and reproducible runtime behavior.',
-		},
-		{
-			label: 'Operational gain',
-			copy: 'Containerized delivery and CI-backed publishing reduced setup friction and deployment guesswork for internal users.',
-		},
-		{
-			label: 'Maintainability',
-			copy: 'Explicit pipelines and modular structure made the system easier to inspect, evolve, and hand over.',
-		},
-	],
-};
-
 export const workOverviewProofItems: ProofItem[] = [
 	{
 		label: 'Edge control',
@@ -96,4 +37,3 @@ export const workOverviewProofItems: ProofItem[] = [
 	},
 ];
 
-export const getWorkProofItems = (slug: string) => workProofMap[slug] ?? [];

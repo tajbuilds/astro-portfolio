@@ -1,6 +1,6 @@
 # Native Android API Handoff (Astro Portfolio)
 
-This document now reflects the **implemented** mobile API in this repository.
+This document reflects the GitBook-backed **mobile API v2** implemented in this repository.
 
 ## Goal
 
@@ -23,7 +23,7 @@ All endpoints return JSON.
 
 - `http://localhost:4321/api/mobile/home`
 - `http://localhost:4321/api/mobile/work`
-- `http://localhost:4321/api/mobile/work/smart-edge-cache-proxy`
+- `http://localhost:4321/api/mobile/work/edge-cache-api-proxy`
 - `http://localhost:4321/api/mobile/about`
 - `http://localhost:4321/api/mobile/contact`
 - `http://localhost:4321/api/mobile/privacy`
@@ -32,24 +32,27 @@ All endpoints return JSON.
 
 - `https://tajs.io/api/mobile/home`
 - `https://tajs.io/api/mobile/work`
-- `https://tajs.io/api/mobile/work/smart-edge-cache-proxy`
+- `https://tajs.io/api/mobile/work/edge-cache-api-proxy`
 - `https://tajs.io/api/mobile/about`
 - `https://tajs.io/api/mobile/contact`
 - `https://tajs.io/api/mobile/privacy`
 
-## Current Work Slugs (as of 2026-03-07)
+## Work Discovery
 
-- `webflow-turnstile-edge-worker-pipeline`
-- `faceted-deals-search-engine`
-- `smart-edge-cache-proxy`
-- `internal-ml-workbench-modernization`
+Work slugs are no longer registered in this repository. They are discovered from direct children of the private GitBook `Projects` hierarchy.
+
+The current representative project is:
+
+- `edge-cache-api-proxy`
+
+Adding/removing a GitBook project changes the mobile work collection without a code change.
 
 ## Response Rules
 
 Implemented across all endpoints:
 
 - `Content-Type: application/json; charset=utf-8`
-- `version: "1.0"` in root
+- `version: "2.0"` in root
 - `generatedAt` as ISO timestamp (UTC)
 - `404` for unknown work slug
 - `500` safe error on unexpected failures
@@ -58,7 +61,7 @@ Standard error shape:
 
 ```json
 {
-  "version": "1.0",
+  "version": "2.0",
   "error": {
     "code": "not_found",
     "message": "Work item not found"
@@ -78,33 +81,35 @@ Returns:
 
 ### `GET /api/mobile/work`
 
-Returns:
+Returns GitBook-discovered `items[]` with:
 
-- `items[]` with:
-  - `slug`
-  - `title`
-  - `summary`
-  - `tags[]`
-  - `role`
-  - `timeline`
-  - `coverImageUrl`
-  - `publishedAt`
-  - `updatedAt`
+- `slug`
+- `title`
+- `summary`
+- `tags[]`
+- `role`
+- `timeline` — nullable; GitBook currently exposes no authoritative project timeline
+- `coverImageUrl` — default portfolio cover until CMS media metadata is introduced
+- `publishedAt` — nullable; GitBook currently exposes no authoritative per-project publication date
+- `updatedAt` — nullable; GitBook currently exposes no authoritative per-project update date
+- `href` — public `/work/<project>/` route
 
 ### `GET /api/mobile/work/[slug]`
 
-Returns:
+Returns `item` with all summary fields, plus:
 
-- `item` with all summary fields, plus:
-  - `content.format` = `"markdown"`
-  - `content.body` (raw markdown)
-  - `sections.context`
-  - `sections.constraints`
-  - `sections.approach`
-  - `sections.outcome`
-  - `sections.learnings`
-  - `links.liveDemo` (nullable)
-  - `links.repository` (nullable)
+- `content.format` = `"markdown"`
+- `content.body` — GitBook project-root Markdown
+- compatibility `sections.context`
+- compatibility `sections.constraints`
+- compatibility `sections.approach`
+- compatibility `sections.outcome`
+- compatibility `sections.learnings`
+- `pages[]` — ordered GitBook child-page navigation with `title`, `summary`, `path`, and public `href`
+- `links.liveDemo` — nullable
+- `links.repository` — nullable
+
+The compatibility `sections` object is derived from conventional level-two headings in the project-root Markdown. New mobile clients should prefer `content.body` plus `pages[]` for the complete CMS-backed case study.
 
 ### `GET /api/mobile/about`
 
@@ -152,7 +157,7 @@ Error responses send:
 ```bash
 curl -s http://localhost:4321/api/mobile/home | jq
 curl -s http://localhost:4321/api/mobile/work | jq
-curl -s http://localhost:4321/api/mobile/work/smart-edge-cache-proxy | jq
+curl -s http://localhost:4321/api/mobile/work/edge-cache-api-proxy | jq
 curl -s http://localhost:4321/api/mobile/about | jq
 curl -s http://localhost:4321/api/mobile/contact | jq
 curl -s http://localhost:4321/api/mobile/privacy | jq
@@ -174,7 +179,7 @@ Implemented files:
 
 - Endpoint paths remain stable.
 - `version` and `generatedAt` are always present.
-- `content.format` is currently `markdown`.
-- Dates are string values (`YYYY-MM-DD`).
-
-Breaking changes should bump API version.
+- `content.format` is `markdown`.
+- Work discovery and detail content come from GitBook.
+- Unsupported historical metadata is explicitly `null`; values are not fabricated.
+- Contract-breaking payload changes require an API version bump.

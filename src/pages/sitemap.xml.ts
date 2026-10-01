@@ -1,25 +1,15 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
+
 import {
-	contentSlug,
-	getPublishedWorkEntries,
-	getPublishedWorkTags,
-	slugifyTag,
-} from '../lib/data/portfolio-data';
+	createGitBookPortfolioFromEnv,
+	normalizeProjectTagKey,
+	type GitBookRuntimeEnv,
+	type PortfolioNavigationNode,
+	type PortfolioProjectSummary,
+} from '../lib/gitbook';
 
 export const prerender = false;
-
-type CaseStudyRow = {
-	id: string;
-	slug: string;
-};
-
-type DocumentRow = {
-	slug_path: string;
-};
-
-const normalizePath = (value: string | null | undefined) =>
-	(value || '').trim().replace(/^\/+|\/+$/g, '');
 
 const toUrl = (origin: string, path: string) => `${origin}${path}`;
 
@@ -31,63 +21,64 @@ const xmlEscape = (value: string) =>
 		.replaceAll('"', '&quot;')
 		.replaceAll("'", '&apos;');
 
+const encodeRelativePath = (value: string) =>
+	value
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/');
+
+const appendProjectPaths = (
+	paths: string[],
+	project: PortfolioProjectSummary,
+	nodes: PortfolioNavigationNode[],
+) => {
+	const projectPath = `/work/${encodeURIComponent(project.slug)}/`;
+	paths.push(projectPath);
+
+	const walk = (items: PortfolioNavigationNode[]) => {
+		for (const item of items) {
+			const relativePath = encodeRelativePath(item.relativePath);
+			if (relativePath) paths.push(`${projectPath}${relativePath}/`);
+			if (item.children.length) walk(item.children);
+		}
+	};
+
+	walk(nodes);
+};
+
 export const GET: APIRoute = async ({ request }) => {
 	const origin = new URL(request.url).origin;
-	const staticPaths = ['/', '/about/', '/contact/', '/work/', '/docs/'];
-	const [workEntries, workTags] = await Promise.all([getPublishedWorkEntries(), getPublishedWorkTags()]);
+	const staticPaths = ['/', '/about/', '/contact/', '/work/'];
+	const contentPaths: string[] = [];
+	const gitbookEnv = env as unknown as GitBookRuntimeEnv;
 
-	const contentPaths = [
-		...workEntries.map((entry) => `/work/${contentSlug(entry.id)}/`),
-		...workTags.map((tag) => `/work/tags/${slugifyTag(tag)}/`),
-	];
+	if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
+		try {
+			const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+			const [projects, tags] = await Promise.all([
+				portfolio.getProjects(),
+				portfolio.getProjectTags(),
+			]);
 
-	const docsPaths: string[] = [];
-	const db = env.DB as D1Database | undefined;
+			const navigation = await Promise.all(
+				projects.map((project) => portfolio.getProjectPages(project.slug)),
+			);
 
-	if (db) {
-		const caseStudiesResult = await db
-			.prepare(
-				`SELECT id, slug
-				 FROM case_studies
-				 WHERE is_visible = 1
-				   AND source_collection_id = (
-						SELECT oc.id
-						FROM outline_collections oc
-						WHERE oc.slug = 'case-studies'
-						  AND oc.is_visible = 1
-						ORDER BY oc.nav_order ASC, oc.updated_at DESC
-						LIMIT 1
-				   )
-				 ORDER BY nav_order ASC, title ASC`
-			)
-			.all<CaseStudyRow>();
+			projects.forEach((project, index) => {
+				appendProjectPaths(contentPaths, project, navigation[index] ?? []);
+			});
 
-		for (const caseStudy of caseStudiesResult.results || []) {
-			docsPaths.push(`/docs/case-studies/${caseStudy.slug}/`);
-
-			const docsResult = await db
-				.prepare(
-					`SELECT slug_path
-					 FROM documents
-					 WHERE case_study_id = ?1
-					 ORDER BY depth ASC, nav_order ASC, title ASC`
-				)
-				.bind(caseStudy.id)
-				.all<DocumentRow>();
-
-			for (const doc of docsResult.results || []) {
-				const slugPath = normalizePath(doc.slug_path);
-				if (!slugPath || slugPath === caseStudy.slug) continue;
-				const rel = slugPath.startsWith(`${caseStudy.slug}/`)
-					? slugPath.slice(caseStudy.slug.length + 1)
-					: slugPath;
-				if (!rel) continue;
-				docsPaths.push(`/docs/case-studies/${caseStudy.slug}/${rel}/`);
+			for (const tag of tags) {
+				const tagKey = normalizeProjectTagKey(tag);
+				if (tagKey) contentPaths.push(`/work/tags/${encodeURIComponent(tagKey)}/`);
 			}
+		} catch (error) {
+			console.error('GitBook sitemap discovery failed.', error);
 		}
 	}
 
-	const allPaths = Array.from(new Set([...staticPaths, ...contentPaths, ...docsPaths])).sort();
+	const allPaths = Array.from(new Set([...staticPaths, ...contentPaths])).sort();
 
 	const urls = allPaths
 		.map((path) => `  <url><loc>${xmlEscape(toUrl(origin, path))}</loc></url>`)

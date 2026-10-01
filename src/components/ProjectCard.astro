@@ -1,17 +1,15 @@
 ---
 import PillTag from './PillTag.astro';
-import FormattedDate from './FormattedDate.astro';
 
 interface Props {
 	title: string;
 	description: string;
 	tags: string[];
 	href: string;
-	date?: Date;
 	compact?: boolean;
 }
 
-const { title, description, tags, href, date, compact = false } = Astro.props;
+const { title, description, tags, href, compact = false } = Astro.props;
 const displayTags = tags.slice(0, 3);
 ---
 
@@ -19,13 +17,6 @@ const displayTags = tags.slice(0, 3);
 	<article
 		class:list={['project-card', 'surface-card', 'surface-card--standard', { 'project-card--compact': compact }]}
 	>
-		<div class="project-card__meta">
-			{date && (
-				<p class="project-card__date">
-					<FormattedDate date={date} />
-				</p>
-			)}
-		</div>
 		<h3>{title}</h3>
 		<p>{description}</p>
 		<div class="project-card__tags">
@@ -97,15 +88,6 @@ const displayTags = tags.slice(0, 3);
 	.project-card p {
 		margin: 0;
 		font-size: 0.96rem;
-	}
-
-	.project-card__meta {
-		min-height: 1rem;
-	}
-
-	.project-card__date {
-		font-size: var(--font-size-xs);
-		color: var(--color-text-muted);
 	}
 
 	.project-card__tags {
