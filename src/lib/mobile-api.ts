@@ -1,10 +1,18 @@
-import { type WorkEntry, getPublishedWorkEntries, contentSlug } from './data/portfolio-data';
+import {
+	createGitBookPortfolioFromEnv,
+	formatProjectTagLabel,
+	type GitBookPortfolio,
+	type GitBookRuntimeEnv,
+	type PortfolioNavigationNode,
+	type PortfolioProject,
+	type PortfolioProjectSummary,
+} from './gitbook';
 
-export const MOBILE_API_VERSION = '1.0';
+export const MOBILE_API_VERSION = '2.0';
 export const MOBILE_READ_CACHE =
 	'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
 
-const isoDate = (value: Date) => value.toISOString().slice(0, 10);
+const DEFAULT_COVER_IMAGE = '/images/work-default-cover.svg';
 
 const pickSection = (sections: Record<string, string>, keys: string[]) => {
 	for (const key of keys) {
@@ -14,7 +22,7 @@ const pickSection = (sections: Record<string, string>, keys: string[]) => {
 };
 
 const parseSections = (markdown: string) => {
-	const sectionRegex = /^##\s+(.+)\n([\s\S]*?)(?=^##\s+|\Z)/gm;
+	const sectionRegex = /^##\s+(.+)\r?\n([\s\S]*?)(?=^##\s+|(?![\s\S]))/gm;
 	const sections: Record<string, string> = {};
 
 	let match: RegExpExecArray | null;
@@ -26,6 +34,18 @@ const parseSections = (markdown: string) => {
 
 	return sections;
 };
+
+const flattenNavigation = (nodes: PortfolioNavigationNode[]): PortfolioNavigationNode[] =>
+	nodes.flatMap((node) => [node, ...flattenNavigation(node.children)]);
+
+const projectHref = (slug: string) => `/work/${encodeURIComponent(slug)}/`;
+
+const pageHref = (projectSlug: string, relativePath: string) =>
+	`${projectHref(projectSlug)}${relativePath
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/')}/`;
 
 export const ok = (payload: Record<string, unknown>, cacheControl = MOBILE_READ_CACHE) =>
 	new Response(
@@ -58,39 +78,67 @@ export const fail = (status: number, code: string, message: string) =>
 		},
 	);
 
-export const getWorkEntries = async () =>
-	getPublishedWorkEntries();
+export const createMobilePortfolio = (runtimeEnv: GitBookRuntimeEnv): GitBookPortfolio => {
+	if (!runtimeEnv.GITBOOK_TOKEN?.trim()) {
+		throw new Error('GitBook portfolio is not configured.');
+	}
 
-export const toWorkSummary = (entry: WorkEntry) => ({
-	slug: contentSlug(entry.id),
-	title: entry.data.title,
-	summary: entry.data.description,
-	tags: entry.data.tags,
+	return createGitBookPortfolioFromEnv(runtimeEnv);
+};
+
+export const toWorkSummary = (project: PortfolioProjectSummary) => ({
+	slug: project.slug,
+	title: project.title,
+	summary: project.description,
+	tags: project.tags.map(formatProjectTagLabel),
 	role: 'Solutions Architect',
-	timeline: String(entry.data.date.getUTCFullYear()),
-	coverImageUrl: entry.data.coverImage || '/images/work-default-cover.svg',
-	publishedAt: isoDate(entry.data.date),
-	updatedAt: isoDate(entry.data.date),
+	timeline: null,
+	coverImageUrl: DEFAULT_COVER_IMAGE,
+	publishedAt: null,
+	updatedAt: null,
+	href: projectHref(project.slug),
 });
 
-export const toWorkDetail = (entry: WorkEntry) => {
-	const sections = parseSections(entry.body);
+export const toWorkDetail = (project: PortfolioProject) => {
+	const sections = parseSections(project.markdown);
+
 	return {
-		...toWorkSummary(entry),
+		...toWorkSummary(project),
 		content: {
 			format: 'markdown',
-			body: entry.body,
+			body: project.markdown,
 		},
 		sections: {
-			context: pickSection(sections, ['tl;dr', 'problem']),
-			constraints: pickSection(sections, ['constraints']),
-			approach: pickSection(sections, ['architecture', 'key decisions']),
-			outcome: pickSection(sections, ['results']),
-			learnings: pickSection(sections, ['future enhancements', 'next improvements']),
+			context: pickSection(sections, [
+				'executive overview',
+				'context',
+				'problem',
+				'why the problem mattered',
+			]),
+			constraints: pickSection(sections, ['constraints', 'architectural responsibility']),
+			approach: pickSection(sections, [
+				'architecture at a glance',
+				'architecture',
+				'approach',
+				'target architecture',
+			]),
+			outcome: pickSection(sections, ['outcome', 'results', 'validation & outcomes']),
+			learnings: pickSection(sections, [
+				'lessons learned',
+				'learnings',
+				'future enhancements',
+				'next improvements',
+			]),
 		},
+		pages: flattenNavigation(project.navigation).map((page) => ({
+			title: page.title,
+			summary: page.description,
+			path: page.relativePath,
+			href: pageHref(project.slug, page.relativePath),
+		})),
 		links: {
 			liveDemo: null,
-			repository: entry.data.github ?? null,
+			repository: null,
 		},
 	};
 };

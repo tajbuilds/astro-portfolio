@@ -11,14 +11,7 @@ interface Env {
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SITE_SECRET: string;
   RESEND_API_KEY: string;
-  MEDIA_BUCKET: R2Bucket;
-  MEDIA_UPLOAD_TOKEN?: string;
   PUBLIC_GA_MEASUREMENT_ID?: string;
-  GISCUS_REPO?: string;
-  GISCUS_REPO_ID?: string;
-  GISCUS_CATEGORY?: string;
-  GISCUS_CATEGORY_ID?: string;
-  GISCUS_LANG?: string;
   GITBOOK_TOKEN?: string;
   GITBOOK_SPACE_ID?: string;
   GITBOOK_PROJECTS_PATH?: string;

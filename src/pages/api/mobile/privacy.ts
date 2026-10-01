@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { fail, ok } from '../../../lib/mobile-api';
-import { privacyData } from '../../../lib/data/portfolio-data';
+import { privacyData } from '../../../lib/data/site-data';
 
 export const prerender = false;
 

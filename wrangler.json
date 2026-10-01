@@ -11,20 +11,6 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
-	"r2_buckets": [
-		{
-			"binding": "MEDIA_BUCKET",
-			"bucket_name": "portfolio",
-			"preview_bucket_name": "portfolio"
-		}
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "portfolio_content_prod",
-			"database_id": "6f2bad45-f456-491f-9754-4873fa815e9e"
-		}
-	],
 	"vars": {
 		"CONTACT_TO_EMAIL": "contact@tajs.io",
 		"CONTACT_FROM_EMAIL": "Portfolio Contact <noreply@tajs.io>",

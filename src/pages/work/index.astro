@@ -4,34 +4,36 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import GitBookProjectCard from '../../components/GitBookProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
 import ProofStrip from '../../components/ProofStrip.astro';
 import {
-	contentSlug,
-	getPublishedWorkEntries,
-	getPublishedWorkTags,
-	slugifyTag,
-} from '../../lib/data/portfolio-data';
-import { createGitBookPortfolioFromEnv } from '../../lib/gitbook';
+	createGitBookPortfolioFromEnv,
+	formatProjectTagLabel,
+	normalizeProjectTagKey,
+} from '../../lib/gitbook';
 import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../../lib/gitbook';
 import { workOverviewProofItems } from '../../lib/proof-data';
 
 export const prerender = false;
 
-const workItems = await getPublishedWorkEntries();
-const tags = await getPublishedWorkTags();
-
 const gitbookEnv = env as unknown as GitBookRuntimeEnv;
 let gitbookProjects: PortfolioProjectSummary[] = [];
+let tags: string[] = [];
+let gitbookError = false;
 
 if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
 	try {
-		const gitbookPortfolio = createGitBookPortfolioFromEnv(gitbookEnv);
-		gitbookProjects = await gitbookPortfolio.getProjects();
+		const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+		[gitbookProjects, tags] = await Promise.all([
+			portfolio.getProjects(),
+			portfolio.getProjectTags(),
+		]);
 	} catch (error) {
+		gitbookError = true;
 		console.error('GitBook project discovery failed on /work.', error);
 	}
+} else {
+	gitbookError = true;
 }
 ---
 
@@ -51,38 +53,16 @@ if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
 			</div>
 		</section>
 
-		{
-			gitbookProjects.length > 0 && (
-				<section class="cms-discovery">
-					<div data-reveal="soft">
-						<SectionHeading
-							eyebrow="GitBook CMS Preview"
-							title="Architecture-led case studies"
-							description="Live project discovery from the private portfolio CMS. These cards are generated from the GitBook Projects hierarchy rather than duplicated Astro content."
-						/>
-					</div>
-
-					<ul class="work-grid">
-						{gitbookProjects.map((project) => (
-							<li data-reveal="soft">
-								<GitBookProjectCard
-									title={project.title}
-									description={project.description}
-									sectionCount={project.sectionCount}
-									href={`/work/cms-preview/${project.slug}/`}
-								/>
-							</li>
-						))}
-					</ul>
-				</section>
-			)
-		}
-
 		<section class="work-filter surface-card surface-card--soft" aria-label="Filter by tag" data-reveal="soft">
 			<p>Filter by focus area:</p>
 			<div class="work-filter__tags">
 				<PillTag label="All" href="/work/" />
-				{tags.map((tag) => <PillTag label={tag} href={`/work/tags/${slugifyTag(tag)}/`} />)}
+				{tags.map((tag) => (
+					<PillTag
+						label={formatProjectTagLabel(tag)}
+						href={`/work/tags/${normalizeProjectTagKey(tag)}/`}
+					/>
+				))}
 			</div>
 		</section>
 
@@ -94,21 +74,26 @@ if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
 		/>
 
 		<section>
-			<ul class="work-grid">
-				{
-					workItems.map((item) => (
+			{gitbookProjects.length > 0 ? (
+				<ul class="work-grid">
+					{gitbookProjects.map((project) => (
 						<li data-reveal="soft">
 							<ProjectCard
-								title={item.data.title}
-								description={item.data.description}
-								tags={item.data.tags}
-								date={item.data.date}
-								href={`/work/${contentSlug(item.id)}/`}
+								title={project.title}
+								description={project.description}
+								tags={project.tags.map(formatProjectTagLabel)}
+								href={`/work/${project.slug}/`}
 							/>
 						</li>
-					))
-				}
-			</ul>
+					))}
+				</ul>
+			) : (
+				<p class="section-intro">
+					{gitbookError
+						? 'Case studies are temporarily unavailable.'
+						: 'No case studies have been published yet.'}
+				</p>
+			)}
 		</section>
 	</Container>
 </MainLayout>
@@ -116,20 +101,6 @@ if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
 <style>
 	.work-intro {
 		margin-bottom: var(--space-6);
-	}
-
-	.cms-discovery {
-		margin-bottom: var(--space-7);
-		padding: clamp(1rem, 2vw, 1.4rem);
-		border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
-		border-radius: var(--radius-lg);
-		background:
-			linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 46%),
-			color-mix(in srgb, var(--color-bg-elevated) 78%, transparent);
-	}
-
-	.cms-discovery :global(.section-heading) {
-		margin-bottom: var(--space-4);
 	}
 
 	.work-filter {

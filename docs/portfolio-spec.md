@@ -23,8 +23,10 @@ Create a modern, smooth, and fast personal portfolio that highlights selected wo
 Core routes:
 
 - `/` Home
-- `/projects` Project index
-- `/projects/[slug]` Project case study
+- `/work` Project index
+- `/work/[project]` Project overview
+- `/work/[project]/[...page]` Project documentation
+- `/work/tags/[tag]` Project taxonomy
 - `/about`
 - `/contact`
 
@@ -46,9 +48,9 @@ Each project preview should include:
 
 - Project name
 - Short impact statement
-- Tech stack (few key items)
-- Role and timeline
-- Link to case study and/or live demo
+- Public project tags (few key items)
+- Short impact/context summary
+- Link to the case study
 
 ## Case Study Requirements
 
@@ -82,6 +84,12 @@ Each project detail page should include:
 - Minimal client-side hydration.
 - Tailwind can be added for velocity, but utility sprawl should be controlled.
 - Avoid unnecessary framework additions unless a clear need exists.
+
+## Content Model
+
+GitBook is the portfolio source of truth. Direct children of the configured `Projects` root are public projects, project-root tags drive taxonomy, and the reserved `showcase` tag controls homepage eligibility.
+
+Ordinary project/content changes should not require repository edits.
 
 ## Content Guidelines
 

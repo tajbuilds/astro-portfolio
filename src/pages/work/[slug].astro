@@ -1,51 +1,51 @@
 ---
-import { render } from 'astro:content';
-import WorkCaseStudy from '../../layouts/WorkCaseStudy.astro';
-import { contentSlug, getPublishedWorkEntries, getWorkSeo } from '../../lib/data/portfolio-data';
+import { env } from 'cloudflare:workers';
 
-const slug = Astro.params.slug?.toLowerCase() ?? '';
-const sortedWork = await getPublishedWorkEntries();
-const index = sortedWork.findIndex((entry) => contentSlug(entry.id).toLowerCase() === slug);
-const post = index >= 0 ? sortedWork[index] : null;
+import GitBookDocumentationReader from '../../components/GitBookDocumentationReader.astro';
+import {
+	createGitBookPortfolioFromEnv,
+	type GitBookRuntimeEnv,
+	type PortfolioProject,
+} from '../../lib/gitbook';
 
-if (!post) {
-	return Astro.redirect('/work/', 302);
+export const prerender = false;
+
+const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+
+if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	return new Response('Portfolio content is not configured in this environment.', { status: 503 });
 }
 
-const previous =
-	sortedWork[index - 1]
-		? { title: sortedWork[index - 1].data.title, slug: contentSlug(sortedWork[index - 1].id) }
-		: undefined;
+let project: PortfolioProject | null = null;
 
-const next =
-	sortedWork[index + 1]
-		? { title: sortedWork[index + 1].data.title, slug: contentSlug(sortedWork[index + 1].id) }
-		: undefined;
+try {
+	const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+	project = await portfolio.getProject(slug);
+} catch (error) {
+	console.error(`GitBook project lookup failed for /work/${slug}/.`, error);
+	return new Response('Portfolio content is temporarily unavailable.', { status: 503 });
+}
 
-const { Content, headings } = await render(post);
-const words = post.body.split(/\s+/).filter(Boolean).length;
-const readingTime = Math.max(1, Math.ceil(words / 220));
-const seo = getWorkSeo(post);
+if (!project) {
+	return new Response('Case study not found.', { status: 404 });
+}
+
+const projectHref = `/work/${project.slug}/`;
+const pageHref = (relativePath: string) =>
+	`${projectHref}${relativePath
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/')}/`;
 ---
 
-<WorkCaseStudy
-	slug={slug}
-	title={post.data.title}
-	description={post.data.description}
-	date={post.data.date}
-	updatedDate={post.data.updatedDate}
-	tags={post.data.tags}
-	github={post.data.github}
-	coverImage={post.data.coverImage}
-	imageAlt={seo.imageAlt}
-	externalCaseStudyUrl={post.data.externalCaseStudyUrl}
-	headings={headings}
-	readingTime={readingTime}
-	previous={previous}
-	next={next}
-	seoTitle={seo.title}
-	seoDescription={seo.description}
-	keywords={seo.keywords}
->
-	<Content />
-</WorkCaseStudy>
+<GitBookDocumentationReader
+	project={project}
+	navigation={project.navigation}
+	projectHref={projectHref}
+	pageHref={pageHref}
+	rootMarkdown={project.markdown}
+	backHref="/work/"
+	backLabel="All work"
+/>

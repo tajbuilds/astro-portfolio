@@ -13,8 +13,6 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^13.2.1",
-		"@astrojs/sitemap": "^3.7.2",
-		"@astrojs/starlight": "^0.38.4",
 		"astro": "^6.1.9",
 		"marked": "^15.0.12",
 		"typescript": "5.9.3"
@@ -34,7 +32,8 @@
 		"deploy": "wrangler deploy",
 		"dev": "astro dev",
 		"preview": "astro build && wrangler dev",
-		"test:gitbook": "node --experimental-strip-types --test test/gitbook/*.test.mjs"
+		"test:gitbook": "node --experimental-strip-types --test test/gitbook/*.test.mjs",
+		"test:mobile": "node --experimental-strip-types --test test/mobile/*.test.mjs"
 	},
 	"type": "module",
 	"overrides": {

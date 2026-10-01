@@ -1,179 +1,21 @@
 ---
-import DocumentationReader from "../../components/DocumentationReader.astro";
-import type { NavNode } from "../../components/DocNavTree.astro";
-import { env } from "cloudflare:workers";
+const slugParam = Astro.params.slug?.trim() ?? '';
+const parts = slugParam.split('/').filter(Boolean);
 
-export const prerender = false;
-
-const slugParam = Astro.params.slug || "";
-const parts = slugParam.split("/").filter(Boolean);
-
-if (parts.length < 2 || parts[0] !== "case-studies") {
-return new Response("Not found", { status: 404 });
+if (parts.length < 2 || parts[0] !== 'case-studies') {
+	return Astro.redirect('/work/', 301);
 }
 
-const caseSlug = parts[1];
-const sectionPath = parts.slice(2).join("/");
+const projectSlug = encodeURIComponent(parts[1].toLowerCase());
+const pagePath = parts
+	.slice(2)
+	.map((segment) => encodeURIComponent(segment))
+	.join('/');
 
-const normalizePath = (value: string | null | undefined) =>
-	(value || "").trim().replace(/^\/+|\/+$/g, "");
-
-const targetRelPath = normalizePath(sectionPath);
-
-const db = env.DB as D1Database | undefined;
-if (!db) {
-return new Response("D1 binding 'DB' is missing on this environment.", { status: 500 });
-}
-
-type CaseStudyRow = {
-id: string;
-title: string;
-slug: string;
-summary: string | null;
-};
-
-type DocumentRow = {
-id: string;
-title: string;
-slug_path: string;
-parent_id: string | null;
-nav_order: number;
-depth: number;
-is_root: number;
-body_md: string;
-excerpt: string | null;
-created_at: string;
-};
-
-const caseStudy = await db
-.prepare(
-`SELECT id, title, slug, summary
- FROM case_studies
- WHERE slug = ?1
-	 AND is_visible = 1
-	 AND source_collection_id = (
-				SELECT oc.id
-				FROM outline_collections oc
-				WHERE oc.slug = 'case-studies'
-					AND oc.is_visible = 1
-				ORDER BY oc.nav_order ASC, oc.updated_at DESC
-				LIMIT 1
-	 )
- LIMIT 1`
-)
-.bind(caseSlug)
-.first<CaseStudyRow>();
-
-if (!caseStudy) return new Response("Not found", { status: 404 });
-
-const docsResult = await db
-.prepare(
-`SELECT id, title, slug_path, parent_id, nav_order, depth, is_root, body_md, excerpt, created_at
- FROM documents
- WHERE case_study_id = ?1
- ORDER BY depth ASC, COALESCE(parent_id, ''), nav_order ASC, created_at ASC, title ASC`
-)
-.bind(caseStudy.id)
-.all<DocumentRow>();
-
-const docs = docsResult.results || [];
-
-const getDocRelPath = (doc: DocumentRow) => {
-	const slugPath = normalizePath(doc.slug_path);
-	if (!slugPath) return "";
-	if (slugPath === caseSlug) return "";
-	if (slugPath.startsWith(`${caseSlug}/`)) return slugPath.slice(caseSlug.length + 1);
-	return slugPath;
-};
-
-const currentDoc = targetRelPath
-	? docs.find((d) => getDocRelPath(d) === targetRelPath)
-			|| docs.find((d) => normalizePath(d.slug_path).endsWith(`/${targetRelPath}`))
-	: docs.find((d) => normalizePath(d.slug_path) === caseSlug)
-			|| docs.find((d) => d.is_root === 1)
-			|| docs.find((d) => d.depth === 0);
-
-if (!currentDoc) return new Response("Not found", { status: 404 });
-
-const toLink = (slugPath: string) => {
-const normalized = normalizePath(slugPath);
-if (!normalized || normalized === caseSlug) return `/docs/case-studies/${caseSlug}/`;
-const rel = normalized.startsWith(`${caseSlug}/`)
-	? normalized.slice(caseSlug.length + 1)
-	: normalized;
-return rel ? `/docs/case-studies/${caseSlug}/${rel}/` : `/docs/case-studies/${caseSlug}/`;
-};
-
-const buildTree = (allDocs: DocumentRow[]): NavNode[] => {
-const map = new Map<string, NavNode>();
-for (const d of allDocs) {
-map.set(d.id, { id: d.id, title: d.title, slug_path: d.slug_path, nav_order: d.nav_order, children: [] });
-}
-const roots: NavNode[] = [];
-for (const d of allDocs) {
-const node = map.get(d.id)!;
-if (d.parent_id && d.parent_id !== d.id && map.has(d.parent_id)) {
-map.get(d.parent_id)!.children.push(node);
-} else {
-roots.push(node);
-}
-}
-return roots;
-};
-
-const navTree = buildTree(docs);
-
-const sectionSegments =
-getDocRelPath(currentDoc)
-	? getDocRelPath(currentDoc).split("/").filter(Boolean)
-	: [];
-
-const breadcrumbs: { label: string; href: string }[] = [
-{ label: "Docs", href: "/docs/" },
-{ label: caseStudy.title, href: `/docs/case-studies/${caseSlug}/` },
-];
-for (let i = 0; i < sectionSegments.length; i++) {
-const sp = `${caseSlug}/${sectionSegments.slice(0, i + 1).join("/")}`;
-const rel = sectionSegments.slice(0, i + 1).join("/");
-const doc = docs.find((d) => getDocRelPath(d) === rel)
-	|| docs.find((d) => normalizePath(d.slug_path) === sp);
-if (doc) breadcrumbs.push({ label: doc.title, href: toLink(sp) });
-}
-
-const byId = new Map(docs.map((d) => [d.id, d] as const));
-const flatOrdered: DocumentRow[] = [];
-const walk = (nodes: NavNode[]) => {
-for (const node of nodes) {
-const row = byId.get(node.id);
-if (row) flatOrdered.push(row);
-if (node.children.length) walk(node.children);
-}
-};
-walk(navTree);
-const currentIdx = flatOrdered.findIndex((d) => d.id === currentDoc.id);
-const prevDoc = currentIdx > 0 ? flatOrdered[currentIdx - 1] : null;
-const nextDoc = currentIdx < flatOrdered.length - 1 ? flatOrdered[currentIdx + 1] : null;
-
-const summaryText = currentDoc.excerpt || caseStudy.summary || "Extended architecture notes, implementation decisions, and delivery context for this case study.";
+return Astro.redirect(
+	pagePath
+		? `/work/${projectSlug}/${pagePath}/`
+		: `/work/${projectSlug}/`,
+	301,
+);
 ---
-
-<DocumentationReader
-	title={`${currentDoc.title} | ${caseStudy.title}`}
-	description={currentDoc.excerpt || caseStudy.summary || "Case study documentation"}
-	projectTitle={caseStudy.title}
-	currentTitle={currentDoc.title}
-	currentSlugPath={currentDoc.slug_path}
-	navTree={navTree}
-	toLink={toLink}
-	breadcrumbs={breadcrumbs}
-	summary={summaryText}
-	sectionCount={docs.length}
-	depthLabel={currentDoc.depth === 0 ? "Overview" : `Depth ${currentDoc.depth}`}
-	sourceLabel="D1 mirror"
-	markdown={currentDoc.body_md || ""}
-	previous={prevDoc ? { title: prevDoc.title, href: toLink(prevDoc.slug_path) } : null}
-	next={nextDoc ? { title: nextDoc.title, href: toLink(nextDoc.slug_path) } : null}
-	backHref="/docs/"
-	backLabel="All docs"
-	searchEnabled={true}
-/>

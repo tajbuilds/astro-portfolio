@@ -13,6 +13,87 @@ export const normalizeGitBookPath = (value: string | null | undefined) =>
 export const joinGitBookPath = (...parts: Array<string | null | undefined>) =>
   parts.map(normalizeGitBookPath).filter(Boolean).join('/');
 
+export const SHOWCASE_PROJECT_TAG = 'showcase';
+
+const normalizeTagLabel = (tag: unknown): string => {
+  if (typeof tag === 'string') return tag.trim();
+  if (!tag || typeof tag !== 'object') return '';
+
+  const value = tag as Record<string, unknown>;
+
+  if ('tag' in value) {
+    const nestedTag = value.tag;
+    if (typeof nestedTag === 'string') return nestedTag.trim();
+    if (nestedTag && typeof nestedTag === 'object') {
+      const nestedValue = nestedTag as Record<string, unknown>;
+      if (typeof nestedValue.tag === 'string') return nestedValue.tag.trim();
+    }
+  }
+
+  for (const key of ['name', 'title', 'label', 'slug']) {
+    const candidate = value[key];
+    if (typeof candidate === 'string' && candidate.trim()) return candidate.trim();
+  }
+
+  return '';
+};
+
+export const normalizeProjectTagKey = (tag: string) =>
+  tag.trim().toLocaleLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+const PROJECT_TAG_INITIALISMS = new Set([
+  'ai',
+  'api',
+  'cdn',
+  'ci',
+  'cms',
+  'css',
+  'd1',
+  'html',
+  'http',
+  'https',
+  'js',
+  'json',
+  'ml',
+  'r2',
+  'seo',
+  'sql',
+  'ssr',
+  'ts',
+  'ui',
+  'ux',
+]);
+
+export const formatProjectTagLabel = (tag: string) =>
+  normalizeProjectTagKey(tag)
+    .split('-')
+    .filter(Boolean)
+    .map((part) =>
+      PROJECT_TAG_INITIALISMS.has(part)
+        ? part.toUpperCase()
+        : `${part.charAt(0).toUpperCase()}${part.slice(1)}`,
+    )
+    .join(' ');
+
+export const normalizeGitBookProjectTags = (tags: unknown[] | null | undefined) => {
+  const seen = new Set<string>();
+  const normalized: string[] = [];
+
+  for (const rawTag of tags ?? []) {
+    const label = normalizeTagLabel(rawTag);
+    const key = normalizeProjectTagKey(label);
+    if (!label || !key || seen.has(key)) continue;
+
+    seen.add(key);
+    normalized.push(label);
+  }
+
+  return normalized;
+};
+
+export const isReservedProjectTag = (tag: string) =>
+  normalizeProjectTagKey(tag) === SHOWCASE_PROJECT_TAG;
+
 export const normalizeGitBookMarkdown = (
   markdown: string | null | undefined,
   pageTitle?: string | null,
@@ -85,16 +166,22 @@ export const mapNavigationNode = (
 export const mapProjectSummary = (
   page: GitBookPageTreeNode,
   order: number,
-): PortfolioProjectSummary => ({
-  id: page.id,
-  title: page.title,
-  slug: page.slug,
-  path: normalizeGitBookPath(page.path),
-  description: page.description?.trim() ?? '',
-  ...(page.icon ? { icon: page.icon } : {}),
-  order,
-  sectionCount: countDescendants(page.pages ?? []),
-});
+): PortfolioProjectSummary => {
+  const allTags = normalizeGitBookProjectTags(page.tags);
+
+  return {
+    id: page.id,
+    title: page.title,
+    slug: page.slug,
+    path: normalizeGitBookPath(page.path),
+    description: page.description?.trim() ?? '',
+    ...(page.icon ? { icon: page.icon } : {}),
+    order,
+    sectionCount: countDescendants(page.pages ?? []),
+    tags: allTags.filter((tag) => !isReservedProjectTag(tag)),
+    showcase: allTags.some((tag) => isReservedProjectTag(tag)),
+  };
+};
 
 export const mapProject = (
   treePage: GitBookPageTreeNode,

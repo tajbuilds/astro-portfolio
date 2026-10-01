@@ -58,6 +58,8 @@ export type PortfolioProjectSummary = {
   icon?: string;
   order: number;
   sectionCount: number;
+  tags: string[];
+  showcase: boolean;
 };
 
 export type PortfolioProject = PortfolioProjectSummary & {
@@ -83,6 +85,9 @@ export type GitBookPortfolioOptions = {
 
 export type GitBookPortfolio = {
   getProjects(): Promise<PortfolioProjectSummary[]>;
+  getShowcaseProjects(limit?: number): Promise<PortfolioProjectSummary[]>;
+  getProjectTags(): Promise<string[]>;
+  getProjectsByTag(tag: string): Promise<PortfolioProjectSummary[]>;
   getProject(projectSlug: string): Promise<PortfolioProject | null>;
   getProjectPages(projectSlug: string): Promise<PortfolioNavigationNode[] | null>;
   getPage(projectSlug: string, pagePath?: string): Promise<PortfolioDocumentPage | null>;
