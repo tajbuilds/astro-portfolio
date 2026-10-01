@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createGitBookClient } from '../../src/lib/gitbook/client.ts';
+import { createCachedGitBookClient } from '../../src/lib/gitbook/cache.ts';
+import { createGitBookClient, GitBookApiError } from '../../src/lib/gitbook/client.ts';
 import {
   findPageByPath,
   formatProjectTagLabel,
@@ -219,4 +220,130 @@ test('portfolio discovers only direct children of Projects and reads project/pag
   const missing = await portfolio.getPage('edge-cache-api-proxy', 'does-not-exist');
   assert.equal(missing, null);
   assert.equal(listPagesCalls, 1);
+});
+
+
+const createMemoryCache = () => {
+  const values = new Map();
+  return {
+    values,
+    cache: {
+      async get(key) {
+        return values.get(key) ?? null;
+      },
+      async put(key, value) {
+        values.set(key, value);
+      },
+    },
+  };
+};
+
+const silentCacheLogger = {
+  debug() {},
+  warn() {},
+};
+
+test('GitBook KV cache serves fresh tree and page data without repeating upstream calls', async () => {
+  const { cache } = createMemoryCache();
+  let listPagesCalls = 0;
+  let pageCalls = 0;
+
+  const upstream = {
+    spaceId: 'space-id',
+    async listPages() {
+      listPagesCalls += 1;
+      return fixtureTree;
+    },
+    async getPageById() {
+      pageCalls += 1;
+      return {
+        id: 'page-1',
+        title: 'Target Architecture',
+        slug: 'target-architecture',
+        path: 'projects/edge-cache-api-proxy/target-architecture',
+        pages: [],
+        markdown: '# Target Architecture',
+      };
+    },
+  };
+
+  const client = createCachedGitBookClient(upstream, cache, {
+    logger: silentCacheLogger,
+  });
+
+  await client.listPages();
+  await client.listPages();
+  await client.getPageById('page-1');
+  await client.getPageById('page-1');
+
+  assert.equal(listPagesCalls, 1);
+  assert.equal(pageCalls, 1);
+});
+
+test('GitBook KV cache serves stale content when a refresh fails transiently', async () => {
+  const { cache } = createMemoryCache();
+  let nowMs = 1_000;
+  let listPagesCalls = 0;
+
+  const upstream = {
+    spaceId: 'space-id',
+    async listPages() {
+      listPagesCalls += 1;
+      if (listPagesCalls > 1) throw new Error('temporary network failure');
+      return fixtureTree;
+    },
+    async getPageById() {
+      throw new Error('not used');
+    },
+  };
+
+  const client = createCachedGitBookClient(upstream, cache, {
+    treeFreshTtlSeconds: 1,
+    now: () => nowMs,
+    logger: silentCacheLogger,
+  });
+
+  const first = await client.listPages();
+  nowMs = 3_000;
+  const stale = await client.listPages();
+
+  assert.deepEqual(stale, first);
+  assert.equal(listPagesCalls, 2);
+});
+
+test('GitBook KV cache does not hide authentication failures behind stale data', async () => {
+  const { cache } = createMemoryCache();
+  let nowMs = 1_000;
+  let listPagesCalls = 0;
+
+  const upstream = {
+    spaceId: 'space-id',
+    async listPages() {
+      listPagesCalls += 1;
+      if (listPagesCalls > 1) {
+        throw new GitBookApiError(
+          'GitBook API request failed with 401.',
+          401,
+          'https://api.example.test/v1/spaces/space-id/content/pages',
+          'unauthorized',
+        );
+      }
+      return fixtureTree;
+    },
+    async getPageById() {
+      throw new Error('not used');
+    },
+  };
+
+  const client = createCachedGitBookClient(upstream, cache, {
+    treeFreshTtlSeconds: 1,
+    now: () => nowMs,
+    logger: silentCacheLogger,
+  });
+
+  await client.listPages();
+  nowMs = 3_000;
+
+  await assert.rejects(() => client.listPages(), GitBookApiError);
+  assert.equal(listPagesCalls, 2);
 });

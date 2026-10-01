@@ -13,6 +13,8 @@ interface Env {
   PUBLIC_GA_MEASUREMENT_ID?: string;
   GITBOOK_TOKEN?: string;
   GITBOOK_SPACE_ID?: string;
+  SESSION: KVNamespace;
+  GITBOOK_CACHE?: KVNamespace;
 }
 
 // Cloudflare secrets are set via `wrangler secret` / `.dev.vars` and are

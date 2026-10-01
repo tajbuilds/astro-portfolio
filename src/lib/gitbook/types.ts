@@ -19,10 +19,22 @@ export type GitBookPagesResponse = {
   pages: GitBookPageTreeNode[];
 };
 
+export type GitBookCacheStore = {
+  get(key: string): Promise<string | null>;
+  put(
+    key: string,
+    value: string,
+    options?: {
+      expirationTtl?: number;
+    },
+  ): Promise<void>;
+};
+
 export type GitBookRuntimeEnv = {
   GITBOOK_TOKEN?: string;
   GITBOOK_SPACE_ID?: string;
   GITBOOK_PROJECTS_PATH?: string;
+  GITBOOK_CACHE?: GitBookCacheStore;
 };
 
 export type GitBookClientOptions = {
