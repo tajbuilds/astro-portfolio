@@ -1,0 +1,282 @@
+[
+  {
+    "path": "smart-edge-cache-proxy/overview-problem.md",
+    "source_id": "758f4f82-d11b-45a5-8b24-00d0521ce008",
+    "body_sha256": "8561bd5290be4c62107a90302f74680e8c6c608bfeba00c6975d95c82f9a5fc1"
+  },
+  {
+    "path": "smart-edge-cache-proxy/architecture-request-flow.md",
+    "source_id": "29cb2010-cd99-4d01-8344-3b237d44e6f6",
+    "body_sha256": "e6bc67b963caea72a20f119da3b5d61bcde7e809b7614a0b8bbfa2c6208db615"
+  },
+  {
+    "path": "smart-edge-cache-proxy/index.md",
+    "source_id": "0f118459-42e3-46e4-8383-48f84646655c",
+    "body_sha256": "762bb8c76275b603636734d207630a39a66a427d1331e113c29f7f294230dfeb"
+  },
+  {
+    "path": "smart-edge-cache-proxy/caching-strategy.md",
+    "source_id": "358cf6b8-0098-4ea7-b794-a15e9d7679cf",
+    "body_sha256": "3b89d06f81114e17396a64101b1e21236f7cbf466801f835a3d39bb665bc2bc0"
+  },
+  {
+    "path": "smart-edge-cache-proxy/operations-observability.md",
+    "source_id": "46ecb8d5-0e0d-441b-a303-91bf5cf60dc0",
+    "body_sha256": "9206654387871eb9faab10b611d4457e59ce740c4e5e5dcadecf9c0aac01a1cc"
+  },
+  {
+    "path": "smart-edge-cache-proxy/architecture-diagrams.md",
+    "source_id": "d55f3bf8-6747-4227-8b5b-ff9a83736076",
+    "body_sha256": "2f36695b1c8837048758183f093b7517830a4799187c642756f211d2ab5fc8ba"
+  },
+  {
+    "path": "smart-edge-cache-proxy/lessons-learned-improvements.md",
+    "source_id": "2d235b22-3f3e-48a5-9bd5-1b9fefb5efb0",
+    "body_sha256": "935e90e914cb1b1b7fa71c9cde5b1efe362bb6c9707c59e89b2067ae81b67ecb"
+  },
+  {
+    "path": "smart-edge-cache-proxy/impact-metrics-smart-edge-cache-proxy.md",
+    "source_id": "7f024670-0ad4-4310-9757-7b7648615fb6",
+    "body_sha256": "e01ad18e24b570345574b7ae0d1401fa8611b0fd2b29955cbb6be456222f4151"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/index.md",
+    "source_id": "17e6d2c2-b96c-4279-bc74-bab7c065e193",
+    "body_sha256": "19659753e47494d579c8cc82fb49d5520e8a87ce1fc63affb18f7dcec2da6da7"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/sub-page-company-research-market-context.md",
+    "source_id": "d01a230d-b64b-4d50-add9-1ce6e22e59f0",
+    "body_sha256": "aa5be5f7059c5c6b9d307a8335ae690a8cb066c65040dc219206c28beed7f48b"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/tech-stack-learning-roadmap.md",
+    "source_id": "cebdb7cd-ff63-4705-8570-d24d2481c5bf",
+    "body_sha256": "7348c6d7d96103b24f06212eafa2dcd787d919444fbd33511addf75cb43972eb"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/coverletter.md",
+    "source_id": "a6e5d95a-0b4c-40b0-92fc-7a0dfcf79ae0",
+    "body_sha256": "466f327acf394c8488d48cd58be72326cc53f80bcfe282738ed262f67964db42"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/interview-q-a-bank.md",
+    "source_id": "e23c0834-9559-4482-bc01-92266105f883",
+    "body_sha256": "9d91961b7f043b1aa6ffba91acc56da4f4296311b661456a1edcf940305b0c55"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/jobposting.md",
+    "source_id": "4523b6ef-96f3-4d5a-a81f-d3f0a9da0e21",
+    "body_sha256": "7845140041a9d46efb3cdd16be3337acb634b84aa051e141f82a352211549050"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/re.md",
+    "source_id": "a413e719-d4b9-4a3c-8a9f-0ff862d40720",
+    "body_sha256": "83d5e26796dc3042a9c2d7f0fe6558a6a5c65c1d05d953cbb91ea33a2440928f"
+  },
+  {
+    "path": "ocs-ltd-mar-2026/resume.md",
+    "source_id": "d1e15e21-cc50-4167-9f79-dbd7460eaba3",
+    "body_sha256": "eabdfd26e3f2a8243fbf9de030c3b95b378f10ee2a984772868a1e43c975c7d6"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/architecture-overview.md",
+    "source_id": "d17adf22-95b1-4323-938e-c634c06c4b3e",
+    "body_sha256": "b3b0793d8b529c3d62b37756adb09e11a7f25eb34dc0ddced73f4cf47056ddc5"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/index.md",
+    "source_id": "39868724-0606-4ae2-9bdf-8b623c8d5a04",
+    "body_sha256": "044db584cd0c8cdea66d045bda75705a1526b3445a2ea6b31b937252000f2ad2"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/ingestion-processing-orchestration.md",
+    "source_id": "88b51c36-4faa-41fd-867a-29e0b53c37c4",
+    "body_sha256": "750cf9a8fcff230cc53c2e9814b836b118075c4a819cea08c507e5fc77d76448"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/knowledge-transformation-pipeline.md",
+    "source_id": "a5c79608-be64-458f-9648-666fb0397804",
+    "body_sha256": "8713be443410a655c6bf0bd9ecf963a594edd7c5bba6cb17e5f31dbeeba11f85"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/ai-agent-guardrails-grounding-strategy.md",
+    "source_id": "3cdd6346-61f2-47b9-a1bc-96c6b05daaf8",
+    "body_sha256": "c11b644665aa81bf56945b5a7b546043357bbfb20a0e1f6886cf011cfafd7373"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/architecture-data-flow-diagrams.md",
+    "source_id": "243a2c3e-5eeb-4e9b-9e26-585c667d45f2",
+    "body_sha256": "486aa8d3acf32dce07669c809e915152040cee2b2d733d3b58fdc91133a9c9d4"
+  },
+  {
+    "path": "ai-knowledge-ingestion-copilot-enablement-platform/impact-metrics-ai-knowledge-platform.md",
+    "source_id": "37610eab-449e-49e3-b8d7-c9f71f1a8988",
+    "body_sha256": "ab3e82b110cb6509a33c2e5bacb073dc0a56836f8429608150cda9870d200643"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/overview-problem.md",
+    "source_id": "21eafa60-d4ce-437a-ab13-83132c4df3d7",
+    "body_sha256": "70672ae10408b763735b0b957f9174636f5c6811a77f14d25aafcca0b7a33143"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/index.md",
+    "source_id": "4768f30e-4add-4df4-ae5f-4f224087b84c",
+    "body_sha256": "6c6649d529d09699a2c07617924f9afd76d2755d8fbbd8cdae5d95e5a7b58293"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/architecture-overview.md",
+    "source_id": "21a340e3-e202-47ae-a868-13709077ff34",
+    "body_sha256": "6ba4e672aa04bd2cff644231d0e34c45c1c36248ee3fe081e9d9bb00c0423e39"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/event-driven-data-flow.md",
+    "source_id": "a8a0e0b1-6bae-4947-bd91-f0edacce6fce",
+    "body_sha256": "07dab78af2f43c6ba7c2003ba4604b9cbe58fa42e21e8885f92e479830b96d3a"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/communication-models-pub-sub-mom.md",
+    "source_id": "60aef5ae-f0a0-446b-b05b-1c706ad666f3",
+    "body_sha256": "9dfdaa94c586a1f26b8b7062566b08781271814706dc21aabc424bf3df61084b"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/reliability-security-fault-tolerance.md",
+    "source_id": "beed25c7-e9d3-46ea-a6fc-6a34fc3a96b8",
+    "body_sha256": "010f1e7ac8fac9782d662a236c42e0e4bbf3f89849c70b109d6e54a46a045eed"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/architecture-diagrams.md",
+    "source_id": "edaeae76-fa95-4537-a598-aa1a4304cbd1",
+    "body_sha256": "8706d2126643f77e0bf181370153648afb856595f788d397721036d05c7896ab"
+  },
+  {
+    "path": "hybrid-distributed-emergency-notification-system/impact-lessons-learned.md",
+    "source_id": "c8b1afed-cd4e-4407-a57e-a3472ded073a",
+    "body_sha256": "b16a50f56f5d4ef193109c919b83af721c57428c490f033f8d73325347a99a13"
+  },
+  {
+    "path": "static/docs/diagrams/edge-cache-proxy-request-flow.mmd",
+    "git_source": "docs/diagrams/edge-cache-proxy-request-flow.mmd",
+    "sha256": "fe746e76a13080b850705c07f9181e3df954b7db6207ba22a6b65a2b0830578c"
+  },
+  {
+    "path": "static/docs/diagrams/meilisearch-search-flow.mmd",
+    "git_source": "docs/diagrams/meilisearch-search-flow.mmd",
+    "sha256": "10a19ae4af576b85f0821c78a9b3a24223777bacbed6e46e1024b98091804d43"
+  },
+  {
+    "path": "static/docs/diagrams/turnstile-edge-worker-flow.mmd",
+    "git_source": "docs/diagrams/turnstile-edge-worker-flow.mmd",
+    "sha256": "bd9dc0cc97d5221e7ebb9e14331868eac40fa49bb5ca66a4ab6789afb6bc4bcb"
+  },
+  {
+    "path": "static/public/diagrams/edge-cache-proxy-flow.svg",
+    "git_source": "public/diagrams/edge-cache-proxy-flow.svg",
+    "sha256": "3bfa8cb12757d51b95aa3f6b43a00eef70e596db5e689fc78aab32b2f7bf1b79"
+  },
+  {
+    "path": "static/public/diagrams/edge-cache-proxy-request-flow.svg",
+    "git_source": "public/diagrams/edge-cache-proxy-request-flow.svg",
+    "sha256": "3bfa8cb12757d51b95aa3f6b43a00eef70e596db5e689fc78aab32b2f7bf1b79"
+  },
+  {
+    "path": "static/public/diagrams/meilisearch-search-flow-v2.svg",
+    "git_source": "public/diagrams/meilisearch-search-flow-v2.svg",
+    "sha256": "fc6b2021ca31fa464a904ef810ffe1f9ce2b16e622acc6e04eb97761e721c6af"
+  },
+  {
+    "path": "static/public/diagrams/meilisearch-search-flow.svg",
+    "git_source": "public/diagrams/meilisearch-search-flow.svg",
+    "sha256": "fc6b2021ca31fa464a904ef810ffe1f9ce2b16e622acc6e04eb97761e721c6af"
+  },
+  {
+    "path": "static/public/diagrams/turnstile-edge-worker-flow.svg",
+    "git_source": "public/diagrams/turnstile-edge-worker-flow.svg",
+    "sha256": "4c1fb75ffca43864813a71a203b321f390b4b49ba6a440ff077da13ff8de19e7"
+  },
+  {
+    "path": "static/public/images/architecture/architecture.jpg",
+    "git_source": "public/images/architecture/architecture.jpg",
+    "sha256": "d9cf2d8a0a3d6c91fcfe01545539f082f26ef5f34f28fcd5abd07c9e6eb3cca3"
+  },
+  {
+    "path": "static/public/images/tajinder-singh-portrait.jpg",
+    "git_source": "public/images/tajinder-singh-portrait.jpg",
+    "sha256": "8523e502156f4875bce89c6853a200c3103bc073e9af7cec979ac7ffddede1fc"
+  },
+  {
+    "path": "static/public/images/work-default-cover.svg",
+    "git_source": "public/images/work-default-cover.svg",
+    "sha256": "ab1d87d3f0bedaa812a0ede76a0f02b9bf5523f4badb4a76b6f7beb4511111b0"
+  },
+  {
+    "path": "static/public/images/work-ml-workbench.svg",
+    "git_source": "public/images/work-ml-workbench.svg",
+    "sha256": "f56431972b2950722513cc0e449d55003ca7bf37dc68092079a131d9e87449ac"
+  },
+  {
+    "path": "static/src/content/work/ai-knowledge-ingestion-copilot-platform.md",
+    "git_source": "src/content/work/ai-knowledge-ingestion-copilot-platform.md",
+    "sha256": "d815eda0ea029c21573f318a2d5bacac0b6f45cb1795d0ed7465d6f981da2a7a"
+  },
+  {
+    "path": "static/src/content/work/distributed-emergency-notification-system.md",
+    "git_source": "src/content/work/distributed-emergency-notification-system.md",
+    "sha256": "9016c6e935747e51d7828b8d1887933d757ed9abe0d9f69ed73884469f4dc1f0"
+  },
+  {
+    "path": "static/src/content/work/edge-sitemap-orchestration-worker.md",
+    "git_source": "src/content/work/edge-sitemap-orchestration-worker.md",
+    "sha256": "24c8c64be3b2aeb1ab3a1a6997b2a88478696a42cdc9a6fa71d63ba24f2096bd"
+  },
+  {
+    "path": "static/src/content/work/encrypted-vault-workflows.md",
+    "git_source": "src/content/work/encrypted-vault-workflows.md",
+    "sha256": "d42c85739db3343c273d49529d7a69d29b464acb5d88ddb8068a081935b048eb"
+  },
+  {
+    "path": "static/src/content/work/faceted-deals-search-engine.md",
+    "git_source": "src/content/work/faceted-deals-search-engine.md",
+    "sha256": "c8dfc59a33601b9dec1708e160dca21c10db3527eb3ff3b3c3e1069639ebd78b"
+  },
+  {
+    "path": "static/src/content/work/hosted-images-gatekeeper-edge-access-control.md",
+    "git_source": "src/content/work/hosted-images-gatekeeper-edge-access-control.md",
+    "sha256": "edb8e82b0fbff753066b199fcd460eb1cd5936bbfe79682c8cc1fdfc78a37c0f"
+  },
+  {
+    "path": "static/src/content/work/internal-ml-workbench-modernization.md",
+    "git_source": "src/content/work/internal-ml-workbench-modernization.md",
+    "sha256": "78599d666c27053bb42d3f6f753e6fb3899096228204bf58793cdcecb9fae040"
+  },
+  {
+    "path": "static/src/content/work/internal-operations-admin-console.md",
+    "git_source": "src/content/work/internal-operations-admin-console.md",
+    "sha256": "26894df96419ae93914351e8cd483d587c83b8a16caf31e697f60e24f4e641a1"
+  },
+  {
+    "path": "static/src/content/work/permission-model-migration-admin-console.md",
+    "git_source": "src/content/work/permission-model-migration-admin-console.md",
+    "sha256": "f9afc61a8c984fa35eb979ba77d95348ec70b67fb14da0d731954e1633d200e9"
+  },
+  {
+    "path": "static/src/content/work/portfolio-platform-astro-web-android-companion.md",
+    "git_source": "src/content/work/portfolio-platform-astro-web-android-companion.md",
+    "sha256": "16aeaa8f5c7563d181e0e507a9d5a0274a8a27052180e95562e4ebeaacdb2b1d"
+  },
+  {
+    "path": "static/src/content/work/sharepoint-explorer-scoped-proxy.md",
+    "git_source": "src/content/work/sharepoint-explorer-scoped-proxy.md",
+    "sha256": "581d905f727c9c6e40f4efdb62562f69df691423a9f26dd930276eae2febcf1c"
+  },
+  {
+    "path": "static/src/content/work/smart-edge-cache-proxy.md",
+    "git_source": "src/content/work/smart-edge-cache-proxy.md",
+    "sha256": "289f6e17e609a5558ed69be3678c361bd4c098c6dae8ccc9174ab30ab735cbdd"
+  },
+  {
+    "path": "static/src/content/work/webflow-turnstile-edge-worker-pipeline.md",
+    "git_source": "src/content/work/webflow-turnstile-edge-worker-pipeline.md",
+    "sha256": "c590df9c2ab17b6059e7929573f792b218b14b04bb1f20e447c8a95bbac3e248"
+  }
+]

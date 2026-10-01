@@ -1,0 +1,22 @@
+[
+  {
+    "id": "b2d4ed36-fe2a-4f01-ac48-d131b0c4fd1a",
+    "source": "outline",
+    "name": "Case Studies",
+    "slug": "case-studies",
+    "nav_order": 0,
+    "is_visible": 1,
+    "synced_at": "2026-03-25 09:54:36",
+    "updated_at": "2026-03-25 09:54:36"
+  },
+  {
+    "id": "d83230db-9354-4614-93ca-639be845c01e",
+    "source": "outline",
+    "name": "JobJunt",
+    "slug": "jobjunt",
+    "nav_order": 1,
+    "is_visible": 1,
+    "synced_at": "2026-03-25 09:54:36",
+    "updated_at": "2026-03-25 09:54:36"
+  }
+]

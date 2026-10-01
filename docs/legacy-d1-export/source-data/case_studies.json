@@ -1,0 +1,62 @@
+[
+  {
+    "id": "17e6d2c2-b96c-4279-bc74-bab7c065e193",
+    "source": "outline",
+    "source_root_doc_id": "d83230db-9354-4614-93ca-639be845c01e",
+    "title": "OCS Ltd - Mar 2026",
+    "slug": "ocs-ltd-mar-2026",
+    "summary": "* **Role:** Solutions Architect",
+    "status": "published",
+    "nav_order": 0,
+    "is_visible": 1,
+    "created_at": "2026-03-22T15:32:32.106Z",
+    "updated_at": "2026-03-25 09:54:58",
+    "synced_at": "2026-03-25 09:54:58",
+    "source_collection_id": "d83230db-9354-4614-93ca-639be845c01e"
+  },
+  {
+    "id": "4768f30e-4add-4df4-ae5f-4f224087b84c",
+    "source": "outline",
+    "source_root_doc_id": "4768f30e-4add-4df4-ae5f-4f224087b84c",
+    "title": "🌍 Hybrid Distributed Emergency Notification System",
+    "slug": "hybrid-distributed-emergency-notification-system",
+    "summary": "This case study presents the design of a **hybrid distributed, event-driven system** built to support real-time monitoring, large-scale data processing, and emergency notification delivery.",
+    "status": "published",
+    "nav_order": 0,
+    "is_visible": 1,
+    "created_at": "2026-05-03T15:08:42.202Z",
+    "updated_at": "2026-09-20 10:03:33",
+    "synced_at": "2026-09-20 10:03:33",
+    "source_collection_id": "b2d4ed36-fe2a-4f01-ac48-d131b0c4fd1a"
+  },
+  {
+    "id": "39868724-0606-4ae2-9bdf-8b623c8d5a04",
+    "source": "outline",
+    "source_root_doc_id": "39868724-0606-4ae2-9bdf-8b623c8d5a04",
+    "title": "🧠 AI Knowledge Ingestion & Copilot Enablement Platform",
+    "slug": "ai-knowledge-ingestion-copilot-enablement-platform",
+    "summary": "This solution addresses a common enterprise challenge:",
+    "status": "published",
+    "nav_order": 1,
+    "is_visible": 1,
+    "created_at": "2026-03-21T10:43:52.851Z",
+    "updated_at": "2026-09-20 10:03:34",
+    "synced_at": "2026-09-20 10:03:34",
+    "source_collection_id": "b2d4ed36-fe2a-4f01-ac48-d131b0c4fd1a"
+  },
+  {
+    "id": "0f118459-42e3-46e4-8383-48f84646655c",
+    "source": "outline",
+    "source_root_doc_id": "0f118459-42e3-46e4-8383-48f84646655c",
+    "title": "🚀 Smart Edge Cache Proxy",
+    "slug": "smart-edge-cache-proxy",
+    "summary": "The Smart Edge Cache Proxy is a **programmable edge-layer caching system** built on Cloudflare Workers. It sits between client applications and backend APIs and is designed to make API delivery:",
+    "status": "published",
+    "nav_order": 2,
+    "is_visible": 1,
+    "created_at": "2026-03-14T23:39:42.435Z",
+    "updated_at": "2026-09-20 10:03:34",
+    "synced_at": "2026-09-20 10:03:34",
+    "source_collection_id": "b2d4ed36-fe2a-4f01-ac48-d131b0c4fd1a"
+  }
+]

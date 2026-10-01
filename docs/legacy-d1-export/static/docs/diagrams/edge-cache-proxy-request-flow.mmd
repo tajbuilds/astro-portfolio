@@ -1,0 +1,30 @@
+flowchart LR
+    T[Edge Cache Proxy Request Flow]
+
+    U[Client App / Browser] --> W[Cloudflare Worker<br/>Edge Cache Proxy]
+
+    W -->|Load endpoint + runtime policy| KV[(Config KV<br/>endpoint rules<br/>TTL bands<br/>operator policy)]
+
+    W -->|1. Edge lookup| EC[(Cloudflare Edge Cache<br/>caches.default)]
+    EC -->|HIT| U
+
+    EC -->|MISS| R2[(R2 Persistent Cache)]
+    R2 -->|R2 HIT| W
+    W -->|Respond to client| U
+    W -->|Edge write-back| EC
+
+    R2 -->|MISS / STALE| O[(Protected API backend)]
+    O -->|Origin response| W
+
+    W -->|Normalize query + derive cache key| K[Canonical Cache Key<br/>+ operator suffix<br/>+ purge-version suffix]
+    K --> EC
+    K --> R2
+
+    W -->|2xx / 404 write-back| EC
+    W -->|Large payload write-back| R2
+
+    W -->|Trace headers + cache outcome metrics| M[(Analytics / Observability)]
+
+    W -->|BYPASS / STRICT_KV_ONLY checks| G[Policy Gate]
+    G -->|Blocked| E[412 policy response]
+    E --> U

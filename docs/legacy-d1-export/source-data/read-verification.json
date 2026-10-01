@@ -1,0 +1,130 @@
+{
+  "counts": {
+    "case_studies": 4,
+    "documents": 31,
+    "outline_collections": 2,
+    "document_assets": 0
+  },
+  "queries": [
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.3886
+      },
+      "duration": 0.3886,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 8,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 2.7725
+      },
+      "duration": 2.7725,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 62,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1473
+      },
+      "duration": 0.1473,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 4,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.0914
+      },
+      "duration": 0.0914,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 2,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1138
+      },
+      "duration": 0.1138,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 32,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1402
+      },
+      "duration": 0.1402,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 38,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    {
+      "served_by": "v3-prod",
+      "served_by_region": "WEUR",
+      "served_by_colo": "AMS",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.5325
+      },
+      "duration": 0.5325,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 749568,
+      "rows_read": 62,
+      "rows_written": 0,
+      "total_attempts": 1
+    }
+  ],
+  "search_discrepancies": 0
+}
