@@ -76,9 +76,10 @@ test('GitBook client keeps credentials server-side and requests Markdown', async
     fetchImpl,
   });
 
-  const page = await client.getPageByPath('projects/edge-cache-api-proxy/target-architecture');
+  const page = await client.getPageById('page-1');
   assert.equal(page.markdown, '# Target Architecture');
   assert.equal(seenAuth, 'Bearer secret-token');
+  assert.match(seenUrl, /\/content\/page\/page-1/);
   assert.match(seenUrl, /format=markdown/);
   assert.match(seenUrl, /metadata=true/);
 });
@@ -88,6 +89,19 @@ test('portfolio discovers only direct children of Projects and reads project/pag
     spaceId: 'space-id',
     async listPages() {
       return fixtureTree;
+    },
+    async getPageById(pageId) {
+      const findById = (pages) => {
+        for (const page of pages) {
+          if (page.id === pageId) return page;
+          const nested = findById(page.pages ?? []);
+          if (nested) return nested;
+        }
+        return null;
+      };
+      const page = findById(fixtureTree.pages);
+      if (!page) throw new Error(`missing fixture page: ${pageId}`);
+      return { ...page, markdown: `# ${page.title}` };
     },
     async getPageByPath(path) {
       const page = findPageByPath(fixtureTree.pages, path);

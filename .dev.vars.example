@@ -1,0 +1,4 @@
+# Local-only runtime secret for the GitBook CMS integration.
+# Copy this file to .dev.vars and replace the placeholder.
+# .dev.vars is ignored by git.
+GITBOOK_TOKEN=replace-with-gitbook-api-token

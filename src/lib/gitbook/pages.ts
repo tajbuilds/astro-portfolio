@@ -46,9 +46,10 @@ export const getPortfolioPage = async (
     targetPath === normalizeGitBookPath(project.path) ||
     targetPath.startsWith(`${normalizeGitBookPath(project.path)}/`);
 
-  if (!isWithinProject || !findPageByPath([project], targetPath)) return null;
+  const targetPage = findPageByPath([project], targetPath);
+  if (!isWithinProject || !targetPage) return null;
 
-  const detail = await client.getPageByPath(targetPath);
+  const detail = await client.getPageById(targetPage.id);
   return mapDocumentPage(detail, project.path);
 };
 

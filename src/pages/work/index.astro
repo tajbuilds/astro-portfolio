@@ -1,8 +1,10 @@
 ---
+import { env } from 'cloudflare:workers';
 import MainLayout from '../../layouts/MainLayout.astro';
 import Container from '../../components/Container.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import GitBookProjectCard from '../../components/GitBookProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
 import ProofStrip from '../../components/ProofStrip.astro';
 import {
@@ -11,10 +13,26 @@ import {
 	getPublishedWorkTags,
 	slugifyTag,
 } from '../../lib/data/portfolio-data';
+import { createGitBookPortfolioFromEnv } from '../../lib/gitbook';
+import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../../lib/gitbook';
 import { workOverviewProofItems } from '../../lib/proof-data';
+
+export const prerender = false;
 
 const workItems = await getPublishedWorkEntries();
 const tags = await getPublishedWorkTags();
+
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+let gitbookProjects: PortfolioProjectSummary[] = [];
+
+if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	try {
+		const gitbookPortfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+		gitbookProjects = await gitbookPortfolio.getProjects();
+	} catch (error) {
+		console.error('GitBook project discovery failed on /work.', error);
+	}
+}
 ---
 
 <MainLayout
@@ -32,6 +50,33 @@ const tags = await getPublishedWorkTags();
 				/>
 			</div>
 		</section>
+
+		{
+			gitbookProjects.length > 0 && (
+				<section class="cms-discovery">
+					<div data-reveal="soft">
+						<SectionHeading
+							eyebrow="GitBook CMS Preview"
+							title="Architecture-led case studies"
+							description="Live project discovery from the private portfolio CMS. These cards are generated from the GitBook Projects hierarchy rather than duplicated Astro content."
+						/>
+					</div>
+
+					<ul class="work-grid">
+						{gitbookProjects.map((project) => (
+							<li data-reveal="soft">
+								<GitBookProjectCard
+									title={project.title}
+									description={project.description}
+									sectionCount={project.sectionCount}
+									href={`/work/cms-preview/${project.slug}/`}
+								/>
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
 
 		<section class="work-filter surface-card surface-card--soft" aria-label="Filter by tag" data-reveal="soft">
 			<p>Filter by focus area:</p>
@@ -71,6 +116,20 @@ const tags = await getPublishedWorkTags();
 <style>
 	.work-intro {
 		margin-bottom: var(--space-6);
+	}
+
+	.cms-discovery {
+		margin-bottom: var(--space-7);
+		padding: clamp(1rem, 2vw, 1.4rem);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
+		border-radius: var(--radius-lg);
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 46%),
+			color-mix(in srgb, var(--color-bg-elevated) 78%, transparent);
+	}
+
+	.cms-discovery :global(.section-heading) {
+		margin-bottom: var(--space-4);
 	}
 
 	.work-filter {
@@ -113,4 +172,3 @@ const tags = await getPublishedWorkTags();
 		}
 	}
 </style>
-
