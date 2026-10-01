@@ -1,12 +1,3 @@
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { DEFAULT_OG_IMAGE_ALT, DEFAULT_WORK_OG_IMAGE, SITE_TITLE } from '../../consts';
-
-export type WorkEntry = CollectionEntry<'work'>;
-export type WorkEntryData = WorkEntry['data'];
-
-export const contentSlug = (id: string) => id.replace(/\.(md|mdx)$/i, '');
-export const slugifyTag = (tag: string) => tag.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-
 export const profileData = {
 	name: 'Tajinder Singh',
 	role: 'Solutions Architect',
@@ -168,41 +159,3 @@ export const privacyData = {
 		email: 'contact@tajs.io',
 	},
 } as const;
-
-export const getPublishedWorkEntries = async () =>
-	(await getCollection('work'))
-		.filter((entry) => !entry.data.draft)
-		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-export const getFeaturedWorkEntries = async (limit = 4) =>
-	(await getPublishedWorkEntries()).filter((entry) => entry.data.featured).slice(0, limit);
-
-export const getPublishedWorkTags = async () =>
-	Array.from(
-		new Set((await getPublishedWorkEntries()).flatMap((item) => item.data.tags).map((tag) => tag.trim())),
-	).sort((a, b) => a.localeCompare(b));
-
-export const getWorkEntryBySlug = async (slug: string) =>
-	(await getPublishedWorkEntries()).find((entry) => contentSlug(entry.id).toLowerCase() === slug.toLowerCase());
-
-export const getWorkSeo = (entry: WorkEntry) => {
-	const slug = contentSlug(entry.id);
-	const title = entry.data.seoTitle || `${entry.data.title} | Work | ${SITE_TITLE}`;
-	const description = entry.data.seoDescription || entry.data.description;
-	const image = entry.data.ogImage || entry.data.coverImage || DEFAULT_WORK_OG_IMAGE;
-	const imageAlt = entry.data.ogImageAlt || `${entry.data.title} case study cover or architecture visual`;
-	const keywords = Array.from(new Set(['Solutions Architect', 'Case Study', ...entry.data.tags])).slice(0, 12);
-
-	return {
-		slug,
-		title,
-		description,
-		image,
-		imageAlt,
-		keywords,
-		publishedTime: entry.data.date,
-		modifiedTime: entry.data.updatedDate || entry.data.date,
-	};
-};
-
-export const defaultSocialImageAlt = DEFAULT_OG_IMAGE_ALT;

@@ -1,0 +1,63 @@
+---
+import { env } from 'cloudflare:workers';
+
+import GitBookDocumentationReader from '../../../components/GitBookDocumentationReader.astro';
+import {
+	createGitBookPortfolioFromEnv,
+	type GitBookRuntimeEnv,
+	type PortfolioDocumentPage,
+	type PortfolioNavigationNode,
+	type PortfolioProjectSummary,
+} from '../../../lib/gitbook';
+
+export const prerender = false;
+
+const slug = Astro.params.slug?.trim().toLowerCase() ?? '';
+const pagePath = Astro.params.page?.trim() ?? '';
+const gitbookEnv = env as unknown as GitBookRuntimeEnv;
+
+if (!gitbookEnv.GITBOOK_TOKEN?.trim()) {
+	return new Response('Portfolio content is not configured in this environment.', { status: 503 });
+}
+
+const portfolio = createGitBookPortfolioFromEnv(gitbookEnv);
+
+let projects: PortfolioProjectSummary[];
+let navigation: PortfolioNavigationNode[] | null;
+let page: PortfolioDocumentPage | null;
+
+try {
+	[projects, navigation, page] = await Promise.all([
+		portfolio.getProjects(),
+		portfolio.getProjectPages(slug),
+		portfolio.getPage(slug, pagePath),
+	]);
+} catch (error) {
+	console.error(`GitBook page lookup failed for /work/${slug}/${pagePath}/.`, error);
+	return new Response('Portfolio content is temporarily unavailable.', { status: 503 });
+}
+
+const project = projects.find((entry) => entry.slug.toLowerCase() === slug) ?? null;
+
+if (!project || !navigation || !page) {
+	return new Response('Case study page not found.', { status: 404 });
+}
+
+const projectHref = `/work/${project.slug}/`;
+const pageHref = (relativePath: string) =>
+	`${projectHref}${relativePath
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/')}/`;
+---
+
+<GitBookDocumentationReader
+	project={project}
+	navigation={navigation}
+	projectHref={projectHref}
+	pageHref={pageHref}
+	currentPage={page}
+	backHref={projectHref}
+	backLabel="Case study overview"
+/>

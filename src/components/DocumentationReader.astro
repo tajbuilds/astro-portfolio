@@ -35,7 +35,6 @@ interface Props {
 	backLabel: string;
 	kicker?: string;
 	noindex?: boolean;
-	searchEnabled?: boolean;
 }
 
 const {
@@ -58,7 +57,6 @@ const {
 	backLabel,
 	kicker = 'Extended Case Study',
 	noindex = false,
-	searchEnabled = false,
 } = Astro.props;
 
 const bodyHtml = await marked.parse(markdown || '');
@@ -92,22 +90,6 @@ const bodyHtml = await marked.parse(markdown || '');
 					<p class="docs-sidebar__eyebrow">Case Study</p>
 					<strong class="docs-sidebar__title">{projectTitle}</strong>
 				</div>
-
-				{
-					searchEnabled && (
-						<div class="docs-search" data-doc-search-root>
-							<label for="docs-search-input" class="sr-only">Search docs</label>
-							<input
-								id="docs-search-input"
-								type="search"
-								placeholder="Search docs&#8230;"
-								autocomplete="off"
-								data-doc-search-input
-							/>
-							<div class="docs-search-results" data-doc-search-results hidden></div>
-						</div>
-					)
-				}
 
 				<nav aria-label="Case study navigation">
 					<ul class="docs-nav-tree">
@@ -206,7 +188,7 @@ const bodyHtml = await marked.parse(markdown || '');
 	</dialog>
 </MainLayout>
 
-<script type="module" src="/scripts/starlight-mermaid.js"></script>
+<script type="module" src="/scripts/documentation-mermaid.js"></script>
 
 <script is:inline>
 (() => {
@@ -473,61 +455,7 @@ resetTransform();
 })();
 </script>
 
-<script is:inline>
-(() => {
-const root = document.querySelector('[data-doc-search-root]');
-if (!(root instanceof HTMLElement)) return;
-const input = root.querySelector('[data-doc-search-input]');
-const results = root.querySelector('[data-doc-search-results]');
-if (!(input instanceof HTMLInputElement) || !(results instanceof HTMLDivElement)) return;
 
-let tid = 0;
-const hide = () => { results.hidden = true; results.replaceChildren(); };
-const render = (items) => {
-results.replaceChildren();
-results.hidden = false;
-if (!Array.isArray(items) || items.length === 0) {
-const p = document.createElement('p');
-p.className = 'docs-search-empty';
-p.textContent = 'No results.';
-results.appendChild(p);
-return;
-}
-for (const item of items) {
-if (!item || typeof item.href !== 'string') continue;
-const a = document.createElement('a');
-a.className = 'docs-search-result';
-a.href = item.href;
-const t = document.createElement('strong');
-t.textContent = typeof item.title === 'string' ? item.title : 'Untitled';
-const m = document.createElement('span');
-m.textContent = typeof item.caseTitle === 'string' ? item.caseTitle : '';
-a.appendChild(t);
-a.appendChild(m);
-results.appendChild(a);
-}
-};
-
-input.addEventListener('input', () => {
-const q = input.value.trim();
-window.clearTimeout(tid);
-if (q.length < 2) { hide(); return; }
-tid = window.setTimeout(async () => {
-try {
-const res = await fetch('/api/docs/search?q=' + encodeURIComponent(q) + '&limit=8', {
-headers: { accept: 'application/json' },
-});
-if (!res.ok) { hide(); return; }
-render((await res.json()).items);
-} catch { hide(); }
-}, 180);
-});
-
-document.addEventListener('click', (e) => {
-if (!(e.target instanceof Node) || !root.contains(e.target)) hide();
-});
-})();
-</script>
 
 <style>
 :global(.site-main.docs-pg) {
@@ -596,55 +524,6 @@ display: block;
 font-size: 0.925rem;
 line-height: 1.35;
 color: var(--color-text);
-}
-
-/* Search */
-.docs-search { position: relative; margin-bottom: 1.1rem; }
-.docs-search input {
-width: 100%;
-padding: 0.58rem 0.7rem;
-font-size: 0.84rem;
-border-radius: var(--radius-sm);
-border: 1px solid var(--color-border);
-background: color-mix(in srgb, var(--color-bg-elevated) 82%, var(--color-surface));
-color: var(--color-text);
-outline: none;
-transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), background-color var(--motion-fast) var(--ease-standard);
-}
-.docs-search input:focus {
-border-color: var(--color-accent);
-box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 16%, transparent);
-}
-.docs-search-results {
-position: absolute;
-top: calc(100% + 4px);
-left: 0; right: 0;
-z-index: 40;
-padding: 0.3rem;
-border: 1px solid var(--color-border);
-border-radius: var(--radius-sm);
-background: var(--color-bg-elevated);
-box-shadow: var(--shadow-md);
-display: grid;
-gap: 0.12rem;
-}
-.docs-search-result {
-display: grid;
-gap: 0.1rem;
-padding: 0.38rem 0.42rem;
-border-radius: var(--radius-sm);
-text-decoration: none;
-font-size: 0.84rem;
-transition: background 0.1s;
-}
-.docs-search-result:hover { background: var(--color-surface); }
-.docs-search-result strong { color: var(--color-text); font-weight: 500; }
-.docs-search-result span { font-size: 0.76rem; color: var(--color-text-muted); }
-.docs-search-empty {
-margin: 0;
-padding: 0.35rem 0.42rem;
-font-size: 0.84rem;
-color: var(--color-text-muted);
 }
 
 /* Nav tree — :global because DocNavTree renders its own elements */

@@ -1,6 +1,13 @@
 import type { APIRoute } from 'astro';
-import { fail, ok, toWorkDetail } from '../../../../lib/mobile-api';
-import { getWorkEntryBySlug } from '../../../../lib/data/portfolio-data';
+import { env } from 'cloudflare:workers';
+
+import {
+	createMobilePortfolio,
+	fail,
+	ok,
+	toWorkDetail,
+} from '../../../../lib/mobile-api';
+import type { GitBookRuntimeEnv } from '../../../../lib/gitbook';
 
 export const prerender = false;
 
@@ -11,7 +18,8 @@ export const GET: APIRoute = async ({ params }) => {
 			return fail(404, 'not_found', 'Work item not found');
 		}
 
-		const item = await getWorkEntryBySlug(slug);
+		const portfolio = createMobilePortfolio(env as unknown as GitBookRuntimeEnv);
+		const item = await portfolio.getProject(slug);
 
 		if (!item) {
 			return fail(404, 'not_found', 'Work item not found');
