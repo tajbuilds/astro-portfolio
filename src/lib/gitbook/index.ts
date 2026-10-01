@@ -1,3 +1,4 @@
+import { createCachedGitBookClient } from './cache.ts';
 import { createGitBookClientFromEnv } from './client.ts';
 import { getPortfolioPage, getPortfolioProjectPages } from './pages.ts';
 import {
@@ -14,6 +15,12 @@ import type {
   GitBookRuntimeEnv,
 } from './types.ts';
 
+export {
+  createCachedGitBookClient,
+  GITBOOK_CACHE_RETENTION_SECONDS,
+  GITBOOK_PAGE_FRESH_TTL_SECONDS,
+  GITBOOK_TREE_FRESH_TTL_SECONDS,
+} from './cache.ts';
 export { createGitBookClient, createGitBookClientFromEnv, GitBookApiError } from './client.ts';
 export { getPortfolioPage, getPortfolioProjectPages } from './pages.ts';
 export {
@@ -73,7 +80,10 @@ export const createGitBookPortfolioFromEnv = (
   env: GitBookRuntimeEnv,
   options: GitBookPortfolioOptions = {},
 ) => {
-  const client = createGitBookClientFromEnv(env);
+  const client = createCachedGitBookClient(
+    createGitBookClientFromEnv(env),
+    env.GITBOOK_CACHE,
+  );
   return createGitBookPortfolio(client, {
     projectsPath: options.projectsPath ?? env.GITBOOK_PROJECTS_PATH,
   });
