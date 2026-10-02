@@ -84,26 +84,27 @@ const evidence = [
         <p class="work-toolbar__label">Explore by focus area</p>
         <p class="work-toolbar__hint">Tags describe architecture domains, technologies and material system concerns.</p>
       </div>
-      <div class="work-filter">
-        <div class="work-filter__all">
-          <PillTag label="All" href="/work/" />
-        </div>
-        <div class="work-filter__groups">
-          {tagGroups.map((group) => (
-            <section class="work-filter__group" aria-label={`${group.label} filters`}>
-              <span class="work-filter__group-label">{group.label}</span>
-              <div class="work-filter__tags">
-                {group.tags.map((tag) => (
-                  <PillTag
-                    label={tag.label}
-                    category={tag.category}
-                    href={`/work/tags/${tag.key}/`}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+      <div class="work-filter__groups">
+        <section class="work-filter__group" aria-label="Portfolio scope">
+          <span class="work-filter__group-label">View</span>
+          <div class="work-filter__tags">
+            <PillTag label="All" href="/work/" />
+          </div>
+        </section>
+        {tagGroups.map((group) => (
+          <section class="work-filter__group" aria-label={`${group.label} filters`}>
+            <span class="work-filter__group-label">{group.label}</span>
+            <div class="work-filter__tags">
+              {group.tags.map((tag) => (
+                <PillTag
+                  label={tag.label}
+                  category={tag.category}
+                  href={`/work/tags/${tag.key}/`}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
 
@@ -226,17 +227,6 @@ const evidence = [
     font-size: var(--font-size-sm);
   }
 
-  .work-filter {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-3);
-    align-items: start;
-  }
-
-  .work-filter__all {
-    padding-top: 1.25rem;
-  }
-
   .work-filter__groups {
     display: grid;
     gap: 0.75rem;
@@ -303,14 +293,6 @@ const evidence = [
 
     .work-toolbar {
       grid-template-columns: 1fr;
-    }
-
-    .work-filter {
-      grid-template-columns: 1fr;
-    }
-
-    .work-filter__all {
-      padding-top: 0;
     }
 
     .work-grid {
