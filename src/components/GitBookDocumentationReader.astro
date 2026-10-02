@@ -1,10 +1,11 @@
 ---
 import DocumentationReader from './DocumentationReader.astro';
 import type { NavNode } from './DocNavTree.astro';
-import type {
-	PortfolioDocumentPage,
-	PortfolioNavigationNode,
-	PortfolioProjectSummary,
+import {
+	presentProjectTag,
+	type PortfolioDocumentPage,
+	type PortfolioNavigationNode,
+	type PortfolioProjectSummary,
 } from '../lib/gitbook';
 
 type FlatNavigationNode = PortfolioNavigationNode & { depth: number };
@@ -113,6 +114,14 @@ const summary =
 	project.description ||
 	'Architecture context, viewpoints, decisions, trade-offs, transition and validation for this case study.';
 const markdown = currentPage?.markdown ?? rootMarkdown;
+const projectTags = project.tags
+	.map(presentProjectTag)
+	.sort((a, b) => {
+		const rank = { architecture: 0, concern: 1, technology: 2 };
+		return rank[a.category] - rank[b.category] || a.label.localeCompare(b.label);
+	})
+	.slice(0, 4);
+
 const depthLabel = currentPage
 	? currentNavigation
 		? currentNavigation.depth === 0
@@ -135,6 +144,7 @@ const depthLabel = currentPage
 	sectionCount={flatNavigation.length}
 	depthLabel={depthLabel}
 	sourceLabel={sourceLabel}
+	projectTags={projectTags}
 	markdown={markdown}
 	previous={previous}
 	next={next}

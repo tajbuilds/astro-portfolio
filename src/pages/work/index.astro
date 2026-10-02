@@ -7,8 +7,8 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import PillTag from '../../components/PillTag.astro';
 import {
   createGitBookPortfolioFromEnv,
-  formatProjectTagLabel,
-  normalizeProjectTagKey,
+  formatProjectTagCategory,
+  presentProjectTag,
 } from '../../lib/gitbook';
 import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../../lib/gitbook';
 
@@ -33,6 +33,14 @@ if (gitbookEnv.GITBOOK_TOKEN?.trim()) {
 } else {
   gitbookError = true;
 }
+
+const tagGroups = (['architecture', 'technology', 'concern'] as const)
+  .map((category) => ({
+    category,
+    label: formatProjectTagCategory(category),
+    tags: tags.map(presentProjectTag).filter((tag) => tag.category === category),
+  }))
+  .filter((group) => group.tags.length > 0);
 
 const evidence = [
   ['Context', 'Why change was needed'],
@@ -76,14 +84,26 @@ const evidence = [
         <p class="work-toolbar__label">Explore by focus area</p>
         <p class="work-toolbar__hint">Tags describe architecture domains, technologies and material system concerns.</p>
       </div>
-      <div class="work-filter__tags">
-        <PillTag label="All" href="/work/" />
-        {tags.map((tag) => (
-          <PillTag
-            label={formatProjectTagLabel(tag)}
-            href={`/work/tags/${normalizeProjectTagKey(tag)}/`}
-          />
-        ))}
+      <div class="work-filter">
+        <div class="work-filter__all">
+          <PillTag label="All" href="/work/" />
+        </div>
+        <div class="work-filter__groups">
+          {tagGroups.map((group) => (
+            <section class="work-filter__group" aria-label={`${group.label} filters`}>
+              <span class="work-filter__group-label">{group.label}</span>
+              <div class="work-filter__tags">
+                {group.tags.map((tag) => (
+                  <PillTag
+                    label={tag.label}
+                    category={tag.category}
+                    href={`/work/tags/${tag.key}/`}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -101,7 +121,7 @@ const evidence = [
               <ProjectCard
                 title={project.title}
                 description={project.description}
-                tags={project.tags.map(formatProjectTagLabel)}
+                tags={project.tags.map(presentProjectTag)}
                 sectionCount={project.sectionCount}
                 href={`/work/${project.slug}/`}
               />
@@ -206,10 +226,42 @@ const evidence = [
     font-size: var(--font-size-sm);
   }
 
+  .work-filter {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+  }
+
+  .work-filter__all {
+    padding-top: 1.25rem;
+  }
+
+  .work-filter__groups {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .work-filter__group {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: start;
+  }
+
+  .work-filter__group-label {
+    padding-top: 0.28rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
   .work-filter__tags {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: var(--space-2);
   }
 
@@ -253,8 +305,12 @@ const evidence = [
       grid-template-columns: 1fr;
     }
 
-    .work-filter__tags {
-      justify-content: flex-start;
+    .work-filter {
+      grid-template-columns: 1fr;
+    }
+
+    .work-filter__all {
+      padding-top: 0;
     }
 
     .work-grid {
@@ -263,6 +319,11 @@ const evidence = [
   }
 
   @media (max-width: 560px) {
+    .work-filter__group {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+
     .evidence-model {
       grid-template-columns: 1fr;
     }

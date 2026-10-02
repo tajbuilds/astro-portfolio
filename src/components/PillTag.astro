@@ -1,17 +1,21 @@
 ---
+import type { PortfolioTagCategory } from '../lib/gitbook';
+
 interface Props {
 	label: string;
 	href?: string;
+	category?: PortfolioTagCategory;
 }
 
-const { label, href } = Astro.props;
+const { label, href, category } = Astro.props;
+const classes = ['pill', category && `pill--${category}`];
 ---
 
 {
 	href ? (
-		<a class="pill" href={href}>{label}</a>
+		<a class:list={classes} href={href}>{label}</a>
 	) : (
-		<span class="pill">{label}</span>
+		<span class:list={classes}>{label}</span>
 	)
 }
 
@@ -36,6 +40,27 @@ const { label, href } = Astro.props;
 			background-color var(--motion-base) var(--ease-standard),
 			transform var(--motion-fast) var(--ease-standard),
 			box-shadow var(--motion-base) var(--ease-standard);
+	}
+
+	.pill--architecture {
+		border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-border));
+		background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg-elevated));
+		color: var(--color-text);
+	}
+
+	.pill--technology {
+		border-color: color-mix(in srgb, var(--color-focus) 32%, var(--color-border));
+		background: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
+	}
+
+	.pill--technology,
+	.pill--concern {
+		color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text));
+	}
+
+	.pill--concern {
+		border-style: dashed;
+		background: color-mix(in srgb, var(--color-surface) 68%, var(--color-bg-elevated));
 	}
 
 	a.pill:hover {

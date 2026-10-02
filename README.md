@@ -30,9 +30,12 @@ A direct child of the configured GitBook `Projects` root is a public portfolio p
 Project-root tags drive portfolio behaviour:
 
 - `showcase` is reserved metadata controlling homepage eligibility;
-- all other project-root tags are public taxonomy used by Work filters and tag routes.
+- all other project-root tags are public taxonomy used by Work filters, case-study metadata and tag routes;
+- `*-architecture` tags are presented as **Architecture**;
+- known platform/product tags are presented as **Technology**;
+- remaining tags are presented as **Concern**.
 
-Adding, removing, renaming or reclassifying a portfolio project should not require a code change.
+The taxonomy is presentation logic only; GitBook remains the source of truth for the tags themselves. Adding, removing, renaming or reclassifying a portfolio project should not require a code change.
 
 ### GitBook cache
 

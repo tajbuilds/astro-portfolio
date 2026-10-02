@@ -9,7 +9,7 @@ import FlagshipCaseStudyCard from '../components/FlagshipCaseStudyCard.astro';
 import ArchitectureReasoning from '../components/ArchitectureReasoning.astro';
 import {
   createGitBookPortfolioFromEnv,
-  formatProjectTagLabel,
+  presentProjectTag,
 } from '../lib/gitbook';
 import type { GitBookRuntimeEnv, PortfolioProjectSummary } from '../lib/gitbook';
 
@@ -166,7 +166,7 @@ const flagshipAccents = ['primary', 'secondary', 'tertiary'] as const;
               <FlagshipCaseStudyCard
                 title={item.title}
                 summary={item.description}
-                tags={item.tags.map(formatProjectTagLabel)}
+                tags={item.tags.map(presentProjectTag)}
                 sectionCount={item.sectionCount}
                 href={`/work/${item.slug}/`}
                 index={index + 1}

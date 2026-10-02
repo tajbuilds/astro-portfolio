@@ -3,7 +3,6 @@ import { env } from 'cloudflare:workers';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import QuickContact from '../components/QuickContact.astro';
 import AnalyticsConsent from '../components/AnalyticsConsent.astro';
 
 interface Props {
@@ -33,9 +32,6 @@ const {
 	width = 'narrow',
 	mainClass,
 } = Astro.props;
-const pathname = Astro.url.pathname;
-const showQuickContact =
-	mainClass !== 'docs-pg' && !pathname.startsWith('/contact') && !pathname.startsWith('/docs');
 const gaMeasurementId = (env.PUBLIC_GA_MEASUREMENT_ID ?? import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
 ---
 
@@ -102,7 +98,6 @@ const gaMeasurementId = (env.PUBLIC_GA_MEASUREMENT_ID ?? import.meta.env.PUBLIC_
 			<slot />
 		</main>
 		<Footer />
-		{showQuickContact && <QuickContact />}
 		<AnalyticsConsent measurementId={gaMeasurementId} />
 		<button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">Top</button>
 

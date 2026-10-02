@@ -4,9 +4,12 @@ import assert from 'node:assert/strict';
 import { createCachedGitBookClient } from '../../src/lib/gitbook/cache.ts';
 import { createGitBookClient, GitBookApiError } from '../../src/lib/gitbook/client.ts';
 import {
+  classifyProjectTag,
   findPageByPath,
+  formatProjectTagCategory,
   formatProjectTagLabel,
   mapProjectSummary,
+  presentProjectTag,
   normalizeGitBookMarkdown,
   normalizeGitBookProjectTags,
   normalizeGitBookPath,
@@ -121,10 +124,25 @@ test('normalizes GitBook frontmatter and duplicate page heading', () => {
   );
 });
 
-test('formats canonical project tag keys for presentation', () => {
+test('formats and classifies canonical project tags for presentation', () => {
   assert.equal(formatProjectTagLabel('cloudflare'), 'Cloudflare');
   assert.equal(formatProjectTagLabel('edge-architecture'), 'Edge Architecture');
   assert.equal(formatProjectTagLabel('api-architecture'), 'API Architecture');
+
+  assert.equal(classifyProjectTag('api-architecture'), 'architecture');
+  assert.equal(classifyProjectTag('cloudflare'), 'technology');
+  assert.equal(classifyProjectTag('caching'), 'concern');
+
+  assert.equal(formatProjectTagCategory('architecture'), 'Architecture');
+  assert.equal(formatProjectTagCategory('technology'), 'Technology');
+  assert.equal(formatProjectTagCategory('concern'), 'Concern');
+
+  assert.deepEqual(presentProjectTag('live-search'), {
+    tag: 'live-search',
+    key: 'live-search',
+    label: 'Live Search',
+    category: 'concern',
+  });
 });
 
 test('GitBook client keeps credentials server-side and requests Markdown', async () => {
