@@ -61,6 +61,15 @@ export type PortfolioNavigationNode = {
   children: PortfolioNavigationNode[];
 };
 
+export type PortfolioTagCategory = 'architecture' | 'technology' | 'concern';
+
+export type PortfolioTagPresentation = {
+  tag: string;
+  key: string;
+  label: string;
+  category: PortfolioTagCategory;
+};
+
 export type PortfolioProjectSummary = {
   id: string;
   title: string;
