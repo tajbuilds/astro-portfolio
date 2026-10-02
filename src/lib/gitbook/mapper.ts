@@ -5,6 +5,8 @@ import type {
   PortfolioNavigationNode,
   PortfolioProject,
   PortfolioProjectSummary,
+  PortfolioTagCategory,
+  PortfolioTagPresentation,
 } from './types.ts';
 
 export const normalizeGitBookPath = (value: string | null | undefined) =>
@@ -74,6 +76,39 @@ export const formatProjectTagLabel = (tag: string) =>
         : `${part.charAt(0).toUpperCase()}${part.slice(1)}`,
     )
     .join(' ');
+
+const TECHNOLOGY_TAG_KEYS = new Set([
+  'astro',
+  'cloudflare',
+  'docker',
+  'github',
+  'meilisearch',
+  'n8n',
+  'typescript',
+  'webflow',
+  'xano',
+]);
+
+export const classifyProjectTag = (tag: string): PortfolioTagCategory => {
+  const key = normalizeProjectTagKey(tag);
+  if (key === 'architecture' || key.endsWith('-architecture')) return 'architecture';
+  if (TECHNOLOGY_TAG_KEYS.has(key)) return 'technology';
+  return 'concern';
+};
+
+export const formatProjectTagCategory = (category: PortfolioTagCategory) =>
+  category === 'architecture'
+    ? 'Architecture'
+    : category === 'technology'
+      ? 'Technology'
+      : 'Concern';
+
+export const presentProjectTag = (tag: string): PortfolioTagPresentation => ({
+  tag,
+  key: normalizeProjectTagKey(tag),
+  label: formatProjectTagLabel(tag),
+  category: classifyProjectTag(tag),
+});
 
 export const normalizeGitBookProjectTags = (tags: unknown[] | null | undefined) => {
   const seen = new Set<string>();
