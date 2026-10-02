@@ -212,6 +212,12 @@ const evidence = ['Current state', 'Options', 'Target state', 'Decisions', 'Vali
     transform: translateX(4px);
   }
 
+  @media (max-width: 980px) {
+    .flagship-card {
+      min-height: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .flagship-card,
     .flagship-card::before,
