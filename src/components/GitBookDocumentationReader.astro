@@ -120,7 +120,7 @@ const projectTags = project.tags
 		const rank = { architecture: 0, concern: 1, technology: 2 };
 		return rank[a.category] - rank[b.category] || a.label.localeCompare(b.label);
 	})
-	.slice(0, 4);
+	.slice(0, 3);
 
 const depthLabel = currentPage
 	? currentNavigation

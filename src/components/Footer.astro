@@ -91,6 +91,14 @@ const today = new Date();
 
 <script is:inline>
 	(() => {
+		const footer = document.querySelector('footer');
+		if (footer && 'ResizeObserver' in window) {
+			const observer = new ResizeObserver(() => {
+				document.documentElement.style.setProperty('--site-footer-height', `${footer.getBoundingClientRect().height}px`);
+			});
+			observer.observe(footer);
+		}
+
 		const trigger = document.getElementById('analytics-settings-trigger');
 		if (!(trigger instanceof HTMLButtonElement)) return;
 		trigger.addEventListener('click', () => {
@@ -110,7 +118,7 @@ const today = new Date();
 		max-width: var(--container-size-full);
 		margin: 0 auto;
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-columns: minmax(0, 1fr) auto;
 		gap: var(--space-4) var(--space-5);
 		align-items: center;
 	}
@@ -202,9 +210,11 @@ const today = new Date();
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
 		color: var(--color-accent);
 		text-decoration: none;
-		padding: 0.18rem;
+		padding: 0;
 		border-radius: 0.35rem;
 		border: 1px solid transparent;
 		transition:
@@ -233,7 +243,7 @@ const today = new Date();
 		height: 1rem;
 	}
 
-	@media (max-width: 760px) {
+	@media (max-width: 880px) {
 		.footer-inner {
 			grid-template-columns: 1fr;
 			gap: var(--space-3);

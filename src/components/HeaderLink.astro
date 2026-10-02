@@ -15,7 +15,10 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 
 <style>
 	a {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.5rem;
 		padding: 0.42rem 0.8rem;
 		border-radius: 999px;
 		text-decoration: none;
@@ -54,6 +57,7 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 
 	@media (max-width: 700px) {
 		a {
+			min-height: 2.4rem;
 			padding: 0.34rem 0.58rem;
 			font-size: var(--font-size-sm);
 		}

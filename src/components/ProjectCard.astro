@@ -18,7 +18,7 @@ interface Props {
 
 const { title, description, tags, href, sectionCount = 0, compact = false } = Astro.props;
 const displayTags = tags.slice(0, 3);
-const architectureSignals = ['Current state', 'Options', 'Target state', 'Decisions', 'Validation'];
+const architectureSignals = ['Current state', 'Options', 'Target state', 'Validation'];
 ---
 
 <a class="project-card-link" href={href} aria-label={`Explore architecture case study: ${title}`}>
@@ -32,7 +32,7 @@ const architectureSignals = ['Current state', 'Options', 'Target state', 'Decisi
       <p>{description}</p>
     </div>
     <div class="project-card__evidence" aria-label="Architecture evidence">
-      {architectureSignals.slice(0, compact ? 3 : 5).map((item) => <span>{item}</span>)}
+      {architectureSignals.slice(0, compact ? 3 : 4).map((item) => <span>{item}</span>)}
     </div>
     <div class="project-card__tags">
       {displayTags.map((tag) => <PillTag label={tag.label} category={tag.category} />)}
