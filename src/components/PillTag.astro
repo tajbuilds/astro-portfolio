@@ -53,6 +53,11 @@ const classes = ['pill', category && `pill--${category}`];
 		background: color-mix(in srgb, var(--color-focus) 9%, var(--color-bg-elevated));
 	}
 
+	.pill--technology,
+	.pill--concern {
+		color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text));
+	}
+
 	.pill--concern {
 		border-style: dashed;
 		background: color-mix(in srgb, var(--color-surface) 68%, var(--color-bg-elevated));
