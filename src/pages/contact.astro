@@ -369,11 +369,13 @@ const directLinks = [
 
 	.contact-form {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--space-4);
 	}
 
 	.contact-form label {
 		display: grid;
+		min-width: 0;
 		gap: var(--space-1);
 	}
 
@@ -386,6 +388,7 @@ const directLinks = [
 	.contact-form input,
 	.contact-form textarea {
 		width: 100%;
+		min-width: 0;
 		padding: 0.72rem 0.78rem;
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-sm);
@@ -562,6 +565,12 @@ const directLinks = [
 
 		.turnstile-wrap {
 			justify-content: flex-start;
+		}
+	}
+
+	@media (max-width: 380px) {
+		.turnstile-wrap {
+			zoom: 0.75;
 		}
 	}
 

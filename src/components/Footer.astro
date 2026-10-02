@@ -91,6 +91,14 @@ const today = new Date();
 
 <script is:inline>
 	(() => {
+		const footer = document.querySelector('footer');
+		if (footer && 'ResizeObserver' in window) {
+			const observer = new ResizeObserver(() => {
+				document.documentElement.style.setProperty('--site-footer-height', `${footer.getBoundingClientRect().height}px`);
+			});
+			observer.observe(footer);
+		}
+
 		const trigger = document.getElementById('analytics-settings-trigger');
 		if (!(trigger instanceof HTMLButtonElement)) return;
 		trigger.addEventListener('click', () => {

@@ -731,7 +731,7 @@ hr {
 }
 
 .back-to-top.is-over-footer {
-	bottom: 5.2rem;
+	bottom: calc(var(--site-footer-height, 8.5rem) + 1rem);
 }
 
 @media (max-width: 720px) {
