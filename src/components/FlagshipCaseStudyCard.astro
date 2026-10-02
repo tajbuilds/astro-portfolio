@@ -1,10 +1,16 @@
 ---
 import PillTag from './PillTag.astro';
+import type { PortfolioTagCategory } from '../lib/gitbook';
+
+type DisplayTag = {
+  label: string;
+  category?: PortfolioTagCategory;
+};
 
 interface Props {
   title: string;
   summary: string;
-  tags: string[];
+  tags: DisplayTag[];
   href: string;
   sectionCount?: number;
   accent?: string;
@@ -43,7 +49,7 @@ const evidence = ['Current state', 'Options', 'Target state', 'Decisions', 'Vali
 
     <div class="flagship-card__footer">
       <div class="flagship-card__tags">
-        {displayTags.map((tag) => <PillTag label={tag} />)}
+        {displayTags.map((tag) => <PillTag label={tag.label} category={tag.category} />)}
       </div>
       <span class="flagship-card__cta">Explore architecture <span aria-hidden="true">→</span></span>
     </div>
