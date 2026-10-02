@@ -40,7 +40,11 @@ const directLinks = [
 ];
 ---
 
-<MainLayout title="Contact | Tajinder Singh" description="Get in touch with Tajinder Singh about architecture roles, collaboration and solution or integration design.">
+<MainLayout
+	title="Contact | Tajinder Singh"
+	description="Get in touch with Tajinder Singh about architecture roles, collaboration and solution or integration design."
+	width="full"
+>
 	<Container size="wide">
 		<section class="contact-hero">
 			<div class="contact-hero__copy">
@@ -262,7 +266,6 @@ const directLinks = [
 </script>
 
 <style>
-	.contact-hero,
 	.contact-form-shell,
 	.contact-rail-card {
 		border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
@@ -276,9 +279,9 @@ const directLinks = [
 	.contact-hero {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(16.5rem, 0.82fr);
-		gap: clamp(var(--space-3), 1.4vw, var(--space-5));
+		gap: clamp(var(--space-4), 2vw, var(--space-6));
 		align-items: start;
-		padding: clamp(0.75rem, 1.1vw, 1rem);
+		padding: clamp(0.4rem, 1vw, 0.75rem) 0 clamp(1rem, 2vw, 1.4rem);
 		margin-bottom: clamp(var(--space-5), 4vw, var(--space-7));
 	}
 
@@ -426,6 +429,7 @@ const directLinks = [
 
 	.contact-form button {
 		width: fit-content;
+		min-height: 2.5rem;
 		border: 1px solid var(--color-accent);
 		background: var(--color-accent);
 		color: #fff;
@@ -501,9 +505,11 @@ const directLinks = [
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
 		color: var(--color-accent);
 		text-decoration: none;
-		padding: 0.22rem;
+		padding: 0;
 		border-radius: 0.35rem;
 		border: 1px solid transparent;
 		transition:
