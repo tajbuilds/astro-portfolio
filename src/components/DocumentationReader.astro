@@ -4,6 +4,7 @@ import { marked } from 'marked';
 import MainLayout from '../layouts/MainLayout.astro';
 import DocNavTree from './DocNavTree.astro';
 import type { NavNode } from './DocNavTree.astro';
+import type { PortfolioTagCategory } from '../lib/gitbook';
 
 type Breadcrumb = {
 	label: string;
@@ -13,6 +14,11 @@ type Breadcrumb = {
 type ReaderLink = {
 	title: string;
 	href: string;
+};
+
+type ProjectTag = {
+	label: string;
+	category: PortfolioTagCategory;
 };
 
 interface Props {
@@ -28,6 +34,7 @@ interface Props {
 	sectionCount: number;
 	depthLabel: string;
 	sourceLabel: string;
+	projectTags?: ProjectTag[];
 	markdown: string;
 	previous?: ReaderLink | null;
 	next?: ReaderLink | null;
@@ -50,6 +57,7 @@ const {
 	sectionCount,
 	depthLabel,
 	sourceLabel,
+	projectTags = [],
 	markdown,
 	previous = null,
 	next = null,
@@ -141,6 +149,18 @@ const bodyHtml = await marked.parse(markdown || '');
 						<span>{depthLabel}</span>
 						<span>{sourceLabel}</span>
 					</div>
+					{
+						projectTags.length > 0 && (
+							<div class="docs-hero__tags" aria-label="Project architecture metadata">
+								{projectTags.map((tag) => (
+									<span class:list={['docs-hero__tag', `docs-hero__tag--${tag.category}`]}>
+										<span class="sr-only">{tag.category}: </span>
+										{tag.label}
+									</span>
+								))}
+							</div>
+						)
+					}
 				</header>
 
 				<div class="docs-prose" data-doc-content>
@@ -730,6 +750,43 @@ background: color-mix(in srgb, var(--color-bg-elevated) 80%, transparent);
 color: var(--color-text-muted);
 font-size: var(--font-size-xs);
 font-weight: 700;
+}
+
+.docs-hero__tags {
+position: relative;
+z-index: 1;
+display: flex;
+flex-wrap: wrap;
+gap: 0.4rem;
+margin-top: 0.7rem;
+}
+
+.docs-hero__tag {
+display: inline-flex;
+align-items: center;
+min-height: 1.7rem;
+padding: 0.2rem 0.52rem;
+border: 1px solid var(--color-border);
+border-radius: 999px;
+font-size: 0.72rem;
+font-weight: 700;
+color: var(--color-text-muted);
+background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+
+.docs-hero__tag--architecture {
+border-color: color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+color: var(--color-text);
+background: color-mix(in srgb, var(--color-accent) 11%, var(--color-bg-elevated));
+}
+
+.docs-hero__tag--technology {
+border-color: color-mix(in srgb, var(--color-focus) 28%, var(--color-border));
+background: color-mix(in srgb, var(--color-focus) 8%, var(--color-bg-elevated));
+}
+
+.docs-hero__tag--concern {
+border-style: dashed;
 }
 
 /* Prose */
