@@ -8,7 +8,8 @@ import ProjectCard from '../../../components/ProjectCard.astro';
 import PillTag from '../../../components/PillTag.astro';
 import {
 	createGitBookPortfolioFromEnv,
-	formatProjectTagLabel,
+	formatProjectTagCategory,
+	presentProjectTag,
 	normalizeProjectTagKey,
 } from '../../../lib/gitbook';
 import type {
@@ -47,7 +48,9 @@ if (!canonicalTag) {
 	return Astro.redirect('/work/', 302);
 }
 
-const tagLabel = formatProjectTagLabel(canonicalTag);
+const tagPresentation = presentProjectTag(canonicalTag);
+const tagLabel = tagPresentation.label;
+const tagCategoryLabel = formatProjectTagCategory(tagPresentation.category);
 ---
 
 <MainLayout
@@ -58,9 +61,9 @@ const tagLabel = formatProjectTagLabel(canonicalTag);
 >
 	<Container size="wide">
 		<SectionHeading
-			eyebrow="Architecture Portfolio"
+			eyebrow={`${tagCategoryLabel} filter`}
 			title={`Case studies: ${tagLabel}`}
-			description="Architecture case studies connected to this domain, technology or material system concern."
+			description={`Architecture case studies connected to this ${tagCategoryLabel.toLowerCase()} tag.`}
 		/>
 		<p class="tag-back"><PillTag label="← Back to all work" href="/work/" /></p>
 		<ul class="work-grid">
@@ -69,7 +72,7 @@ const tagLabel = formatProjectTagLabel(canonicalTag);
 					<ProjectCard
 						title={project.title}
 						description={project.description}
-						tags={project.tags.map(formatProjectTagLabel)}
+						tags={project.tags.map(presentProjectTag)}
 						sectionCount={project.sectionCount}
 						href={`/work/${project.slug}/`}
 					/>
